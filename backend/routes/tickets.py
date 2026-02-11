@@ -119,8 +119,8 @@ async def whatsapp_booking(booking: WhatsAppBooking):
                 payment_proof = booking.payment_proof_base64
             status = TicketStatus.PAYMENT_SUBMITTED
         else:
-            # STRICT REQUIREMENT: No image = No booking
-            raise HTTPException(status_code=400, detail="Payment proof is required for every booking")
+            # No image provided -> Pending payment
+            status = TicketStatus.PENDING
 
         # Create ticket with guest_name
         ticket = Ticket(
@@ -303,6 +303,64 @@ async def upload_payment_proof(ticket_id: int, background_tasks: BackgroundTasks
             "success": True,
             "message": "تم رفع إثبات الدفع بنجاح، في انتظار المراجعة"
         }
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        session.close()
+
+
+class ProofUploadRequest(BaseModel):
+    phone: str
+    payment_proof_base64: str
+
+@router.post("/upload-proof-by-phone")
+async def upload_proof_by_phone(data: ProofUploadRequest, background_tasks: BackgroundTasks):
+    """Update payment proof for ALL pending tickets for a specific phone number"""
+    session = get_session()
+    try:
+        # standardise phone
+        phone = data.phone.replace("+", "").replace(" ", "")
+        
+        customer = session.query(Customer).filter(Customer.phone == phone).first()
+        if not customer:
+             raise HTTPException(status_code=404, detail="العميل غير موجود")
+
+        # Find all PENDING tickets for this customer
+        pending_tickets = session.query(Ticket).filter(
+            Ticket.customer_id == customer.id,
+            Ticket.status == TicketStatus.PENDING
+        ).all()
+        
+        if not pending_tickets:
+             return {
+                "success": False,
+                "message": "لا توجد تذاكر معلقة لهذا الرقم"
+            }
+
+        # Process image
+        if not data.payment_proof_base64.startswith("data:image"):
+            payment_proof = f"data:image/jpeg;base64,{data.payment_proof_base64}"
+        else:
+            payment_proof = data.payment_proof_base64
+
+        # Update all tickets
+        for ticket in pending_tickets:
+            ticket.payment_proof = payment_proof
+            ticket.status = TicketStatus.PAYMENT_SUBMITTED
+        
+        session.commit()
+
+        # Send Confirmation Message
+        msg = f"تم استلام إثبات الدفع لـ {len(pending_tickets)} تذاكر معلقة.\nسيتم مراجعتهم وتأكيد الحجز قريباً. ⏳"
+        background_tasks.add_task(whatsapp_service.send_message, customer.phone, msg)
+
+        return {
+            "success": True,
+            "updated_count": len(pending_tickets),
+            "message": f"تم تحديث {len(pending_tickets)} تذكرة بنجاح"
+        }
+
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=500, detail=str(e))
