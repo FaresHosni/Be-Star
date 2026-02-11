@@ -3,6 +3,8 @@ services:
     build: ./backend
     container_name: bestar_backend
     restart: always
+    env_file:
+      - ./backend/.env
     volumes:
       - ./backend/data:/app/data
     expose:
