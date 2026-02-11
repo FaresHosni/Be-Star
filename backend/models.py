@@ -52,6 +52,9 @@ class Ticket(Base):
     payment_method = Column(String(50), nullable=True)
     payment_proof = Column(Text, nullable=True)
     
+    # Guest name for this specific ticket (defaults to customer name if empty)
+    guest_name = Column(String(100), nullable=True)
+    
     approved_by = Column(Integer, ForeignKey("admins.id"), nullable=True)
     approved_at = Column(DateTime, nullable=True)
     rejection_reason = Column(String(255), nullable=True)

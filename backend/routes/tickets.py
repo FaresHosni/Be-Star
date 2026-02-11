@@ -96,8 +96,7 @@ async def whatsapp_booking(booking: WhatsAppBooking):
             session.commit()
             session.refresh(customer)
         else:
-            # Update name/email if provided
-            customer.name = booking.name
+            # Update email if provided, but DON'T overwrite name (keep original customer name)
             if booking.email:
                 customer.email = booking.email
             session.commit()
@@ -113,6 +112,7 @@ async def whatsapp_booking(booking: WhatsAppBooking):
         # Determine status based on payment proof
         payment_proof = None
         if booking.payment_proof_base64:
+            # Ensure proper prefix
             if not booking.payment_proof_base64.startswith("data:image"):
                 payment_proof = f"data:image/jpeg;base64,{booking.payment_proof_base64}"
             else:
@@ -121,12 +121,13 @@ async def whatsapp_booking(booking: WhatsAppBooking):
         else:
             status = TicketStatus.PENDING
 
-        # Create ticket
+        # Create ticket with guest_name
         ticket = Ticket(
             code=code,
             ticket_type=ticket_type,
             price=price,
             customer_id=customer.id,
+            guest_name=booking.name,  # Save the provided name as guest name
             payment_method="Vodafone Cash",
             payment_proof=payment_proof,
             status=status
@@ -181,6 +182,7 @@ async def create_ticket(ticket_data: TicketCreate, background_tasks: BackgroundT
             ticket_type=ticket_data.ticket_type,
             price=price,
             customer_id=customer.id,
+            guest_name=ticket_data.name, # Use provided name as guest name
             payment_method=ticket_data.payment_method,
             status=TicketStatus.PENDING
         )
@@ -189,7 +191,7 @@ async def create_ticket(ticket_data: TicketCreate, background_tasks: BackgroundT
         session.refresh(ticket)
 
         # Send Pending Message via WhatsApp
-        msg = f"مرحباً {customer.name} 👋\nتم تسجيل طلب تذكرتك بنجاح!\nنوع التذكرة: {ticket.ticket_type.value}\nالسعر: {price} جنيه\n\nيرجى إتمام الدفع لتأكيد الحجز."
+        msg = f"مرحباً {ticket.guest_name or customer.name} 👋\nتم تسجيل طلب تذكرتك بنجاح!\nنوع التذكرة: {ticket.ticket_type.value}\nالسعر: {price} جنيه\n\nيرجى إتمام الدفع لتأكيد الحجز."
         background_tasks.add_task(whatsapp_service.send_message, customer.phone, msg)
         
         return {
@@ -231,7 +233,8 @@ async def check_customer_tickets(phone: str):
                     "code": t.code,
                     "type": t.ticket_type.value,
                     "status": t.status.value,
-                    "price": t.price
+                    "price": t.price,
+                    "guest_name": t.guest_name or customer.name
                 } for t in tickets
             ],
             "message": f"تم العثور على {len(tickets)} تذكرة لهذا الرقم"
@@ -259,7 +262,8 @@ async def get_all_tickets(status: Optional[str] = None):
                 "ticket_type": t.ticket_type.value,
                 "status": t.status.value,
                 "price": t.price,
-                "customer_name": t.customer.name,
+                # Use guest_name if available, else customer name
+                "customer_name": t.guest_name if t.guest_name else t.customer.name,
                 "customer_phone": t.customer.phone,
                 "customer_email": t.customer.email,
                 "payment_method": t.payment_method,
@@ -285,6 +289,7 @@ async def upload_payment_proof(ticket_id: int, background_tasks: BackgroundTasks
         content = await file.read()
         encoded = base64.b64encode(content).decode('utf-8')
         
+        # Always ensure proper prefix for uploaded files
         ticket.payment_proof = f"data:{file.content_type};base64,{encoded}"
         ticket.status = TicketStatus.PAYMENT_SUBMITTED
         session.commit()
@@ -317,17 +322,20 @@ async def approve_ticket(ticket_id: int, approval: TicketApproval, background_ta
         if not ticket:
             raise HTTPException(status_code=404, detail="التذكرة غير موجودة")
         
+        # Use guest name for ticket generation
+        ticket_name = ticket.guest_name if ticket.guest_name else ticket.customer.name
+
         if approval.approved:
             ticket.status = TicketStatus.APPROVED
             ticket.approved_by = admin_id
             ticket.approved_at = datetime.utcnow()
             message = "تم اعتماد التذكرة بنجاح"
             
-            # Generate PDF
+            # Generate PDF with guest name
             pdf_bytes = generate_ticket_pdf(
                 ticket_code=ticket.code,
                 ticket_type=ticket.ticket_type.value,
-                customer_name=ticket.customer.name,
+                customer_name=ticket_name,
                 price=ticket.price
             )
             # Encode base64
@@ -346,7 +354,7 @@ async def approve_ticket(ticket_id: int, approval: TicketApproval, background_ta
                 background_tasks.add_task(
                     email_service.send_ticket_email,
                     to_email=ticket.customer.email,
-                    customer_name=ticket.customer.name,
+                    customer_name=ticket_name,
                     ticket_code=ticket.code,
                     ticket_type=ticket.ticket_type.value,
                     pdf_bytes=pdf_bytes
@@ -403,6 +411,9 @@ async def activate_ticket(activation: TicketActivation):
         ticket.customer.name = activation.name
         ticket.customer.phone = activation.phone
         ticket.customer.email = activation.email
+        # Also update guest name
+        ticket.guest_name = activation.name
+        
         ticket.status = TicketStatus.ACTIVATED
         
         session.commit()
@@ -436,7 +447,7 @@ async def get_ticket(ticket_id: int):
             "status": ticket.status.value,
             "price": ticket.price,
             "customer": {
-                "name": ticket.customer.name,
+                "name": ticket.guest_name if ticket.guest_name else ticket.customer.name,
                 "phone": ticket.customer.phone,
                 "email": ticket.customer.email
             },
