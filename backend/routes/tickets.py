@@ -326,19 +326,31 @@ async def upload_proof_for_pending(data: ProofUploadRequest, background_tasks: B
     """
     session = get_session()
     try:
-        # standardise phone
-        phone = data.phone.strip()
-        if phone.startswith("0") and len(phone) == 11:
-            phone = "20" + phone[1:]
-        elif phone.startswith("+"):
-            phone = phone[1:]
+        # Clean phone input first
+        raw_phone = data.phone.replace("+", "").replace(" ", "").strip()
         
-        # Additional cleanup
-        phone = phone.replace(" ", "")
+        # Generate possible variations to search for
+        possible_phones = {raw_phone}
         
-        customer = session.query(Customer).filter(Customer.phone == phone).first()
+        # Case 1: Input starts with '0' (e.g., 010...) -> Try adding '2' (2010...)
+        if raw_phone.startswith("0"):
+            possible_phones.add("2" + raw_phone)
+        
+        # Case 2: Input starts with '20' (e.g., 2010...) -> Try removing '2' (010...)
+        if raw_phone.startswith("20"):
+            possible_phones.add("0" + raw_phone[2:])
+            
+        # Case 3: Try adding/removing international prefix just in case
+        possible_phones.add("2" + raw_phone if not raw_phone.startswith("2") else raw_phone)
+
+        print(f"DEBUG: Searching for customer with phones: {possible_phones}")
+
+        # Search for customer with ANY of these phone formats
+        customer = session.query(Customer).filter(Customer.phone.in_(possible_phones)).first()
+
         if not customer:
-             raise HTTPException(status_code=404, detail="العميل غير موجود")
+             print(f"DEBUG: Customer not found. Input: {data.phone}")
+             raise HTTPException(status_code=404, detail=f"العميل غير موجود (بحثنا عن: {possible_phones})")
 
         # Find waiting tickets (Ordered by creation date ASC for FIFO)
         pending_tickets = session.query(Ticket).filter(
