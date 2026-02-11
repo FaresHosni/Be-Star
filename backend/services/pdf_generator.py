@@ -43,12 +43,15 @@ except Exception as e:
 
 def reshape_arabic(text: str) -> str:
     """Reshape Arabic text for proper display in PDF"""
+    if not text:
+        return ""
     if not ARABIC_SUPPORT:
         return text
     try:
         reshaped = arabic_reshaper.reshape(text)
         return get_display(reshaped)
-    except:
+    except Exception as e:
+        print(f"Error reshaping Arabic text: {e}")
         return text
 
 
