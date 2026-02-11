@@ -1,7 +1,7 @@
 """
 Tickets API Routes
 """
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, BackgroundTasks
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime
