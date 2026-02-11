@@ -313,10 +313,17 @@ async def upload_payment_proof(ticket_id: int, background_tasks: BackgroundTasks
 class ProofUploadRequest(BaseModel):
     phone: str
     payment_proof_base64: str
+    guest_name: Optional[str] = None
 
-@router.post("/upload-proof-by-phone")
-async def upload_proof_by_phone(data: ProofUploadRequest, background_tasks: BackgroundTasks):
-    """Update payment proof for ALL pending tickets for a specific phone number"""
+@router.post("/upload-proof-for-pending")
+async def upload_proof_for_pending(data: ProofUploadRequest, background_tasks: BackgroundTasks):
+    """
+    Update payment proof for A PENDING ticket.
+    Logic:
+    1. If guest_name is provided, find the pending ticket for that guest.
+    2. If no name provided (or not found), pick the OLDEST pending ticket (FIFO).
+    3. Update only ONE ticket.
+    """
     session = get_session()
     try:
         # standardise phone
@@ -326,11 +333,11 @@ async def upload_proof_by_phone(data: ProofUploadRequest, background_tasks: Back
         if not customer:
              raise HTTPException(status_code=404, detail="العميل غير موجود")
 
-        # Find all PENDING tickets for this customer
+        # Find waiting tickets (Ordered by creation date ASC for FIFO)
         pending_tickets = session.query(Ticket).filter(
             Ticket.customer_id == customer.id,
             Ticket.status == TicketStatus.PENDING
-        ).all()
+        ).order_by(Ticket.created_at.asc()).all()
         
         if not pending_tickets:
              return {
@@ -338,27 +345,45 @@ async def upload_proof_by_phone(data: ProofUploadRequest, background_tasks: Back
                 "message": "لا توجد تذاكر معلقة لهذا الرقم"
             }
 
+        target_ticket = None
+
+        # 1. Try matching by guest name if provided
+        if data.guest_name:
+            # Simple normalization for comparison
+            search_name = data.guest_name.strip().lower()
+            for t in pending_tickets:
+                # Check match with guest_name or customer_name (if guest_name is null)
+                t_name = (t.guest_name or t.customer.name).strip().lower()
+                if search_name in t_name or t_name in search_name:
+                    target_ticket = t
+                    break
+        
+        # 2. Fallback: Take the first (oldest) pending ticket
+        if not target_ticket:
+            target_ticket = pending_tickets[0]
+
         # Process image
         if not data.payment_proof_base64.startswith("data:image"):
             payment_proof = f"data:image/jpeg;base64,{data.payment_proof_base64}"
         else:
             payment_proof = data.payment_proof_base64
 
-        # Update all tickets
-        for ticket in pending_tickets:
-            ticket.payment_proof = payment_proof
-            ticket.status = TicketStatus.PAYMENT_SUBMITTED
+        # Update the target ticket
+        target_ticket.payment_proof = payment_proof
+        target_ticket.status = TicketStatus.PAYMENT_SUBMITTED
         
         session.commit()
 
         # Send Confirmation Message
-        msg = f"تم استلام إثبات الدفع لـ {len(pending_tickets)} تذاكر معلقة.\nسيتم مراجعتهم وتأكيد الحجز قريباً. ⏳"
+        ticket_name = target_ticket.guest_name or target_ticket.customer.name
+        msg = f"تم استلام إثبات الدفع لتذكرة ({ticket_name}).\nكود التذكرة: {target_ticket.code}\nجاري المراجعة... ⏳"
         background_tasks.add_task(whatsapp_service.send_message, customer.phone, msg)
 
         return {
             "success": True,
-            "updated_count": len(pending_tickets),
-            "message": f"تم تحديث {len(pending_tickets)} تذكرة بنجاح"
+            "ticket_code": target_ticket.code,
+            "guest_name": ticket_name,
+            "message": f"تم ربط الصورة بتذكرة {ticket_name} بنجاح"
         }
 
     except Exception as e:
