@@ -29,8 +29,8 @@ function Tickets() {
         setLoading(true)
         try {
             const url = statusFilter === 'all'
-                ? '/api/tickets'
-                : `/api/tickets?status=${statusFilter}`
+                ? '/api/tickets/'
+                : `/api/tickets/?status=${statusFilter}`
             const res = await fetch(url)
             const data = await res.json()
             setTickets(data)
