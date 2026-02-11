@@ -8,7 +8,13 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     fonts-noto-color-emoji \
     fonts-dejavu \
+    curl \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Arabic Fonts (Amiri)
+RUN mkdir -p /app/fonts && \
+    curl -L https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Regular.ttf -o /app/fonts/Amiri-Regular.ttf && \
+    curl -L https://github.com/google/fonts/raw/main/ofl/amiri/Amiri-Bold.ttf -o /app/fonts/Amiri-Bold.ttf
 
 # Install Python dependencies
 COPY requirements.txt .

@@ -28,23 +28,17 @@ DARK_BG = HexColor("#0a0a0a")
 FONT_REGULAR = "Helvetica"
 FONT_BOLD = "Helvetica-Bold"
 
-# Try Windows Arabic fonts
-arabic_font_paths = [
-    "C:/Windows/Fonts/arial.ttf",
-    "C:/Windows/Fonts/tahoma.ttf",
-    "C:/Windows/Fonts/segoeui.ttf",
-]
-
-for font_path in arabic_font_paths:
-    if os.path.exists(font_path):
-        try:
-            font_name = os.path.basename(font_path).replace('.ttf', '')
-            pdfmetrics.registerFont(TTFont(f'Arabic_{font_name}', font_path))
-            FONT_REGULAR = f'Arabic_{font_name}'
-            FONT_BOLD = f'Arabic_{font_name}'
-            break
-        except Exception as e:
-            continue
+# Register Arabic fonts
+try:
+    pdfmetrics.registerFont(TTFont('Amiri-Regular', '/app/fonts/Amiri-Regular.ttf'))
+    pdfmetrics.registerFont(TTFont('Amiri-Bold', '/app/fonts/Amiri-Bold.ttf'))
+    FONT_REGULAR = 'Amiri-Regular'
+    FONT_BOLD = 'Amiri-Bold'
+except Exception as e:
+    print(f"Error loading Arabic fonts: {e}")
+    # Fallback to Helvetica
+    FONT_REGULAR = "Helvetica"
+    FONT_BOLD = "Helvetica-Bold"
 
 
 def reshape_arabic(text: str) -> str:

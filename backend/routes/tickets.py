@@ -61,6 +61,8 @@ class WhatsAppBooking(BaseModel):
 from services.whatsapp_service import WhatsAppService
 whatsapp_service = WhatsAppService()
 
+from services import email_service
+
 
 @router.post("/whatsapp-booking", response_model=dict)
 async def whatsapp_booking(booking: WhatsAppBooking):
@@ -109,7 +111,15 @@ async def whatsapp_booking(booking: WhatsAppBooking):
         code = Ticket.generate_unique_code(session)
 
         # Determine status based on payment proof
-        status = TicketStatus.PAYMENT_SUBMITTED if booking.payment_proof_base64 else TicketStatus.PENDING
+        payment_proof = None
+        if booking.payment_proof_base64:
+            if not booking.payment_proof_base64.startswith("data:image"):
+                payment_proof = f"data:image/jpeg;base64,{booking.payment_proof_base64}"
+            else:
+                payment_proof = booking.payment_proof_base64
+            status = TicketStatus.PAYMENT_SUBMITTED
+        else:
+            status = TicketStatus.PENDING
 
         # Create ticket
         ticket = Ticket(
@@ -118,7 +128,7 @@ async def whatsapp_booking(booking: WhatsAppBooking):
             price=price,
             customer_id=customer.id,
             payment_method="Vodafone Cash",
-            payment_proof=booking.payment_proof_base64 if booking.payment_proof_base64 else None,
+            payment_proof=payment_proof,
             status=status
         )
         session.add(ticket)
@@ -330,6 +340,17 @@ async def approve_ticket(ticket_id: int, approval: TicketApproval, background_ta
                 pdf_base64,
                 f"مبروك! 🌟 تم تأكيد تذكرتك لحضور إيفنت Be Star.\nالكود: {ticket.code}"
             )
+            
+            # Send PDF via Email if available
+            if ticket.customer.email:
+                background_tasks.add_task(
+                    email_service.send_ticket_email,
+                    to_email=ticket.customer.email,
+                    customer_name=ticket.customer.name,
+                    ticket_code=ticket.code,
+                    ticket_type=ticket.ticket_type.value,
+                    pdf_bytes=pdf_bytes
+                )
             
         else:
             ticket.status = TicketStatus.REJECTED
