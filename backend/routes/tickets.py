@@ -327,7 +327,14 @@ async def upload_proof_for_pending(data: ProofUploadRequest, background_tasks: B
     session = get_session()
     try:
         # standardise phone
-        phone = data.phone.replace("+", "").replace(" ", "")
+        phone = data.phone.strip()
+        if phone.startswith("0") and len(phone) == 11:
+            phone = "20" + phone[1:]
+        elif phone.startswith("+"):
+            phone = phone[1:]
+        
+        # Additional cleanup
+        phone = phone.replace(" ", "")
         
         customer = session.query(Customer).filter(Customer.phone == phone).first()
         if not customer:
