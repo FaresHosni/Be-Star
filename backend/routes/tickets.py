@@ -50,8 +50,11 @@ class TicketActivation(BaseModel):
     email: Optional[str] = None
 
 
+from services.whatsapp_service import WhatsAppService
+whatsapp_service = WhatsAppService()
+
 @router.post("/", response_model=dict)
-async def create_ticket(ticket_data: TicketCreate):
+async def create_ticket(ticket_data: TicketCreate, background_tasks: BackgroundTasks):
     """Create a new ticket reservation"""
     session = get_session()
     try:
@@ -88,6 +91,10 @@ async def create_ticket(ticket_data: TicketCreate):
         session.add(ticket)
         session.commit()
         session.refresh(ticket)
+
+        # Send Pending Message via WhatsApp
+        msg = f"مرحباً {customer.name} 👋\nتم تسجيل طلب تذكرتك بنجاح!\nنوع التذكرة: {ticket.ticket_type.value}\nالسعر: {price} جنيه\n\nيرجى إتمام الدفع لتأكيد الحجز."
+        background_tasks.add_task(whatsapp_service.send_message, customer.phone, msg)
         
         return {
             "success": True,
@@ -169,7 +176,7 @@ async def get_all_tickets(status: Optional[str] = None):
 
 
 @router.post("/{ticket_id}/payment-proof")
-async def upload_payment_proof(ticket_id: int, file: UploadFile = File(...)):
+async def upload_payment_proof(ticket_id: int, background_tasks: BackgroundTasks, file: UploadFile = File(...)):
     """Upload payment proof image"""
     session = get_session()
     try:
@@ -185,6 +192,10 @@ async def upload_payment_proof(ticket_id: int, file: UploadFile = File(...)):
         ticket.payment_proof = f"data:{file.content_type};base64,{encoded}"
         ticket.status = TicketStatus.PAYMENT_SUBMITTED
         session.commit()
+
+        # Send Payment Received Message
+        msg = f"تم استلام إثبات الدفع لتذكرتك (كود: {ticket.code}).\nسيتم مراجعته وتأكيد الحجز قريباً. ⏳"
+        background_tasks.add_task(whatsapp_service.send_message, ticket.customer.phone, msg)
         
         return {
             "success": True,
@@ -198,6 +209,7 @@ async def upload_payment_proof(ticket_id: int, file: UploadFile = File(...)):
 
 
 from fastapi import BackgroundTasks
+from services.pdf_generator import generate_ticket_pdf
 
 @router.post("/{ticket_id}/approve")
 async def approve_ticket(ticket_id: int, approval: TicketApproval, background_tasks: BackgroundTasks, admin_id: int = 1):
@@ -215,27 +227,32 @@ async def approve_ticket(ticket_id: int, approval: TicketApproval, background_ta
             ticket.approved_at = datetime.utcnow()
             message = "تم اعتماد التذكرة بنجاح"
             
-            # Prepare data for n8n
-            ticket_data = {
-                "ticket_id": ticket.id,
-                "phone": ticket.customer.phone,
-                "name": ticket.customer.name,
-                "code": ticket.code,
-                "ticket_type": ticket.ticket_type.value,
-                "price": ticket.price,
-                "event_date": os.getenv("EVENT_DATE", "2026-02-11"),
-                "location": os.getenv("EVENT_LOCATION", "سوهاج"),
-                "pdf_url": f"http://localhost:8000/api/tickets/{ticket.id}/pdf" # Adjust domain in n8n if needed
-            }
+            # Generate PDF
+            pdf_bytes = generate_ticket_pdf(
+                ticket_code=ticket.code,
+                ticket_type=ticket.ticket_type.value,
+                customer_name=ticket.customer.name,
+                price=ticket.price
+            )
+            # Encode base64
+            pdf_base64 = base64.b64encode(pdf_bytes).decode('utf-8')
             
-            # Trigger n8n workflow in background
-            from services.n8n_client import trigger_ticket_approved_workflow
-            background_tasks.add_task(trigger_ticket_approved_workflow, ticket_data)
+            # Send PDF via WhatsApp
+            background_tasks.add_task(
+                whatsapp_service.send_pdf_ticket, 
+                ticket.customer.phone, 
+                pdf_base64,
+                f"مبروك! 🌟 تم تأكيد تذكرتك لحضور إيفنت Be Star.\nالكود: {ticket.code}"
+            )
             
         else:
             ticket.status = TicketStatus.REJECTED
             ticket.rejection_reason = approval.rejection_reason
             message = "تم رفض التذكرة"
+            
+            # Send Rejection Message
+            msg = f"عذراً، تم رفض طلب التذكرة (كود: {ticket.code}).\nالسبب: {approval.rejection_reason}"
+            background_tasks.add_task(whatsapp_service.send_message, ticket.customer.phone, msg)
         
         session.commit()
         
