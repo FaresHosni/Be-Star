@@ -119,17 +119,8 @@ async def whatsapp_booking(booking: WhatsAppBooking):
                 payment_proof = booking.payment_proof_base64
             status = TicketStatus.PAYMENT_SUBMITTED
         else:
-            # Fallback: Check if customer has a previous ticket with payment proof
-            last_ticket_with_proof = session.query(Ticket).filter(
-                Ticket.customer_id == customer.id,
-                Ticket.payment_proof.isnot(None)
-            ).order_by(Ticket.created_at.desc()).first()
-            
-            if last_ticket_with_proof:
-                payment_proof = last_ticket_with_proof.payment_proof
-                status = TicketStatus.PAYMENT_SUBMITTED
-            else:
-                status = TicketStatus.PENDING
+            # STRICT REQUIREMENT: No image = No booking
+            raise HTTPException(status_code=400, detail="Payment proof is required for every booking")
 
         # Create ticket with guest_name
         ticket = Ticket(
