@@ -50,8 +50,94 @@ class TicketActivation(BaseModel):
     email: Optional[str] = None
 
 
+class WhatsAppBooking(BaseModel):
+    name: str
+    phone: str
+    email: Optional[str] = None
+    ticket_type: str  # "VIP" or "Student"
+    payment_proof_base64: Optional[str] = None
+
+
 from services.whatsapp_service import WhatsAppService
 whatsapp_service = WhatsAppService()
+
+
+@router.post("/whatsapp-booking", response_model=dict)
+async def whatsapp_booking(booking: WhatsAppBooking):
+    """Create a ticket from WhatsApp chatbot with optional payment proof"""
+    session = get_session()
+    try:
+        # Normalize phone number
+        phone = booking.phone.strip()
+        if phone.startswith("0") and len(phone) == 11:
+            phone = "20" + phone[1:]
+        elif phone.startswith("+"):
+            phone = phone[1:]
+
+        # Map ticket type
+        ticket_type_str = booking.ticket_type.strip().upper()
+        if ticket_type_str in ("VIP", "في اي بي"):
+            ticket_type = TicketType.VIP
+        else:
+            ticket_type = TicketType.STUDENT
+
+        # Check if customer exists
+        customer = session.query(Customer).filter(Customer.phone == phone).first()
+
+        if not customer:
+            customer = Customer(
+                name=booking.name,
+                phone=phone,
+                email=booking.email
+            )
+            session.add(customer)
+            session.commit()
+            session.refresh(customer)
+        else:
+            # Update name/email if provided
+            customer.name = booking.name
+            if booking.email:
+                customer.email = booking.email
+            session.commit()
+
+        # Get price
+        vip_price = int(os.getenv("VIP_PRICE", 500))
+        student_price = int(os.getenv("STUDENT_PRICE", 100))
+        price = vip_price if ticket_type == TicketType.VIP else student_price
+
+        # Generate unique code
+        code = Ticket.generate_unique_code(session)
+
+        # Determine status based on payment proof
+        status = TicketStatus.PAYMENT_SUBMITTED if booking.payment_proof_base64 else TicketStatus.PENDING
+
+        # Create ticket
+        ticket = Ticket(
+            code=code,
+            ticket_type=ticket_type,
+            price=price,
+            customer_id=customer.id,
+            payment_method="Vodafone Cash",
+            payment_proof=booking.payment_proof_base64 if booking.payment_proof_base64 else None,
+            status=status
+        )
+        session.add(ticket)
+        session.commit()
+        session.refresh(ticket)
+
+        return {
+            "success": True,
+            "ticket_id": ticket.id,
+            "code": ticket.code,
+            "price": ticket.price,
+            "status": ticket.status.value,
+            "message": f"تم إنشاء تذكرة {ticket_type.value} بنجاح - كود التذكرة: {ticket.code}"
+        }
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        session.close()
 
 @router.post("/", response_model=dict)
 async def create_ticket(ticket_data: TicketCreate, background_tasks: BackgroundTasks):
