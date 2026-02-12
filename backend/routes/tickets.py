@@ -142,7 +142,7 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
             total_price = sum(t.price for t in created_tickets)
             return {
                 "success": True,
-                "message": f"تم حجز {len(created_tickets)} تذكرة بنجاح. إجمالي: {total_price} جنيه. جاري المراجعة.",
+                "message": f"تم استلام طلب {len(created_tickets)} تذاكر. إجمالي: {total_price} جنيه. الطلب قيد المراجعة وسيتم تأكيد الحجز قريباً.",
                 "tickets": [
                     {
                         "ticket_id": t.id,
@@ -311,7 +311,7 @@ async def create_ticket(ticket_data: TicketCreate, background_tasks: BackgroundT
             "ticket_id": ticket.id,
             "code": ticket.code,
             "price": ticket.price,
-            "message": f"تم إنشاء حجز تذكرة {ticket_data.ticket_type.value} بنجاح"
+            "message": f"تم استلام طلب تذكرة {ticket_data.ticket_type.value} بنجاح. يرجى إتمام الدفع."
         }
     except Exception as e:
         session.rollback()
@@ -453,8 +453,8 @@ async def approve_ticket(ticket_id: int, approval: TicketApproval, background_ta
                 customer_name=ticket_name,
                 price=ticket.price
             )
-            # Encode base64
-            pdf_base64 = base64.b64encode(pdf_bytes).decode('utf-8')
+            # Encode base64 with prefix
+            pdf_base64 = f"data:application/pdf;base64,{base64.b64encode(pdf_bytes).decode('utf-8')}"
             
             # Send PDF via WhatsApp
             background_tasks.add_task(
@@ -718,7 +718,7 @@ async def save_draft(update: DraftUpdate, background_tasks: BackgroundTasks):
             
             return {
                 "status": "completed",
-                "message": f"تم حجز التذكرة بنجاح! كود التذكرة: {ticket.code}",
+                "message": f"تم استلام طلبك بنجاح (كود: {ticket.code}). الطلب قيد المراجعة لإثبات الدفع، وسيتم إرسال التذكرة فور الاعتماد.",
                 "ticket_code": ticket.code,
                 "ticket_id": ticket.id
             }
