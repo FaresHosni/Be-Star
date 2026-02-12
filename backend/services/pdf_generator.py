@@ -209,6 +209,34 @@ def generate_ticket_pdf(
     c.setFont(FONT_BOLD, 10)
     footer_text = reshape_arabic("نتمنى لك تجربة رائعة!")
     c.drawCentredString(width/2, 8*mm, footer_text)
+
+    # ---------------------------------------------------------
+    # Verified Badge (Gold Circle + Checkmark) - Native Drawing
+    # ---------------------------------------------------------
+    badge_x = width - 15*mm
+    badge_y = 25*mm
+    badge_r = 6*mm
+    
+    # Circle
+    c.setFillColor(GOLD)
+    c.setStrokeColor(white)
+    c.setLineWidth(1)
+    c.circle(badge_x, badge_y, badge_r, fill=True, stroke=True)
+    
+    # Checkmark inside
+    c.setStrokeColor(DARK_BG)
+    c.setLineWidth(2)
+    p = c.beginPath()
+    p.moveTo(badge_x - 3*mm, badge_y)       # Start left
+    p.lineTo(badge_x - 1*mm, badge_y - 2*mm) # Down
+    p.lineTo(badge_x + 3*mm, badge_y + 3*mm) # Up right
+    c.drawPath(p, stroke=True, fill=False)
+    
+    # Label
+    c.setFillColor(GOLD)
+    c.setFont(FONT_BOLD, 6)
+    c.drawCentredString(badge_x, badge_y - 9*mm, "VERIFIED")
+    # ---------------------------------------------------------
     
     # Tear line (dashed)
     c.setStrokeColor(GOLD)
