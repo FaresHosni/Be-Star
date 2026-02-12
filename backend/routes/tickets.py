@@ -8,7 +8,7 @@ from datetime import datetime
 import base64
 import os
 
-from models import get_session, Customer, Ticket, TicketType, TicketStatus
+from models import get_session, Customer, Ticket, TicketType, TicketStatus, TicketDraft
 
 router = APIRouter()
 
@@ -609,3 +609,141 @@ async def download_ticket_pdf(ticket_id: int):
     finally:
         session.close()
 
+
+class DraftUpdate(BaseModel):
+    user_phone: str
+    ticket_index: int
+    field: str
+    value: str
+
+@router.post("/save-draft", response_model=dict)
+async def save_draft(update: DraftUpdate, background_tasks: BackgroundTasks):
+    """
+    Save specific field to ticket draft.
+    If all fields (name, type, email, payment, phone) are present, create the ticket automatically.
+    """
+    session = get_session()
+    try:
+        # Normalize fields
+        field_map = {
+            "name": "guest_name",
+            "phone": "guest_phone", 
+            "type": "ticket_type",
+            "email": "email", 
+            "payment": "payment_proof",
+            "payment_proof": "payment_proof" # Handle alias
+        }
+        
+        db_field = field_map.get(update.field.lower())
+        if not db_field:
+             # Try direct match
+             if update.field in ["guest_name", "guest_phone", "ticket_type", "email", "payment_proof"]:
+                 db_field = update.field
+             else:
+                 raise HTTPException(status_code=400, detail=f"Invalid field: {update.field}")
+
+        # Find or create draft
+        draft = session.query(TicketDraft).filter(
+            TicketDraft.user_phone == update.user_phone,
+            TicketDraft.ticket_index == update.ticket_index,
+            TicketDraft.is_completed == False
+        ).first()
+
+        if not draft:
+            draft = TicketDraft(
+                user_phone=update.user_phone,
+                ticket_index=update.ticket_index
+            )
+            session.add(draft)
+        
+        # Update value
+        setattr(draft, db_field, update.value)
+        session.commit()
+        session.refresh(draft)
+
+        # Check completeness
+        required_fields = ["guest_name", "ticket_type", "email", "payment_proof", "guest_phone"]
+        missing = []
+        for f in required_fields:
+            val = getattr(draft, f)
+            if not val or str(val).strip() == "":
+                missing.append(f)
+        
+        if not missing:
+            # Create Ticket!
+            
+            # 1. Ensure Customer exists (Booker)
+            raw_phone = update.user_phone
+            # Basic normalization for lookup
+            possible_phones = {raw_phone}
+            if raw_phone.startswith("20"): possible_phones.add(raw_phone[2:])
+            
+            customer = session.query(Customer).filter(Customer.phone.in_(possible_phones)).first()
+            if not customer:
+                # Create customer if not exists (using draft data if possible, else fillers)
+                customer = Customer(
+                    name=draft.guest_name, # Default to first guest name
+                    phone=raw_phone,
+                    email=draft.email
+                )
+                session.add(customer)
+                session.commit()
+                session.refresh(customer)
+
+            # 2. Prices
+            vip_price = int(os.getenv("VIP_PRICE", 500))
+            student_price = int(os.getenv("STUDENT_PRICE", 100))
+            
+            # Map type
+            tt_str = str(draft.ticket_type).strip().upper()
+            tt_enum = TicketType.VIP if "VIP" in tt_str else TicketType.STUDENT
+            price = vip_price if tt_enum == TicketType.VIP else student_price
+
+            ticket = Ticket(
+                code=Ticket.generate_unique_code(session),
+                ticket_type=tt_enum,
+                price=price,
+                customer_id=customer.id,
+                guest_name=draft.guest_name,
+                guest_phone=draft.guest_phone,
+                payment_method="Vodafone Cash",
+                payment_proof=draft.payment_proof,
+                status=TicketStatus.PAYMENT_SUBMITTED
+            )
+            session.add(ticket)
+            
+            # Mark draft completed
+            draft.is_completed = True
+            session.commit()
+            
+            return {
+                "status": "completed",
+                "message": f"تم حجز التذكرة بنجاح! كود التذكرة: {ticket.code}",
+                "ticket_code": ticket.code,
+                "ticket_id": ticket.id
+            }
+        else:
+            # Return progress
+            # Map DB fields back to user friendly names
+            friendly_missing = []
+            name_map = {
+                "guest_name": "الاسم",
+                "guest_phone": "رقم الهاتف",
+                "ticket_type": "نوع التذكرة",
+                "email": "البريد الإلكتروني",
+                "payment_proof": "صورة الدفع"
+            }
+            for m in missing:
+                friendly_missing.append(name_map.get(m, m))
+                
+            return {
+                "status": "draft_saved",
+                "message": f"تم حفظ {update.value}. المتبقي: {', '.join(friendly_missing)}",
+                "missing_fields": friendly_missing
+            }
+
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        session.close()

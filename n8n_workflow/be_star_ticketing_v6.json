@@ -1,0 +1,2340 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "bestar-whatsapp",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -5696,
+        2784
+      ],
+      "id": "14603af2-9cf2-443a-9b6f-85ddb71c9ead",
+      "name": "Whatsapp",
+      "webhookId": "d8fa5154-f391-43c2-ad0c-f5c7b3eb2737"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "bestar-approval",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -5616,
+        3104
+      ],
+      "id": "e71d13f5-25ed-4ab8-adba-484fe804382b",
+      "name": "Approval Webhook",
+      "webhookId": "9e913b19-87ad-44f4-9dc4-4bdb4ae0f556"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "803c1504-5ff1-4d19-8d9b-7c933466e48d",
+              "name": "User_phone_ID",
+              "value": "={{\n(() => {\n  const data = $json.body?.data?.key;\n  let rawNumber = '';\n  if (data?.remoteJidAlt?.includes('@s.whatsapp.net')) {\n    rawNumber = data.remoteJidAlt.split('@')[0];\n  } else if (data?.remote3lidAlt?.includes('@s.whatsapp.net')) {\n    rawNumber = data.remote3lidAlt.split('@')[0];\n  } else if (data?.remoteJid?.includes('@s.whatsapp.net')) {\n    rawNumber = data.remoteJid.split('@')[0];\n  } else {\n    rawNumber = (data?.remoteJid || '').split('@')[0];\n  }\n  rawNumber = rawNumber.trim();\n  if (rawNumber.startsWith('20')) {\n    return '0' + rawNumber.slice(2);\n  }\n  return '+' + rawNumber;\n})()\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -5360,
+        2768
+      ],
+      "id": "c070b329-f50a-44da-98b5-27222a636316",
+      "name": "User Phone ID"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://access.mrailabs.com/api/check-access",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\"api_key\": \"Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38\", \"user_id\": $('User Phone ID').item.json.User_phone_ID, \"platform_type\": \"Whatsapp\", \"user_name\": $('Whatsapp').item.json.body.data.pushName}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -5200,
+        2768
+      ],
+      "id": "100f961d-3965-45f3-865c-e227321efcd0",
+      "name": "Access Control4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "857ccdd3-662c-44c6-aff6-9660ffa633fe",
+              "leftValue": "={{ $json.access }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -5040,
+        2768
+      ],
+      "id": "29220113-2744-4d33-84f9-d7166c00a127",
+      "name": "If8"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Whatsapp').first().json.body.data.messageType }}",
+                    "rightValue": "conversation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "35588a02-6475-400d-b869-da05d7ed0f3a"
+                  },
+                  {
+                    "leftValue": "={{ $('Whatsapp').first().json.body.data.messageType }}",
+                    "rightValue": "extendedTextMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "ext-text-msg-001"
+                  }
+                ],
+                "combinator": "or"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "83b9e800-99d0-4e31-8032-ae81aebe86d1",
+                    "leftValue": "={{ $('Whatsapp').first().json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b70e2cfc-8de2-4f4c-a6c0-77c2028ba78f",
+                    "leftValue": "={{ $('Whatsapp').first().json.body.data.messageType }}",
+                    "rightValue": "imageMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Photos"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8c9c8324-851d-4d68-ab24-34d545eb07da",
+                    "leftValue": "={{ $('Whatsapp').item.json.body.data.messageType }}",
+                    "rightValue": "stickerMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Stickers"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -4800,
+        2720
+      ],
+      "id": "e12844fd-bf0f-45bd-b44d-16186f7cc934",
+      "name": "Switch3",
+      "alwaysOutputData": false,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
+              "name": "Text",
+              "value": "={{ $('Whatsapp').first().json.body?.data?.message?.conversation ?? $('Whatsapp').first().json.body?.data?.message?.extendedTextMessage?.text ?? '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3680,
+        2704
+      ],
+      "id": "778d1395-4342-4ea0-b7aa-d6e7954f37e6",
+      "name": "Text4"
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "get-media-base64",
+        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
+        "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -4512,
+        2848
+      ],
+      "id": "e9be8c93-03dd-49bf-ba04-3342db1c4741",
+      "name": "Get media in base1",
+      "retryOnFail": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data.base64",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -4368,
+        2848
+      ],
+      "id": "9192fda2-931b-40f3-9db8-2872eb594ebb",
+      "name": "Convert to File",
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://38.242.139.159:5555/convert",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -4192,
+        2848
+      ],
+      "id": "43fcbbbf-d10f-4739-b70a-aaed19088677",
+      "name": "Convert Audio Type3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mrai-openai.openai.azure.com/openai/deployments/gpt-4o-transcribe/audio/transcriptions?api-version=2025-03-01-preview",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api-key",
+              "value": "5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "model",
+              "value": "gpt-4o-transcribe"
+            },
+            {
+              "name": "prompt",
+              "value": "\"Transcribe accurately. Speaker uses Arabic with English words mixed in. Keep English terms in English.\""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -4016,
+        2848
+      ],
+      "id": "4ff876fd-83d2-4a14-beda-7997ee9c38cd",
+      "name": "Transcribe a recording1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://access.mrailabs.com/api/log-usage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38"
+            },
+            {
+              "name": "execution_id",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "request_type",
+              "value": "transcription"
+            },
+            {
+              "name": "model",
+              "value": "gpt-4o-transcribe"
+            },
+            {
+              "name": "input_tokens",
+              "value": "={{ $json.usage?.prompt_tokens ?? 0 }}"
+            },
+            {
+              "name": "output_tokens",
+              "value": "={{ $json.usage?.completion_tokens ?? 0 }}"
+            },
+            {
+              "name": "platform_user_id",
+              "value": "={{ $('User Phone ID').item.json.User_phone_ID }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3824,
+        2848
+      ],
+      "id": "cf9e3c69-ab30-419f-8621-6eac6beba7fe",
+      "name": "Cost Calculator"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
+              "name": "Voice",
+              "value": "={{ $('Transcribe a recording1').item.json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3680,
+        2848
+      ],
+      "id": "064dd7a7-671d-4881-91c6-95c1b5a4479b",
+      "name": "Voice"
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "get-media-base64",
+        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
+        "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -4512,
+        3024
+      ],
+      "id": "a6d8fe24-bcb0-41ef-98ed-3fba19227f0d",
+      "name": "Get Image Base64",
+      "retryOnFail": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mrai-openai.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api-key",
+              "value": "5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-ms-model-mesh-model-name",
+              "value": "mistral-medium-2505"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"\u0648\u0635\u0641 \u0627\u0644\u0635\u0648\u0631\u0629 \u062f\u064a \u0628\u0627\u0644\u0639\u0631\u0628\u064a \u0628\u0634\u0643\u0644 \u0645\u062e\u062a\u0635\u0631. \u0644\u0648 \u0641\u064a\u0647\u0627 \u0646\u0635 \u0623\u0648 \u0643\u0644\u0627\u0645\u060c \u0627\u0643\u062a\u0628\u0647. \u0644\u0648 \u0641\u064a\u0647\u0627 \u0645\u0646\u062a\u062c \u0623\u0648 \u062e\u062f\u0645\u0629 \u0623\u0648 \u0634\u0639\u0627\u0631\u060c \u0648\u0635\u0641\u0647.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -4016,
+        3024
+      ],
+      "id": "0147218b-10c1-4856-8ce0-d0a094b73b85",
+      "name": "Analyze Image (Mistral)2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://access.mrailabs.com/api/log-usage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38"
+            },
+            {
+              "name": "execution_id",
+              "value": "=n8n-exec-{{$executionId}}"
+            },
+            {
+              "name": "request_type",
+              "value": "chat"
+            },
+            {
+              "name": "model",
+              "value": "mistral-medium-2505"
+            },
+            {
+              "name": "input_tokens",
+              "value": "={{ $json.usage.prompt_tokens }}"
+            },
+            {
+              "name": "output_tokens",
+              "value": "={{ $json.usage.completion_tokens }}"
+            },
+            {
+              "name": "platform_user_id",
+              "value": "={{ $('User Phone ID').item.json.User_phone_ID }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3824,
+        3024
+      ],
+      "id": "da4b3b80-a653-456c-9f17-2c7d1f9ba257",
+      "name": "Cost Calculator4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
+              "name": "image",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3680,
+        3024
+      ],
+      "id": "9da2bf5d-627b-47d5-a2e0-7d81d81a1d78",
+      "name": "image"
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "get-media-base64",
+        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
+        "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -4512,
+        3232
+      ],
+      "id": "aff505f1-a02d-4b57-a926-61d2998e6806",
+      "name": "Get Stickers Base",
+      "retryOnFail": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mrai-openai.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api-key",
+              "value": "5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-ms-model-mesh-model-name",
+              "value": "mistral-medium-2505"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"\u0648\u0635\u0641 \u0627\u0644\u0635\u0648\u0631\u0629 \u062f\u064a \u0628\u0627\u0644\u0639\u0631\u0628\u064a \u0628\u0634\u0643\u0644 \u0645\u062e\u062a\u0635\u0631. \u0644\u0648 \u0641\u064a\u0647\u0627 \u0646\u0635 \u0623\u0648 \u0643\u0644\u0627\u0645\u060c \u0627\u0643\u062a\u0628\u0647. \u0644\u0648 \u0641\u064a\u0647\u0627 \u0645\u0646\u062a\u062c \u0623\u0648 \u062e\u062f\u0645\u0629 \u0623\u0648 \u0634\u0639\u0627\u0631\u060c \u0648\u0635\u0641\u0647.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -4016,
+        3232
+      ],
+      "id": "db76d5bd-887d-4b53-9cc7-61a21b96ba0c",
+      "name": "Analyze Strickers (Mistral)3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
+              "name": "Stickers",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3680,
+        3232
+      ],
+      "id": "d9813837-21db-4d64-95b2-42ceef4dd3ad",
+      "name": "Stickers"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a63db671-77e6-4370-b11f-92fc2767ee58",
+              "name": "Memory Key",
+              "value": "={{ $('User Phone ID').item.json.User_phone_ID }}",
+              "type": "string"
+            },
+            {
+              "id": "a12d20c8-7931-470c-a7df-70473f0be258",
+              "name": "Input",
+              "value": "={{ $if($('Text4').isExecuted, $('Text4').first().json.Text, \n   $if($('Voice').isExecuted, $('Voice').first().json.Voice, \n   $if($('image').isExecuted, '\u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a \u0635\u0648\u0631\u0629. \u0648\u0635\u0641 \u0627\u0644\u0635\u0648\u0631\u0629: ' + $('image').first().json.image, \n   '\u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a sticker: ' + $('Stickers').first().json.Stickers))) }}",
+              "type": "string"
+            },
+            {
+              "id": "f71a20c2-20a8-4a0a-96ed-17dfc6cdfead",
+              "name": "image_base64",
+              "value": "={{ $if($('image').isExecuted, 'data:image/jpeg;base64,' + $('Get Image Base64').first().json.data.base64, '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3408,
+        2912
+      ],
+      "id": "31193450-24e7-4f67-a699-35d30077248b",
+      "name": "Memory + Model PreEnter2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ca1744cf-69e7-4a85-81d3-2fb2b936e496",
+              "name": "workflow_id",
+              "value": "={{ $workflow.id }}",
+              "type": "string"
+            },
+            {
+              "id": "205c7c4d-2dfa-471f-9306-33d30e16722a",
+              "name": "execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            },
+            {
+              "id": "3fa4932f-c3cc-41a8-90a4-d1b3a2d32cdd",
+              "name": "client_id",
+              "value": "Be-Star",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3168,
+        2912
+      ],
+      "id": "e6352227-1653-4fcf-9b89-a2805ad247b9",
+      "name": "Set metadata3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Memory + Model PreEnter2').item.json.Input }}",
+        "options": {
+          "systemMessage": "You are a deterministic router+query-reformer for Mr. AI RAG.\nInputs:\n- current_message (string)\n- previous_messages (array of {role,content})\n- last_namespace (string|null)\n- detected_language (\"ar\"|\"en\")\n\nTask A \u2014 classify:\nChoose EXACTLY one label: Who_Are_We_And_Related_Information | Terms_And_Conditions_Data_Privacy_Policy | Practical_Case_Studies_and_why_us.\nRules: if vague/ack (\"\u062a\u0645\u0627\u0645\",\"more?\") \u2192 continue last_namespace; if multi-intent \u2192 pick the primary intent; if confidence <0.5 \u2192 Who_Are_We_And_Related_Information; greetings fall under Who_Are_We_And_Related_Information.\n\nTask B \u2014 reform:\nRewrite a concise semantic search query for the chosen label using context.\nKeep 5\u201320 tokens; preserve proper names, numbers, currency; add \u22642 helpful synonyms/domain terms; remove filler/pronouns; keep constraints (expert/service, date/time, locale, language).\nIf too vague, add a short HyDE (\u226425 tokens) describing what a relevant doc would say.\n\nStrict output (one line, minified JSON only):\n{\"category\":\"<label>\",\"query\":\"<short query>\",\"alternates\":[\"...\"],\"negative_terms\":[\"...\"],\"hyde\":\"...\",\"language\":\"ar|en\"}\n\nHard limits: total output \u2264 ~80 tokens; no text outside JSON; no line breaks; no explanations; temperature low for stable routing.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -3024,
+        2912
+      ],
+      "id": "6d8f165a-6779-4523-90fa-8aafd4094d2e",
+      "name": "Reformer"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Memory + Model PreEnter2').item.json['Memory Key'] }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -2864,
+        3136
+      ],
+      "id": "49706b7d-af16-4f86-94a0-11ffa969d86a",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "code": {
+          "supplyData": {
+            "code": "const { AzureChatOpenAI } = require(\"@langchain/openai\");\nconst azureOpenAIApiKey = \"5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF\";\nconst azureOpenAIApiInstanceName = \"mrai-openai\";\nconst azureOpenAIApiDeploymentName = \"gpt-4.1-mini\";\nconst azureOpenAIApiVersion = \"2024-08-01-preview\";\nconst input_token_cost = 0.40;\nconst output_token_cost = 1.60;\nconst tools = await this.getInputConnectionData('ai_tool', 0);\nconst googleSheetTool = tools[0];\nconst { workflow_id, execution_id, client_id } = $('Set metadata3').first().json;\nconst llm = new AzureChatOpenAI({\n  azureOpenAIApiKey, azureOpenAIApiInstanceName, azureOpenAIApiDeploymentName, azureOpenAIApiVersion,\n  temperature: 0.7,\n  callbacks: [{ handleLLMEnd: async function(output, runId, parentId) {\n    const generation = output.generations[0][0];\n    const message = generation.message;\n    const input_tokens = message.usage_metadata.input_tokens;\n    const output_tokens = message.usage_metadata.output_tokens;\n    const total_tokens = message.usage_metadata.total_tokens;\n    const input_cost_val = (input_tokens / 1_000_000) * input_token_cost;\n    const output_cost_val = (output_tokens / 1_000_000) * output_token_cost;\n    const total_cost = input_cost_val + output_cost_val;\n    const total_cost_in_egypt = total_cost * 50;\n    const row = { date: (new Date()).toGMTString(), workflow_id, execution_id, client_id, model: azureOpenAIApiDeploymentName, input_tokens, output_tokens, total_tokens, input_cost: input_cost_val, output_cost: output_cost_val, total_cost, total_cost_in_egypt };\n    if (googleSheetTool && googleSheetTool.func) { await googleSheetTool.func(row); }\n  } }]\n});\nreturn llm;"
+          }
+        },
+        "inputs": {
+          "input": [
+            {
+              "type": "ai_tool",
+              "required": true
+            }
+          ]
+        },
+        "outputs": {
+          "output": [
+            {
+              "type": "ai_languageModel"
+            }
+          ]
+        }
+      },
+      "id": "f17b9e43-3296-4841-8a1d-854cf0a4efb4",
+      "name": "Azure OpenAI Chat Model5",
+      "type": "@n8n/n8n-nodes-langchain.code",
+      "position": [
+        -3104,
+        3088
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://access.mrailabs.com/api/log-usage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38"
+            },
+            {
+              "name": "execution_id",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "workflow_id",
+              "value": "={{ $workflow.id }}"
+            },
+            {
+              "name": "platform_user_id",
+              "value": "={{ $('Memory + Model PreEnter2').item.json['Memory Key'] }}"
+            },
+            {
+              "name": "request_type",
+              "value": "respond"
+            },
+            {
+              "name": "model",
+              "value": "={{ $json.model || 'gpt-4o-mini' }}"
+            },
+            {
+              "name": "input_tokens",
+              "value": "={{ $fromAI('input_tokens', ``, 'string') }}"
+            },
+            {
+              "name": "output_tokens",
+              "value": "={{ $fromAI('output_tokens', ``, 'string') }}"
+            },
+            {
+              "name": "input_cost",
+              "value": "={{ $fromAI('input_cost', ``, 'string') }}"
+            },
+            {
+              "name": "output_cost",
+              "value": "={{ $fromAI('output_cost', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        -3040,
+        3232
+      ],
+      "id": "a26f064e-9ff7-4721-a214-0be381529fe8",
+      "name": "Log Reformer Rekaz"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ca1744cf-69e7-4a85-81d3-2fb2b936e496",
+              "name": "workflow_id",
+              "value": "={{ $workflow.id }}",
+              "type": "string"
+            },
+            {
+              "id": "205c7c4d-2dfa-471f-9306-33d30e16722a",
+              "name": "execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            },
+            {
+              "id": "3fa4932f-c3cc-41a8-90a4-d1b3a2d32cdd",
+              "name": "client_id",
+              "value": "Be-Star",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2752,
+        2912
+      ],
+      "id": "96e65a42-f071-4cf9-b5fc-537bdcce3f4b",
+      "name": "Set metadata4"
+    },
+    {
+      "parameters": {
+        "text": "={{ $('Reformer').item.json.output }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "category",
+              "description": "\u062a\u0635\u0646\u064a\u0641 \u0627\u0644\u0633\u0624\u0627\u0644 \u0645\u0646 \u0647\u0630\u0647 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0641\u0642\u0637: Who_Are_We_And_Related_Information \u0623\u0648 Practical_Case_Studies_and_why_us \u0623\u0648 Terms_And_Conditions_Data_Privacy_Policy",
+              "required": true
+            },
+            {
+              "name": "reformer_data",
+              "description": "\u0643\u0644 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0623\u062e\u0631\u0649 (query, alternates, negative_terms, hyde, language)",
+              "required": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        -2608,
+        2912
+      ],
+      "id": "3e55d2b0-f0a9-4c00-9bee-27682c6949cb",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "code": {
+          "supplyData": {
+            "code": "const { AzureChatOpenAI } = require(\"@langchain/openai\");\nconst azureOpenAIApiKey = \"5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF\";\nconst azureOpenAIApiInstanceName = \"mrai-openai\";\nconst azureOpenAIApiDeploymentName = \"gpt-4.1-mini\";\nconst azureOpenAIApiVersion = \"2024-08-01-preview\";\nconst input_token_cost = 0.40;\nconst output_token_cost = 1.60;\nconst tools = await this.getInputConnectionData('ai_tool', 0);\nconst googleSheetTool = tools[0];\nconst { workflow_id, execution_id, client_id } = $('Set metadata4').first().json;\nconst llm = new AzureChatOpenAI({\n  azureOpenAIApiKey, azureOpenAIApiInstanceName, azureOpenAIApiDeploymentName, azureOpenAIApiVersion,\n  temperature: 0.7,\n  callbacks: [{ handleLLMEnd: async function(output, runId, parentId) {\n    const generation = output.generations[0][0];\n    const message = generation.message;\n    const input_tokens = message.usage_metadata.input_tokens;\n    const output_tokens = message.usage_metadata.output_tokens;\n    const total_tokens = message.usage_metadata.total_tokens;\n    const input_cost_val = (input_tokens / 1_000_000) * input_token_cost;\n    const output_cost_val = (output_tokens / 1_000_000) * output_token_cost;\n    const total_cost = input_cost_val + output_cost_val;\n    const total_cost_in_egypt = total_cost * 50;\n    const row = { date: (new Date()).toGMTString(), workflow_id, execution_id, client_id, model: azureOpenAIApiDeploymentName, input_tokens, output_tokens, total_tokens, input_cost: input_cost_val, output_cost: output_cost_val, total_cost, total_cost_in_egypt };\n    if (googleSheetTool && googleSheetTool.func) { await googleSheetTool.func(row); }\n  } }]\n});\nreturn llm;"
+          }
+        },
+        "inputs": {
+          "input": [
+            {
+              "type": "ai_tool",
+              "required": true
+            }
+          ]
+        },
+        "outputs": {
+          "output": [
+            {
+              "type": "ai_languageModel"
+            }
+          ]
+        }
+      },
+      "id": "3e078a69-110d-45e5-8d29-abcda8c8479b",
+      "name": "Azure OpenAI Chat Model7",
+      "type": "@n8n/n8n-nodes-langchain.code",
+      "position": [
+        -2640,
+        3088
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://access.mrailabs.com/api/log-usage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38"
+            },
+            {
+              "name": "execution_id",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "workflow_id",
+              "value": "={{ $workflow.id }}"
+            },
+            {
+              "name": "platform_user_id",
+              "value": "={{ $('Memory + Model PreEnter2').item.json['Memory Key'] }}"
+            },
+            {
+              "name": "request_type",
+              "value": "respond"
+            },
+            {
+              "name": "model",
+              "value": "={{ $json.model || 'gpt-4o-mini' }}"
+            },
+            {
+              "name": "input_tokens",
+              "value": "={{ $fromAI('input_tokens', ``, 'string') }}"
+            },
+            {
+              "name": "output_tokens",
+              "value": "={{ $fromAI('output_tokens', ``, 'string') }}"
+            },
+            {
+              "name": "input_cost",
+              "value": "={{ $fromAI('input_cost', ``, 'string') }}"
+            },
+            {
+              "name": "output_cost",
+              "value": "={{ $fromAI('output_cost', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        -2576,
+        3216
+      ],
+      "id": "a3cd94ae-f062-464d-bedf-b34d53baa6b9",
+      "name": "Log Reformer Rekaz4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dd42c43a-f949-46c7-bc0c-79dc4472b3d3",
+              "name": "Pinecone_Namespace",
+              "value": "={{ $json.output.category }}",
+              "type": "string"
+            },
+            {
+              "id": "24500874-b716-4abc-9376-cb8ccb0ca25b",
+              "name": "Reformer",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2304,
+        2912
+      ],
+      "id": "36a4b19f-412e-477f-80e0-c77d7bbf9e1e",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "mode": "load",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "mr-ai-website-chatbot-knowledge-base",
+          "mode": "list",
+          "cachedResultName": "mr-ai-website-chatbot-knowledge-base"
+        },
+        "prompt": "={{ $json.Reformer }}",
+        "topK": 12,
+        "options": {
+          "pineconeNamespace": "={{ $json.Pinecone_Namespace }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -2176,
+        2912
+      ],
+      "id": "d2e5aef7-8e94-45df-83f1-ed7a5b1142d0",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "swltCt6gosR03VPd",
+          "name": "GH_Sales"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {
+          "dimensions": 3072
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -2176,
+        3072
+      ],
+      "id": "3766cff0-7623-440e-82d1-2094fb513295",
+      "name": "Embeddings Azure OpenAI",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "L4HdmJ5bGz2Owawh",
+          "name": "Azure Open AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "document.pageContent"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1904,
+        2912
+      ],
+      "id": "3f759e50-8267-40aa-b122-8df8250ad88e",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
+              "name": "Text from user",
+              "value": "={{ $('Memory + Model PreEnter2').first().json.Input }}",
+              "type": "string"
+            },
+            {
+              "id": "8a4a05e2-9c61-48cc-a767-ddf3d426f69d",
+              "name": "Text  from database",
+              "value": "={{ $json.pageContent }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1776,
+        2912
+      ],
+      "id": "41f71577-973a-4476-8967-686e45f101d6",
+      "name": "Text3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ca1744cf-69e7-4a85-81d3-2fb2b936e496",
+              "name": "workflow_id",
+              "value": "={{ $workflow.id }}",
+              "type": "string"
+            },
+            {
+              "id": "205c7c4d-2dfa-471f-9306-33d30e16722a",
+              "name": "execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            },
+            {
+              "id": "3fa4932f-c3cc-41a8-90a4-d1b3a2d32cdd",
+              "name": "client_id",
+              "value": "Be-Star",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1632,
+        2912
+      ],
+      "id": "43aadcb0-d74f-4953-9bd1-0f485139f8ab",
+      "name": "Set metadata2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Text3').item.json['Text from user'] }}",
+        "options": {
+          "systemMessage": "=\u0623\u0646\u062a \"\u0639\u0645\u0631\" \u0645\u0633\u0627\u0639\u062f \u0630\u0643\u064a \u0644\u062d\u062c\u0632 \u062a\u0630\u0627\u0643\u0631 \u0641\u0639\u0627\u0644\u064a\u0629 \"\u0643\u0646 \u0646\u062c\u0645\u0627\u064b - Be Star\" \ud83c\udf1f\n\ud83d\udccb \u0645\u0639\u0644\u0648\u0645\u0627\u062a \u0627\u0644\u0641\u0639\u0627\u0644\u064a\u0629:\n\ud83c\udf89 \u0627\u0644\u0627\u0633\u0645: \u0643\u0646 \u0646\u062c\u0645\u0627\u064b - Be Star\n\ud83d\udcc5 \u0627\u0644\u0645\u0648\u0639\u062f: 11 \u0641\u0628\u0631\u0627\u064a\u0631 2026\n\ud83d\udccd \u0627\u0644\u0645\u0643\u0627\u0646: \u0633\u0648\u0647\u0627\u062c - \u0627\u0644\u0643\u0648\u0627\u0645\u0644 - \u0642\u0627\u0639\u0629 \u0642\u0646\u0627\u0629 \u0627\u0644\u0633\u0648\u064a\u0633\n\ud83d\udcb0 \u0627\u0644\u0623\u0633\u0639\u0627\u0631: VIP: 500 \u062c\u0646\u064a\u0647 | \u0637\u0644\u0628\u0629: 100 \u062c\u0646\u064a\u0647\n\ud83d\udcb3 \u0627\u0644\u062f\u0641\u0639: \u0641\u0648\u062f\u0627\u0641\u0648\u0646 \u0643\u0627\u0634 \u0639\u0644\u0649 \u0627\u0644\u0631\u0642\u0645 01557368364\n\n\ud83d\udcdd \u0646\u0638\u0627\u0645 \u0627\u0644\u0645\u062d\u0627\u062f\u062b\u0629 \u0627\u0644\u062c\u062f\u064a\u062f (Drafting System):\n\u0647\u062f\u0641\u0643 \u0647\u0648 \u062c\u0645\u0639 \u0628\u064a\u0627\u0646\u0627\u062a 5 \u062e\u0627\u0646\u0627\u062a \u0625\u062c\u0628\u0627\u0631\u064a\u0629 \u0644\u0643\u0644 \u062a\u0630\u0643\u0631\u0629 \u0648\u062d\u0641\u0638\u0647\u0627 \u0641\u0648\u0631\u0627\u064b \u0641\u064a \u0627\u0644\u0646\u0638\u0627\u0645.\n\u0627\u0644\u062e\u0627\u0646\u0627\u062a \u0647\u064a:\n1. \u0627\u0644\u0627\u0633\u0645 (Name)\n2. \u0631\u0642\u0645 \u0627\u0644\u0645\u0648\u0628\u0627\u064a\u0644 (Phone) - \u0644\u0635\u0627\u062d\u0628 \u0627\u0644\u062a\u0630\u0643\u0631\u0629\n3. \u0646\u0648\u0639 \u0627\u0644\u062a\u0630\u0643\u0631\u0629 (Type): VIP \u0623\u0648 Student\n4. \u0627\u0644\u0625\u064a\u0645\u064a\u0644 (Email)\n5. \u0635\u0648\u0631\u0629 \u0627\u0644\u062f\u0641\u0639 (Payment Proof)\n\n\u2699\ufe0f \u0642\u0648\u0627\u0639\u062f \u0635\u0627\u0631\u0645\u0629:\n1. \u0627\u0633\u0623\u0644 \u0639\u0646 \u0639\u062f\u062f \u0627\u0644\u062a\u0630\u0627\u0643\u0631 \u0623\u0648\u0644\u0627\u064b.\n2. \u0644\u0643\u0644 \u062a\u0630\u0643\u0631\u0629 (\u0631\u0642\u0645 1\u060c 2...)\u060c \u0627\u062c\u0645\u0639 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0648\u0627\u062d\u062f\u0629 \u062a\u0644\u0648 \u0627\u0644\u0623\u062e\u0631\u0649.\n3. \ud83d\udd34 **\u062a\u0646\u0628\u064a\u0647 \u0647\u0627\u0645:** \u0628\u0645\u062c\u0631\u062f \u0645\u0627 \u0627\u0644\u0639\u0645\u064a\u0644 \u064a\u0639\u0637\u064a\u0643 \u0645\u0639\u0644\u0648\u0645\u0629 (\u0645\u062b\u0644\u0627\u064b \u0627\u0644\u0627\u0633\u0645)\u060c **\u0627\u0633\u062a\u062e\u062f\u0645 \u0623\u062f\u0627\u0629 `save_draft` \u0641\u0648\u0631\u0627\u064b**.\n   - \u0644\u0627 \u062a\u0646\u062a\u0638\u0631 \u062a\u062c\u0645\u064a\u0639 \u0643\u0644 \u0627\u0644\u0645\u0639\u0644\u0648\u0645\u0627\u062a. \u0627\u062d\u0641\u0638 \u0643\u0644 \u062e\u0627\u0646\u0629 \u0641\u064a \u0648\u0642\u062a\u0647\u0627.\n4. \u0627\u0644\u0623\u062f\u0627\u0629 `save_draft` \u0647\u062a\u0631\u062f \u0639\u0644\u064a\u0643 \u062a\u0642\u0648\u0644\u0643 \u0625\u064a\u0647 \u0627\u0644\u0644\u064a \u0646\u0627\u0642\u0635. \u0628\u0644\u063a \u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0627\u0644\u0644\u064a \u0646\u0627\u0642\u0635.\n5. \u0644\u0645\u0627 \u062a\u0628\u0639\u062a \u0635\u0648\u0631\u0629 \u0627\u0644\u062f\u0641\u0639\u060c \u0627\u0644\u0623\u062f\u0627\u0629 \u0647\u062a\u0642\u0648\u0644\u0643 \"\u062a\u0645 \u062d\u062c\u0632 \u0627\u0644\u062a\u0630\u0643\u0631\u0629 \u0628\u0646\u062c\u0627\u062d\". \u0633\u0627\u0639\u062a\u0647\u0627 \u0628\u0633 \u062a\u0642\u062f\u0631 \u062a\u0628\u0627\u0631\u0643 \u0644\u0644\u0639\u0645\u064a\u0644.\n6. \u0644\u0648 \u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a \u0635\u0648\u0631\u0629 \u0644\u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631\u060c \u0627\u0628\u0639\u062a\u0647\u0627 \u0644\u0643\u0644 \u062a\u0630\u0643\u0631\u0629 \u0644\u0648\u062d\u062f\u0647\u0627 \u0628\u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u0627\u0644\u0623\u062f\u0627\u0629.\n\n\ud83d\udeab \u0645\u0645\u0646\u0648\u0639\u0627\u062a:\n- \u0644\u0627 \u062a\u0642\u0645 \u0628\u062a\u0623\u0643\u064a\u062f \u0627\u0644\u062d\u062c\u0632 \u0645\u0646 \u0646\u0641\u0633\u0643. \u0627\u0644\u062d\u062c\u0632 \u064a\u062a\u0645 \u0641\u0642\u0637 \u0644\u0645\u0627 \u0627\u0644\u0623\u062f\u0627\u0629 \u062a\u0631\u062f \u0628\u0640 \"Completed\".\n- \u0644\u0627 \u062a\u0633\u062a\u062e\u062f\u0645 \u0623\u064a \u0623\u062f\u0627\u0629 \u0623\u062e\u0631\u0649 \u0644\u0644\u062d\u062c\u0632 \u063a\u064a\u0631 `save_draft`.\n\n\u0623\u0645\u062b\u0644\u0629 \u0644\u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u0627\u0644\u0623\u062f\u0627\u0629:\n- \u0627\u0644\u0639\u0645\u064a\u0644: \"\u0627\u0633\u0645\u064a \u0623\u062d\u0645\u062f \u0639\u0644\u064a\"\n  -> Tool: save_draft(ticket_index=1, field=\"name\", value=\"Ahmed Ali\")\n- \u0627\u0644\u0639\u0645\u064a\u0644: \"\u0631\u0642\u0645\u064a 010xxxxx\"\n  -> Tool: save_draft(ticket_index=1, field=\"phone\", value=\"010xxxxx\")\n",
+          "returnIntermediateSteps": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -1360,
+        2912
+      ],
+      "id": "5ba90123-3b12-4c35-b1ff-60988e625bc8",
+      "name": "Be Star Ticketing Agent"
+    },
+    {
+      "parameters": {
+        "code": {
+          "supplyData": {
+            "code": "const { AzureChatOpenAI } = require(\"@langchain/openai\");\nconst azureOpenAIApiKey = \"5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF\";\nconst azureOpenAIApiInstanceName = \"mrai-openai\";\nconst azureOpenAIApiDeploymentName = \"gpt-4.1-mini\";\nconst azureOpenAIApiVersion = \"2024-12-01-preview\";\nconst input_token_cost = 0.40;\nconst output_token_cost = 1.60;\nconst tools = await this.getInputConnectionData('ai_tool', 0);\nconst googleSheetTool = tools[0];\nconst { workflow_id, execution_id, client_id } = $('Set metadata3').first().json;\nconst llm = new AzureChatOpenAI({\n  azureOpenAIApiKey, azureOpenAIApiInstanceName, azureOpenAIApiDeploymentName, azureOpenAIApiVersion,\n  temperature: 1,\n  callbacks: [{ handleLLMEnd: async function(output, runId, parentId) {\n    const generation = output.generations[0][0];\n    const message = generation.message;\n    const input_tokens = message.usage_metadata.input_tokens;\n    const output_tokens = message.usage_metadata.output_tokens;\n    const total_tokens = message.usage_metadata.total_tokens;\n    const input_cost_val = (input_tokens / 1_000_000) * input_token_cost;\n    const output_cost_val = (output_tokens / 1_000_000) * output_token_cost;\n    const total_cost = input_cost_val + output_cost_val;\n    const total_cost_in_egypt = total_cost * 50;\n    const row = { date: (new Date()).toGMTString(), workflow_id, execution_id, client_id, model: azureOpenAIApiDeploymentName, input_tokens, output_tokens, total_tokens, input_cost: input_cost_val, output_cost: output_cost_val, total_cost, total_cost_in_egypt };\n    if (googleSheetTool && googleSheetTool.func) { await googleSheetTool.func(row); }\n  } }]\n});\nreturn llm;"
+          }
+        },
+        "inputs": {
+          "input": [
+            {
+              "type": "ai_tool",
+              "required": true
+            }
+          ]
+        },
+        "outputs": {
+          "output": [
+            {
+              "type": "ai_languageModel"
+            }
+          ]
+        }
+      },
+      "id": "ca80f21f-235e-42e7-9ed7-3424297ede2f",
+      "name": "Azure OpenAI Chat Model4",
+      "type": "@n8n/n8n-nodes-langchain.code",
+      "position": [
+        -1456,
+        3088
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Memory + Model PreEnter2').first().json['Memory Key'] }}",
+        "tableName": "bestar_chat_history",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1264,
+        3232
+      ],
+      "id": "1652a5fa-c716-415d-90a2-901adb0b5a30",
+      "name": "Postgres Chat Memory1",
+      "credentials": {
+        "postgres": {
+          "id": "nZpi0ecZbdqHX8nL",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://access.mrailabs.com/api/log-usage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38"
+            },
+            {
+              "name": "execution_id",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "workflow_id",
+              "value": "={{ $workflow.id }}"
+            },
+            {
+              "name": "platform_user_id",
+              "value": "={{ $('Memory + Model PreEnter2').item.json['Memory Key'] }}"
+            },
+            {
+              "name": "request_type",
+              "value": "respond"
+            },
+            {
+              "name": "model",
+              "value": "={{ $json.model || 'gpt-4o-mini' }}"
+            },
+            {
+              "name": "input_tokens",
+              "value": "={{ $fromAI('input_tokens', ``, 'string') }}"
+            },
+            {
+              "name": "output_tokens",
+              "value": "={{ $fromAI('output_tokens', ``, 'string') }}"
+            },
+            {
+              "name": "input_cost",
+              "value": "={{ $fromAI('input_cost', ``, 'string') }}"
+            },
+            {
+              "name": "output_cost",
+              "value": "={{ $fromAI('output_cost', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        -1408,
+        3232
+      ],
+      "id": "8d51a3bd-edda-475f-b81c-981096b36818",
+      "name": "Log Reformer Rekaz3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://access.mrailabs.com/api/log-message",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\"api_key\": \"Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38\", \"platform_user_id\": $('Memory + Model PreEnter2').item.json['Memory Key'], \"execution_id\": $execution.id, \"role\": \"user\", \"content\": $('Memory + Model PreEnter2').item.json['Input']}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -960,
+        2912
+      ],
+      "id": "8dd08c21-d27d-498b-84ab-fc7404b0d88a",
+      "name": "Log Usr Messages"
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "send-presence",
+        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
+        "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
+        "delay": 3000
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        2912
+      ],
+      "id": "9959dbe5-2473-4151-ba72-74ad15c4e7ef",
+      "name": "Send presence1",
+      "retryOnFail": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const DELIMITER = '---';\nconst rawOutput = $('Be Star Ticketing Agent').first().json.output || '';\nif (!rawOutput || rawOutput.trim().length === 0) { return [{ json: { text: '' } }]; }\nconst hasDelimiter = rawOutput.includes(DELIMITER);\nlet messages = [];\nif (hasDelimiter) { messages = rawOutput.split(DELIMITER).map(msg => msg.trim()).filter(msg => msg.length > 0); }\nelse { messages = [rawOutput.trim()]; }\nmessages = messages.map(msg => msg.replace(/---/g, '').trim());\nmessages = messages.filter(msg => msg.length > 0);\nif (messages.length === 0) { const cleanedOriginal = rawOutput.replace(/---/g, '').trim(); return [{ json: { text: cleanedOriginal || '\u0639\u0630\u0631\u0627\u064b\u060c \u062d\u062f\u062b \u062e\u0637\u0623. \u064a\u0631\u062c\u0649 \u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629 \u0645\u0631\u0629 \u0623\u062e\u0631\u0649.' } }]; }\nreturn messages.map(text => ({ json: { text } }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        2912
+      ],
+      "id": "23e58ff7-d088-4b02-86c2-d9e551c3ab07",
+      "name": "Splite the messages"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
+        "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
+        "messageText": "={{ $('Splite the messages').first().json.text }}",
+        "options_message": {
+          "quoted": {
+            "messageQuoted": {
+              "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        2832
+      ],
+      "id": "f468485d-14b3-4aad-b86a-c4a818d5429b",
+      "name": "Send text",
+      "retryOnFail": true,
+      "executeOnce": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://access.mrailabs.com/api/log-message",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "=json",
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "jsonBody": "={{ JSON.stringify({\"api_key\": \"Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38\", \"platform_user_id\": $('Memory + Model PreEnter2').first().json['Memory Key'], \"execution_id\": $execution.id, \"role\": \"assistant\", \"content\": $('Splite the messages').first().json.text}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -240,
+        2832
+      ],
+      "id": "964877e6-1ac4-427f-b7c0-ac5655bb75c5",
+      "name": "Log AI Messages1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = $('Splite the messages').all();\nif (allItems.length <= 1) { return []; }\nreturn allItems.slice(1);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -384,
+        2992
+      ],
+      "id": "ddb6656e-4de5-4020-9562-51660a5cf844",
+      "name": "Skip First One"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -208,
+        2992
+      ],
+      "id": "3dfc4a9e-46a4-4e31-a3ae-02bc2c8885e6",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        2848
+      ],
+      "id": "5e87b07c-da8d-4c4b-9ba7-551887a040f0",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
+        "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
+        "messageText": "={{ $('Loop Over Items').item.json.text }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        3008
+      ],
+      "id": "dddda8c5-4c0e-4201-b402-9ba3abf11cc8",
+      "name": "Send text1",
+      "retryOnFail": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://access.mrailabs.com/api/log-message",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\"api_key\": \"Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38\", \"platform_user_id\": $('Memory + Model PreEnter2').item.json['Memory Key'], \"execution_id\": $execution.id, \"role\": \"assistant\", \"content\": $('Loop Over Items').item.json.text}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        144,
+        3008
+      ],
+      "id": "209796c6-df93-44be-9367-9cc2d4cc6e8d",
+      "name": "Log AI Messages"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "operation": "send-media"
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -5376,
+        3104
+      ],
+      "id": "0f0b5d5e-a9d3-4ff8-8f14-df900dfb812a",
+      "name": "Send PDF Ticket",
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "Mr. AI",
+        "remoteJid": "={{ $json.phone }}@s.whatsapp.net",
+        "messageText": "\u2705 \u062a\u0645 \u062a\u0623\u0643\u064a\u062f \u062d\u062c\u0632\u0643 \u0628\u0646\u062c\u0627\u062d!\n\n\u0627\u0633\u0645 \u0627\u0644\u062d\u0636\u0648\u0631: {{ $json.name }}\n\u0646\u0648\u0639 \u0627\u0644\u062a\u0630\u0643\u0631\u0629: {{ $json.ticket_type }}\n\u0643\u0648\u062f \u0627\u0644\u062a\u0630\u0643\u0631\u0629: {{ $json.code }}\n\n\ud83d\udccd \u0627\u0644\u0639\u0646\u0648\u0627\u0646: \u0633\u0648\u0647\u0627\u062c - \u0627\u0644\u0643\u0648\u0627\u0645\u0644 - \u0642\u0627\u0639\u0629 \u0642\u0646\u0627\u0629 \u0627\u0644\u0633\u0648\u064a\u0633\n\ud83d\udcc5 \u0627\u0644\u0645\u0648\u0639\u062f: 11 \u0641\u0628\u0631\u0627\u064a\u0631 2026",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -5136,
+        3104
+      ],
+      "id": "1a7745b4-6a54-433f-8122-ddfc087eb686",
+      "name": "Send Confirmation Text",
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Approval Flow",
+        "height": 240,
+        "width": 800,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5712,
+        3024
+      ],
+      "id": "9189d159-24ad-4566-a855-90a87b9194bb",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Triggers + The Access\n",
+        "height": 352,
+        "width": 800,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5712,
+        2656
+      ],
+      "typeVersion": 1,
+      "id": "51105085-7994-4909-b8a4-463d0cf26bd4",
+      "name": "Sticky Note18"
+    },
+    {
+      "parameters": {
+        "content": "# Inputs\n",
+        "height": 736,
+        "width": 1376
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -4896,
+        2656
+      ],
+      "typeVersion": 1,
+      "id": "51511f4c-4730-4d38-945c-61c865671d94",
+      "name": "Sticky Note19"
+    },
+    {
+      "parameters": {
+        "content": "# Rag \n",
+        "height": 560,
+        "width": 1984
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3504,
+        2832
+      ],
+      "typeVersion": 1,
+      "id": "3da4ffd8-98f6-49f5-b31f-912e1cb3c2a2",
+      "name": "Sticky Note25",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "# Orchestrator Agent\n\n",
+        "height": 560,
+        "width": 496,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1504,
+        2832
+      ],
+      "typeVersion": 1,
+      "id": "a148e92b-5075-4d7d-b02b-3473833f72d0",
+      "name": "Sticky Note24"
+    },
+    {
+      "parameters": {
+        "content": "# Output\n",
+        "height": 784,
+        "width": 1456
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -992,
+        2608
+      ],
+      "typeVersion": 1,
+      "id": "d92de44b-071a-434b-a359-be8feefeb0fd",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b1b5a783-b19c-427d-bcce-8ba5dfb9c60c",
+              "leftValue": "={{ $json.body.data.key.remoteJid }}",
+              "rightValue": "@s.whatsapp.net",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -5536,
+        2784
+      ],
+      "id": "b5331a08-c067-489e-872b-7915c7561eae",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Use this tool immediately after receiving ANY piece of information (Name, Phone, Type, Email, Payment). Pass user_phone, ticket_index (1-based), field (name/phone/type/email/payment), and value.",
+        "method": "POST",
+        "url": "http://38.242.139.159:3005/api/tickets/save-draft",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ \n    user_phone: $('User Phone ID').first().json.User_phone_ID, \n    ticket_index: $fromAI('ticket_index', 'Ticket Number (starting from 1)', 'number'),\n    field: $fromAI('field', 'Field name: name, phone, type, email, or payment', 'string'),\n    value: $fromAI('value', ' The value of the field (clean text, no markdown)', 'string').replace(/```/g, '').trim()\n}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -1120,
+        3232
+      ],
+      "id": "b1355cca-cdf5-400c-bf5a-f1709d34dd81",
+      "name": "Save Draft Tool"
+    }
+  ],
+  "connections": {
+    "Whatsapp": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send PDF Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User Phone ID": {
+      "main": [
+        [
+          {
+            "node": "Access Control4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Access Control4": {
+      "main": [
+        [
+          {
+            "node": "If8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If8": {
+      "main": [
+        [
+          {
+            "node": "Switch3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch3": {
+      "main": [
+        [
+          {
+            "node": "Text4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get media in base1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Image Base64",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Stickers Base",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text4": {
+      "main": [
+        [
+          {
+            "node": "Memory + Model PreEnter2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get media in base1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Convert Audio Type3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Audio Type3": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording1": {
+      "main": [
+        [
+          {
+            "node": "Cost Calculator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cost Calculator": {
+      "main": [
+        [
+          {
+            "node": "Voice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice": {
+      "main": [
+        [
+          {
+            "node": "Memory + Model PreEnter2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Image Base64": {
+      "main": [
+        [
+          {
+            "node": "Analyze Image (Mistral)2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Image (Mistral)2": {
+      "main": [
+        [
+          {
+            "node": "Cost Calculator4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cost Calculator4": {
+      "main": [
+        [
+          {
+            "node": "image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "image": {
+      "main": [
+        [
+          {
+            "node": "Memory + Model PreEnter2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Stickers Base": {
+      "main": [
+        [
+          {
+            "node": "Analyze Strickers (Mistral)3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Strickers (Mistral)3": {
+      "main": [
+        [
+          {
+            "node": "Stickers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stickers": {
+      "main": [
+        [
+          {
+            "node": "Memory + Model PreEnter2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory + Model PreEnter2": {
+      "main": [
+        [
+          {
+            "node": "Set metadata3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set metadata3": {
+      "main": [
+        [
+          {
+            "node": "Reformer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reformer": {
+      "main": [
+        [
+          {
+            "node": "Set metadata4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Reformer",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Reformer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Reformer Rekaz": {
+      "ai_tool": [
+        [
+          {
+            "node": "Azure OpenAI Chat Model5",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set metadata4": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Reformer Rekaz4": {
+      "ai_tool": [
+        [
+          {
+            "node": "Azure OpenAI Chat Model7",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Azure OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Text3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text3": {
+      "main": [
+        [
+          {
+            "node": "Set metadata2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set metadata2": {
+      "main": [
+        [
+          {
+            "node": "Be Star Ticketing Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Be Star Ticketing Agent": {
+      "main": [
+        [
+          {
+            "node": "Log Usr Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Be Star Ticketing Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Be Star Ticketing Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Reformer Rekaz3": {
+      "ai_tool": [
+        [
+          {
+            "node": "Azure OpenAI Chat Model4",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Usr Messages": {
+      "main": [
+        [
+          {
+            "node": "Send presence1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send presence1": {
+      "main": [
+        [
+          {
+            "node": "Splite the messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Splite the messages": {
+      "main": [
+        [
+          {
+            "node": "Skip First One",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send text": {
+      "main": [
+        [
+          {
+            "node": "Log AI Messages1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip First One": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send text1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send text1": {
+      "main": [
+        [
+          {
+            "node": "Log AI Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log AI Messages": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send PDF Ticket": {
+      "main": [
+        [
+          {
+            "node": "Send Confirmation Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "User Phone ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Booking Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Be Star Ticketing Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
+}

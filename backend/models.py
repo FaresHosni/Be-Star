@@ -52,8 +52,10 @@ class Ticket(Base):
     payment_method = Column(String(50), nullable=True)
     payment_proof = Column(Text, nullable=True)
     
+
     # Guest name for this specific ticket (defaults to customer name if empty)
     guest_name = Column(String(100), nullable=True)
+    guest_phone = Column(String(20), nullable=True)
     
     approved_by = Column(Integer, ForeignKey("admins.id"), nullable=True)
     approved_at = Column(DateTime, nullable=True)
@@ -72,6 +74,23 @@ class Ticket(Base):
             existing = session.query(Ticket).filter(Ticket.code == code).first()
             if not existing:
                 return code
+
+
+class TicketDraft(Base):
+    __tablename__ = "ticket_drafts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_phone = Column(String(20), nullable=False, index=True)
+    ticket_index = Column(Integer, nullable=False)
+    
+    guest_name = Column(String(100), nullable=True)
+    guest_phone = Column(String(20), nullable=True)
+    ticket_type = Column(String(50), nullable=True)
+    email = Column(String(100), nullable=True)
+    payment_proof = Column(Text, nullable=True)
+    
+    is_completed = Column(Boolean, default=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class Admin(Base):
