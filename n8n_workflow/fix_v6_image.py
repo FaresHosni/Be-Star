@@ -1,6 +1,5 @@
 import json
 import sys
-import re
 
 # Force UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
@@ -18,19 +17,10 @@ try:
             tool_found = True
             print("Found Save Draft Tool. Updating jsonBody expression...")
             
-            # Current JSON Body is a string with expressions
-            # We want to replace the 'value' logic.
-            # The structure is usually:
-            # "jsonBody": "={\n  \"ticket_index\": ...,\n  \"field\": ...,\n  \"value\": $fromAI(...\n}"
-            
-            # Instead of parsing the string, we'll replace the full jsonBody expression with the robust one.
-            
-            # Robust Expression:
-            # If AI value contains "وصف الصورة" AND Image Node Executed -> Use Image Base64.
-            # Else -> Use AI value.
-            
+            # Robust Expression with user_phone and image handling
             new_expression = """={{
 {
+  "user_phone": $('User Phone ID').first().json.User_phone_ID,
   "ticket_index": $fromAI("ticket_index", "1"),
   "field": $fromAI("field", "name"),
   "value": (
@@ -42,7 +32,7 @@ try:
 }}"""
             
             node['parameters']['jsonBody'] = new_expression
-            print("✅ Updated 'value' expression to intercept image descriptions.")
+            print("✅ Updated 'jsonBody' with 'user_phone' and image logic.")
             break
 
     if tool_found:
