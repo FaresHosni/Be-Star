@@ -678,12 +678,18 @@ async def save_draft(update: DraftUpdate, background_tasks: BackgroundTasks):
             possible_phones = {raw_phone}
             if raw_phone.startswith("20"): possible_phones.add(raw_phone[2:])
             
-            customer = session.query(Customer).filter(Customer.phone.in_(possible_phones)).first()
+            # Normalize for creation/lookup
+            normalized_phone = raw_phone
+            if normalized_phone.startswith("0") and len(normalized_phone) == 11:
+                normalized_phone = "20" + normalized_phone[1:]
+            
+            # Use IN query to match probable variations if needed, but rely on normalized_phone for creation
+            customer = session.query(Customer).filter(Customer.phone == normalized_phone).first()
             if not customer:
-                # Create customer if not exists (using draft data if possible, else fillers)
+                # Create customer if not exists
                 customer = Customer(
                     name=draft.guest_name, # Default to first guest name
-                    phone=raw_phone,
+                    phone=normalized_phone,
                     email=draft.email
                 )
                 session.add(customer)

@@ -28,8 +28,10 @@ class WhatsAppService:
             return None
 
         # Format phone number (ensure country code)
-        if not phone.startswith("20") and len(phone) == 11:
-            phone = "20" + phone
+        if phone.startswith("0") and len(phone) == 11:
+            phone = "20" + phone[1:]
+        elif not phone.startswith("20") and len(phone) == 10:
+             phone = "20" + phone
             
         endpoint = f"{self.api_url}/message/sendText/{self.instance_name}"
         
@@ -59,8 +61,10 @@ class WhatsAppService:
             return None
 
          # Format phone number
-        if not phone.startswith("20") and len(phone) == 11:
-            phone = "20" + phone
+        if phone.startswith("0") and len(phone) == 11:
+            phone = "20" + phone[1:]
+        elif not phone.startswith("20") and len(phone) == 10:
+             phone = "20" + phone
 
         endpoint = f"{self.api_url}/message/sendMedia/{self.instance_name}"
         
