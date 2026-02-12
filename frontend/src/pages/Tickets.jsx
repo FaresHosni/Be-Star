@@ -279,6 +279,10 @@ function Tickets() {
                                     <span className="mr-2">{selectedTicket.customer_phone}</span>
                                 </div>
                                 <div>
+                                    <span className="text-white/50">البريد الإلكتروني:</span>
+                                    <span className="mr-2">{selectedTicket.customer_email || '-'}</span>
+                                </div>
+                                <div>
                                     <span className="text-white/50">النوع:</span>
                                     <span className="mr-2">{selectedTicket.ticket_type}</span>
                                 </div>
