@@ -118,6 +118,21 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
             # If ticket_type is ALSO missing, then this was definitely intended as a payment update.
             if not booking.ticket_type:
                  if customer:
+                     # Check if there are tickets that are ALREADY submitted (duplicate request check)
+                     # We check for tickets updated in the last 1 hour to be safe, or just any recent one.
+                     recent_submitted = session.query(Ticket).filter(
+                         Ticket.customer_id == customer.id,
+                         Ticket.status == TicketStatus.PAYMENT_SUBMITTED
+                     ).order_by(Ticket.updated_at.desc()).first()
+                     
+                     if recent_submitted:
+                         return {
+                             "success": True,
+                             "message": "تم استلام إثبات الدفع لهذه التذكرة مسبقاً، وهي قيد المراجعة حالياً.",
+                             "code": recent_submitted.code,
+                             "status": recent_submitted.status.value
+                         }
+
                      # Debug purpose: Find what tickets DO exist
                      all_tickets = session.query(Ticket).filter(Ticket.customer_id == customer.id).all()
                      tickets_status = [f"{t.code}:{t.status.value}" for t in all_tickets]
