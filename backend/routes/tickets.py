@@ -453,8 +453,8 @@ async def approve_ticket(ticket_id: int, approval: TicketApproval, background_ta
                 customer_name=ticket_name,
                 price=ticket.price
             )
-            # Encode base64 with prefix
-            pdf_base64 = f"data:application/pdf;base64,{base64.b64encode(pdf_bytes).decode('utf-8')}"
+            # Encode base64
+            pdf_base64 = base64.b64encode(pdf_bytes).decode('utf-8')
             
             # Send PDF via WhatsApp
             background_tasks.add_task(
