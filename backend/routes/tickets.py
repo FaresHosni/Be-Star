@@ -58,6 +58,12 @@ class WhatsAppBooking(BaseModel):
     email: Optional[str] = None
 
 
+from services.whatsapp_service import WhatsAppService
+whatsapp_service = WhatsAppService()
+
+from services import email_service
+
+
 @router.post("/whatsapp-booking", response_model=dict)
 async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: BackgroundTasks):
     """
