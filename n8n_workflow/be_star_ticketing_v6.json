@@ -1727,7 +1727,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{\n{\n  \"ticket_index\": $fromAI(\"ticket_index\", \"1\"),\n  \"field\": $fromAI(\"field\", \"name\"),\n  \"value\": (\n    ($fromAI(\"value\", \"\") || \"\").includes(\"\u0648\u0635\u0641 \u0627\u0644\u0635\u0648\u0631\u0629\") || \n    ($fromAI(\"value\", \"\") || \"\").includes(\"User sent image\") ||\n    ($fromAI(\"value\", \"\") || \"\").includes(\"\u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a \u0635\u0648\u0631\u0629\")\n  ) && $('Get Image Base64') && $('Get Image Base64').first() ? \"data:image/jpeg;base64,\" + $('Get Image Base64').first().json.data.base64 : $fromAI(\"value\", \"\").replace(/```/g, \"\").trim()\n}\n}}",
+        "jsonBody": "={{\n{\n  \"user_phone\": $('User Phone ID').first().json.User_phone_ID,\n  \"ticket_index\": $fromAI(\"ticket_index\", \"1\"),\n  \"field\": $fromAI(\"field\", \"name\"),\n  \"value\": (\n    ($fromAI(\"value\", \"\") || \"\").includes(\"\u0648\u0635\u0641 \u0627\u0644\u0635\u0648\u0631\u0629\") || \n    ($fromAI(\"value\", \"\") || \"\").includes(\"User sent image\") ||\n    ($fromAI(\"value\", \"\") || \"\").includes(\"\u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a \u0635\u0648\u0631\u0629\")\n  ) && $('Get Image Base64') && $('Get Image Base64').first() ? \"data:image/jpeg;base64,\" + $('Get Image Base64').first().json.data.base64 : $fromAI(\"value\", \"\").replace(/```/g, \"\").trim()\n}\n}}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequestTool",
