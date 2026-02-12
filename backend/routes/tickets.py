@@ -111,6 +111,14 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
                     "message": "تم تحديث إثبات الدفع للتذاكر المعلقة",
                     "updated_count": len(pending_tickets)
                 }
+            
+            # If we are here, it means we have payment proof, BUT either:
+            # 1. Customer not found
+            # 2. No PENDING tickets found
+            # If ticket_type is ALSO missing, then this was definitely intended as a payment update.
+            if not booking.ticket_type:
+                 detail_msg = "لم يتم العثور على تذاكر معلقة لهذا الرقم" if customer else "هذا الرقم غير مسجل لدينا"
+                 raise HTTPException(status_code=404, detail=detail_msg)
 
         # 3. Handle New Booking (Requires ticket_type)
         if not booking.ticket_type:
