@@ -9,8 +9,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        5936,
-        5504
+        68.0,
+        800
       ],
       "id": "ab6a4ceb-3288-4e0d-8946-a93ffdd797ee",
       "name": "Whatsapp",
@@ -25,8 +25,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        5936,
-        6600
+        68.0,
+        1896
       ],
       "id": "3945bd27-149a-4e85-8949-aca70e6b78ad",
       "name": "Approval Webhook",
@@ -49,8 +49,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6160,
-        5504
+        258.4,
+        800
       ],
       "id": "c4405af0-30f2-4787-99c2-3a580c5dfc0a",
       "name": "User Phone ID"
@@ -76,8 +76,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        6384,
-        5504
+        448.8,
+        800
       ],
       "id": "61bb6090-63d9-4c16-9ab2-7219347c94e9",
       "name": "Access Control4"
@@ -109,8 +109,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6672,
-        5504
+        693.6,
+        800
       ],
       "id": "1693036d-7840-4f11-bf4e-5415fb177ef6",
       "name": "If8"
@@ -231,8 +231,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        7200,
-        5488
+        1142.3999999999999,
+        784
       ],
       "id": "c94c0911-6ae7-4e59-9bf8-80c4fd0b83bb",
       "name": "Switch3",
@@ -256,8 +256,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7888,
-        4992
+        1727.2,
+        288
       ],
       "id": "2f0f4adf-6101-4620-8ed9-a7aa6830e391",
       "name": "Text4"
@@ -272,8 +272,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        7456,
-        5504
+        1360.0,
+        800
       ],
       "id": "0ccb1e75-be62-4000-a099-8357f202eb8b",
       "name": "Get media in base1",
@@ -295,8 +295,8 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        7600,
-        5504
+        1482.3999999999999,
+        800
       ],
       "id": "0de261a8-acfa-4f5a-9355-7df38831cce6",
       "name": "Convert to File",
@@ -322,8 +322,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        7776,
-        5504
+        1632.0,
+        800
       ],
       "id": "318e8b70-ed9f-4b49-a284-1a18fbb2c749",
       "name": "Convert Audio Type3"
@@ -365,8 +365,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        7952,
-        5504
+        1781.6,
+        800
       ],
       "id": "643b1719-0253-44c3-8df1-4264f42fe7e8",
       "name": "Transcribe a recording1"
@@ -413,8 +413,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        8144,
-        5504
+        1944.8,
+        800
       ],
       "id": "4e59102e-3aaa-4f42-9849-363043d38f67",
       "name": "Cost Calculator"
@@ -436,8 +436,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8304,
-        5232
+        2080.7999999999997,
+        528
       ],
       "id": "e6d01f7b-a751-4960-9b33-6ef686b7edfd",
       "name": "Voice"
@@ -452,8 +452,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        7488,
-        5872
+        1387.2,
+        1168
       ],
       "id": "bfa001d0-abca-437b-bb22-19bd32161552",
       "name": "Get Image Base64",
@@ -495,8 +495,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        7984,
-        5872
+        1808.8,
+        1168
       ],
       "id": "dc54c8b9-7e40-498a-8e87-1a4fc2ded6bd",
       "name": "Analyze Image (Mistral)2"
@@ -543,8 +543,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        8128,
-        5872
+        1931.2,
+        1168
       ],
       "id": "14ee61b8-3845-4d04-b1c1-13faf89264cc",
       "name": "Cost Calculator4"
@@ -566,8 +566,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8272,
-        5872
+        2053.6,
+        1168
       ],
       "id": "1f1383c6-a02b-45a8-b36e-e22c3f63f9b5",
       "name": "image"
@@ -582,8 +582,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        7488,
-        6240
+        1387.2,
+        1536
       ],
       "id": "bb5a4262-70ad-4792-b8f7-8a26b5fddd86",
       "name": "Get Stickers Base",
@@ -625,8 +625,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        7984,
-        6240
+        1808.8,
+        1536
       ],
       "id": "a10ffb1a-6bcc-4d0b-a8d9-31fb4f47730f",
       "name": "Analyze Strickers (Mistral)3"
@@ -648,8 +648,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8272,
-        6240
+        2053.6,
+        1536
       ],
       "id": "eed6d3d3-4579-40d4-847d-e9f56a7ea11e",
       "name": "Stickers"
@@ -683,8 +683,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8528,
-        5024
+        2271.2,
+        320
       ],
       "id": "3f811a31-e70d-4582-8de2-a8949e4e49de",
       "name": "Memory + Model PreEnter2"
@@ -718,8 +718,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8720,
-        5024
+        2434.4,
+        320
       ],
       "id": "4c014f39-d1d5-47d5-ab88-712a4867f509",
       "name": "Set metadata3"
@@ -735,8 +735,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        8864,
-        5024
+        2556.7999999999997,
+        320
       ],
       "id": "47e9e27f-8298-4b07-90d9-d02b4c946c74",
       "name": "Reformer"
@@ -749,8 +749,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        9024,
-        5232
+        2692.7999999999997,
+        528
       ],
       "id": "f43f3ab3-c3c4-452b-8215-cd88a4009ae5",
       "name": "Simple Memory"
@@ -782,8 +782,8 @@
       "name": "Azure OpenAI Chat Model5",
       "type": "@n8n/n8n-nodes-langchain.code",
       "position": [
-        8784,
-        5184
+        2488.7999999999997,
+        480
       ],
       "typeVersion": 1
     },
@@ -850,8 +850,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.3,
       "position": [
-        8848,
-        5328
+        2543.2,
+        624
       ],
       "id": "62895ecc-eb6e-4ba7-8280-67953be52693",
       "name": "Log Reformer Rekaz"
@@ -885,8 +885,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9136,
-        5008
+        2788.0,
+        304
       ],
       "id": "be2c6eed-d6b8-47b5-805f-7823b157116a",
       "name": "Set metadata4"
@@ -913,8 +913,8 @@
       "type": "@n8n/n8n-nodes-langchain.informationExtractor",
       "typeVersion": 1.2,
       "position": [
-        9280,
-        5008
+        2910.4,
+        304
       ],
       "id": "b2c1d404-f9cb-4dca-8d53-0b7e8c18dea6",
       "name": "Information Extractor"
@@ -946,8 +946,8 @@
       "name": "Azure OpenAI Chat Model7",
       "type": "@n8n/n8n-nodes-langchain.code",
       "position": [
-        9248,
-        5184
+        2883.2,
+        480
       ],
       "typeVersion": 1
     },
@@ -1014,8 +1014,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.3,
       "position": [
-        9312,
-        5328
+        2937.6,
+        624
       ],
       "id": "4b47c6d7-d993-4d59-90cd-311ba69d1980",
       "name": "Log Reformer Rekaz4"
@@ -1043,8 +1043,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9584,
-        5024
+        3168.7999999999997,
+        320
       ],
       "id": "1aba9fc2-d101-4930-a5dd-14862171b052",
       "name": "Edit Fields1"
@@ -1067,8 +1067,8 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
       "typeVersion": 1.3,
       "position": [
-        9712,
-        5024
+        3277.6,
+        320
       ],
       "id": "3520038b-f00c-42ac-9894-aeb3e709459d",
       "name": "Pinecone Vector Store1",
@@ -1089,8 +1089,8 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        9712,
-        5184
+        3277.6,
+        480
       ],
       "id": "57431b9d-2a54-4ce7-a543-1c94448f3464",
       "name": "Embeddings Azure OpenAI",
@@ -1115,8 +1115,8 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        9984,
-        5024
+        3508.7999999999997,
+        320
       ],
       "id": "1063ed24-a9ca-4e43-9d38-111900de27df",
       "name": "Aggregate1"
@@ -1144,8 +1144,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        10112,
-        5024
+        3617.6,
+        320
       ],
       "id": "20a92d90-7226-4df6-a141-b823e82acb9f",
       "name": "Text3"
@@ -1179,8 +1179,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        10256,
-        5024
+        3740.0,
+        320
       ],
       "id": "d40dfdc4-5264-4a0b-ba95-c26375cf77ae",
       "name": "Set metadata2"
@@ -1197,8 +1197,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        10624,
-        4864
+        4052.7999999999997,
+        160
       ],
       "id": "ba2c31bd-7da8-4c21-a901-7ab21dad8bc6",
       "name": "Be Star Ticketing Agent"
@@ -1230,8 +1230,8 @@
       "name": "Azure OpenAI Chat Model4",
       "type": "@n8n/n8n-nodes-langchain.code",
       "position": [
-        10416,
-        5104
+        3876.0,
+        400
       ],
       "typeVersion": 1
     },
@@ -1245,8 +1245,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        10688,
-        5232
+        4107.2,
+        528
       ],
       "id": "dce43c58-58bc-4029-a49d-cf75d12c77f4",
       "name": "Postgres Chat Memory1",
@@ -1320,8 +1320,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.3,
       "position": [
-        10576,
-        5232
+        4012.0,
+        528
       ],
       "id": "77b114f8-8326-4ff1-993b-fd03e10da250",
       "name": "Log Reformer Rekaz3"
@@ -1337,8 +1337,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.6,
       "position": [
-        11696,
-        4880
+        4964.0,
+        176
       ],
       "id": "5c6a7ebb-c03a-4549-ab07-7fa49cb63b9e",
       "name": "Guardrails Supervisor"
@@ -1351,8 +1351,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        11424,
-        5264
+        4732.8,
+        560
       ],
       "id": "85498b7b-e653-4892-b997-d3f61e40b035",
       "name": "Azure OpenAI Chat Model1",
@@ -1373,8 +1373,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        11824,
-        5296
+        5072.8,
+        592
       ],
       "id": "33584155-f433-4d4f-88e6-fef9d111b5bd",
       "name": "Postgres Chat Memory",
@@ -1406,8 +1406,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        12736,
-        4976
+        5848.0,
+        272
       ],
       "id": "432c5ea9-2f67-44b5-a6c3-8d0d8d16e747",
       "name": "Log Usr Messages"
@@ -1423,8 +1423,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        13536,
-        5216
+        6528.0,
+        512
       ],
       "id": "98dc2f51-9118-43dc-ab1c-85b4464e48d5",
       "name": "Send presence1",
@@ -1443,8 +1443,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13632,
-        5440
+        6609.599999999999,
+        736
       ],
       "id": "a1d9b95c-6e94-4cd7-9111-2b2b4473aa6d",
       "name": "Splite the messages"
@@ -1466,8 +1466,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        13808,
-        5392
+        6759.2,
+        688
       ],
       "id": "198e6f25-e508-4bf0-b96a-350de8fa45b5",
       "name": "Send text",
@@ -1506,8 +1506,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        13952,
-        5392
+        6881.599999999999,
+        688
       ],
       "id": "461da543-db3b-4e69-b7ee-370d52acfeee",
       "name": "Log AI Messages1"
@@ -1519,8 +1519,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13808,
-        5552
+        6759.2,
+        848
       ],
       "id": "69fe3c09-ac5b-40ff-bb95-54efc0265803",
       "name": "Skip First One"
@@ -1532,8 +1532,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        13968,
-        5552
+        6895.2,
+        848
       ],
       "id": "25a504b2-d07f-49aa-b437-f4a06e1f839b",
       "name": "Loop Over Items"
@@ -1543,8 +1543,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        14176,
-        5408
+        7072.0,
+        704
       ],
       "id": "12c04e42-2767-4b85-981d-6c6bc88d9c93",
       "name": "No Operation, do nothing"
@@ -1560,8 +1560,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        14144,
-        5568
+        7044.8,
+        864
       ],
       "id": "147c0a6a-631f-4abd-be80-6482901e4fd4",
       "name": "Send text1",
@@ -1594,8 +1594,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        14336,
-        5568
+        7208.0,
+        864
       ],
       "id": "b122c0c9-bd9f-4681-b0aa-ff3e6eb1fdee",
       "name": "Log AI Messages"
@@ -1615,8 +1615,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        6176,
-        6600
+        272.0,
+        1896
       ],
       "id": "33a8d0fa-3674-4d80-b5a7-f573c5c3d4f1",
       "name": "Send PDF Ticket",
@@ -1638,8 +1638,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        6416,
-        6600
+        476.0,
+        1896
       ],
       "id": "46d07dee-2391-4c33-827d-f6d57e0a8547",
       "name": "Send Confirmation Text",
@@ -1659,8 +1659,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        7088,
-        4816
+        1047.2,
+        112
       ],
       "id": "a948ff74-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1675,8 +1675,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        7408,
-        5408
+        1319.2,
+        704
       ],
       "id": "c17763e8-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1691,8 +1691,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        7152,
-        5440
+        1101.6,
+        736
       ],
       "id": "6e7f5b10-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1707,8 +1707,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        7648,
-        4944
+        1523.2,
+        240
       ],
       "id": "20fa2687-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1722,8 +1722,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        7168,
-        5792
+        1115.2,
+        1088
       ],
       "id": "da72f62f-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1737,8 +1737,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        7168,
-        6176
+        1115.2,
+        1472
       ],
       "id": "73960d5d-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1753,8 +1753,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        10384,
-        4768
+        3848.7999999999997,
+        64
       ],
       "id": "12a57df2-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1768,8 +1768,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        8480,
-        4768
+        2230.4,
+        64
       ],
       "id": "55bc4455-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1784,8 +1784,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        11360,
-        4800
+        4678.4,
+        96
       ],
       "id": "58b87122-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1799,8 +1799,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        12608,
-        4704
+        5739.2,
+        0
       ],
       "id": "50162fcd-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1815,8 +1815,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        13456,
-        5184
+        6460.0,
+        480
       ],
       "id": "c5873594-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1831,8 +1831,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        13568,
-        5376
+        6555.2,
+        672
       ],
       "id": "db56bba9-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1847,8 +1847,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        5856,
-        6528
+        0.0,
+        1824
       ],
       "id": "bestar-approval-sn-0000-0000-0000-000000000000",
       "name": "Sticky Note"
@@ -1875,8 +1875,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.3,
       "position": [
-        10800,
-        5232
+        4202.4,
+        528
       ],
       "id": "bestar-booking-tool-001",
       "name": "Create Booking Tool"
