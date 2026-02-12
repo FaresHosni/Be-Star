@@ -44,8 +44,9 @@ class WhatsAppService:
                     endpoint, 
                     json=payload, 
                     headers=self._get_headers(),
-                    timeout=10.0
+                    timeout=30.0
                 )
+                logger.info(f"WhatsApp Text Response ({phone}): {response.status_code} - {response.text}")
                 response.raise_for_status()
                 return response.json()
         except Exception as e:
@@ -78,8 +79,9 @@ class WhatsAppService:
                     endpoint, 
                     json=payload, 
                     headers=self._get_headers(),
-                    timeout=30.0
+                    timeout=60.0
                 )
+                logger.info(f"WhatsApp PDF Response ({phone}): {response.status_code} - {response.text}")
                 response.raise_for_status()
                 return response.json()
         except Exception as e:
