@@ -9,10 +9,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        5936,
-        5504
+        -5696,
+        2784
       ],
-      "id": "ab6a4ceb-3288-4e0d-8946-a93ffdd797ee",
+      "id": "14603af2-9cf2-443a-9b6f-85ddb71c9ead",
       "name": "Whatsapp",
       "webhookId": "d8fa5154-f391-43c2-ad0c-f5c7b3eb2737"
     },
@@ -25,10 +25,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        5936,
-        6600
+        -5616,
+        3104
       ],
-      "id": "3945bd27-149a-4e85-8949-aca70e6b78ad",
+      "id": "e71d13f5-25ed-4ab8-adba-484fe804382b",
       "name": "Approval Webhook",
       "webhookId": "9e913b19-87ad-44f4-9dc4-4bdb4ae0f556"
     },
@@ -49,10 +49,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6160,
-        5504
+        -5360,
+        2768
       ],
-      "id": "c4405af0-30f2-4787-99c2-3a580c5dfc0a",
+      "id": "c070b329-f50a-44da-98b5-27222a636316",
       "name": "User Phone ID"
     },
     {
@@ -76,10 +76,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        6384,
-        5504
+        -5200,
+        2768
       ],
-      "id": "61bb6090-63d9-4c16-9ab2-7219347c94e9",
+      "id": "100f961d-3965-45f3-865c-e227321efcd0",
       "name": "Access Control4"
     },
     {
@@ -109,10 +109,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6672,
-        5504
+        -5040,
+        2768
       ],
-      "id": "1693036d-7840-4f11-bf4e-5415fb177ef6",
+      "id": "29220113-2744-4d33-84f9-d7166c00a127",
       "name": "If8"
     },
     {
@@ -231,10 +231,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        7200,
-        5488
+        -4800,
+        2720
       ],
-      "id": "c94c0911-6ae7-4e59-9bf8-80c4fd0b83bb",
+      "id": "e12844fd-bf0f-45bd-b44d-16186f7cc934",
       "name": "Switch3",
       "alwaysOutputData": false,
       "executeOnce": false
@@ -256,10 +256,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7888,
-        4992
+        -3680,
+        2704
       ],
-      "id": "2f0f4adf-6101-4620-8ed9-a7aa6830e391",
+      "id": "778d1395-4342-4ea0-b7aa-d6e7954f37e6",
       "name": "Text4"
     },
     {
@@ -272,10 +272,10 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        7456,
-        5504
+        -4512,
+        2848
       ],
-      "id": "0ccb1e75-be62-4000-a099-8357f202eb8b",
+      "id": "e9be8c93-03dd-49bf-ba04-3342db1c4741",
       "name": "Get media in base1",
       "retryOnFail": true,
       "alwaysOutputData": true,
@@ -295,10 +295,10 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        7600,
-        5504
+        -4368,
+        2848
       ],
-      "id": "0de261a8-acfa-4f5a-9355-7df38831cce6",
+      "id": "9192fda2-931b-40f3-9db8-2872eb594ebb",
       "name": "Convert to File",
       "executeOnce": false,
       "alwaysOutputData": false,
@@ -322,10 +322,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        7776,
-        5504
+        -4192,
+        2848
       ],
-      "id": "318e8b70-ed9f-4b49-a284-1a18fbb2c749",
+      "id": "43fcbbbf-d10f-4739-b70a-aaed19088677",
       "name": "Convert Audio Type3"
     },
     {
@@ -365,10 +365,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        7952,
-        5504
+        -4016,
+        2848
       ],
-      "id": "643b1719-0253-44c3-8df1-4264f42fe7e8",
+      "id": "4ff876fd-83d2-4a14-beda-7997ee9c38cd",
       "name": "Transcribe a recording1"
     },
     {
@@ -413,10 +413,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        8144,
-        5504
+        -3824,
+        2848
       ],
-      "id": "4e59102e-3aaa-4f42-9849-363043d38f67",
+      "id": "cf9e3c69-ab30-419f-8621-6eac6beba7fe",
       "name": "Cost Calculator"
     },
     {
@@ -436,10 +436,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8304,
-        5232
+        -3680,
+        2848
       ],
-      "id": "e6d01f7b-a751-4960-9b33-6ef686b7edfd",
+      "id": "064dd7a7-671d-4881-91c6-95c1b5a4479b",
       "name": "Voice"
     },
     {
@@ -452,10 +452,10 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        7488,
-        5872
+        -4512,
+        3024
       ],
-      "id": "bfa001d0-abca-437b-bb22-19bd32161552",
+      "id": "a6d8fe24-bcb0-41ef-98ed-3fba19227f0d",
       "name": "Get Image Base64",
       "retryOnFail": true,
       "alwaysOutputData": true,
@@ -489,16 +489,16 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"وصف الصورة دي بالعربي بشكل مختصر. لو فيها نص أو كلام، اكتبه. لو فيها منتج أو خدمة أو شعار، وصفه.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
+        "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"\u0648\u0635\u0641 \u0627\u0644\u0635\u0648\u0631\u0629 \u062f\u064a \u0628\u0627\u0644\u0639\u0631\u0628\u064a \u0628\u0634\u0643\u0644 \u0645\u062e\u062a\u0635\u0631. \u0644\u0648 \u0641\u064a\u0647\u0627 \u0646\u0635 \u0623\u0648 \u0643\u0644\u0627\u0645\u060c \u0627\u0643\u062a\u0628\u0647. \u0644\u0648 \u0641\u064a\u0647\u0627 \u0645\u0646\u062a\u062c \u0623\u0648 \u062e\u062f\u0645\u0629 \u0623\u0648 \u0634\u0639\u0627\u0631\u060c \u0648\u0635\u0641\u0647.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        7984,
-        5872
+        -4016,
+        3024
       ],
-      "id": "dc54c8b9-7e40-498a-8e87-1a4fc2ded6bd",
+      "id": "0147218b-10c1-4856-8ce0-d0a094b73b85",
       "name": "Analyze Image (Mistral)2"
     },
     {
@@ -543,10 +543,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        8128,
-        5872
+        -3824,
+        3024
       ],
-      "id": "14ee61b8-3845-4d04-b1c1-13faf89264cc",
+      "id": "da4b3b80-a653-456c-9f17-2c7d1f9ba257",
       "name": "Cost Calculator4"
     },
     {
@@ -566,10 +566,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8272,
-        5872
+        -3680,
+        3024
       ],
-      "id": "1f1383c6-a02b-45a8-b36e-e22c3f63f9b5",
+      "id": "9da2bf5d-627b-47d5-a2e0-7d81d81a1d78",
       "name": "image"
     },
     {
@@ -582,10 +582,10 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        7488,
-        6240
+        -4512,
+        3232
       ],
-      "id": "bb5a4262-70ad-4792-b8f7-8a26b5fddd86",
+      "id": "aff505f1-a02d-4b57-a926-61d2998e6806",
       "name": "Get Stickers Base",
       "retryOnFail": true,
       "alwaysOutputData": true,
@@ -619,16 +619,16 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"وصف الصورة دي بالعربي بشكل مختصر. لو فيها نص أو كلام، اكتبه. لو فيها منتج أو خدمة أو شعار، وصفه.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
+        "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"\u0648\u0635\u0641 \u0627\u0644\u0635\u0648\u0631\u0629 \u062f\u064a \u0628\u0627\u0644\u0639\u0631\u0628\u064a \u0628\u0634\u0643\u0644 \u0645\u062e\u062a\u0635\u0631. \u0644\u0648 \u0641\u064a\u0647\u0627 \u0646\u0635 \u0623\u0648 \u0643\u0644\u0627\u0645\u060c \u0627\u0643\u062a\u0628\u0647. \u0644\u0648 \u0641\u064a\u0647\u0627 \u0645\u0646\u062a\u062c \u0623\u0648 \u062e\u062f\u0645\u0629 \u0623\u0648 \u0634\u0639\u0627\u0631\u060c \u0648\u0635\u0641\u0647.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        7984,
-        6240
+        -4016,
+        3232
       ],
-      "id": "a10ffb1a-6bcc-4d0b-a8d9-31fb4f47730f",
+      "id": "db76d5bd-887d-4b53-9cc7-61a21b96ba0c",
       "name": "Analyze Strickers (Mistral)3"
     },
     {
@@ -648,10 +648,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8272,
-        6240
+        -3680,
+        3232
       ],
-      "id": "eed6d3d3-4579-40d4-847d-e9f56a7ea11e",
+      "id": "d9813837-21db-4d64-95b2-42ceef4dd3ad",
       "name": "Stickers"
     },
     {
@@ -667,7 +667,13 @@
             {
               "id": "a12d20c8-7931-470c-a7df-70473f0be258",
               "name": "Input",
-              "value": "={{ $if($('Text4').isExecuted, $('Text4').first().json.Text, \n   $if($('Voice').isExecuted, $('Voice').first().json.Voice, \n   $if($('image').isExecuted, 'العميل بعت صورة. وصف الصورة: ' + $('image').first().json.image, \n   'العميل بعت sticker: ' + $('Stickers').first().json.Stickers))) }}",
+              "value": "={{ $if($('Text4').isExecuted, $('Text4').first().json.Text, \n   $if($('Voice').isExecuted, $('Voice').first().json.Voice, \n   $if($('image').isExecuted, '\u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a \u0635\u0648\u0631\u0629. \u0648\u0635\u0641 \u0627\u0644\u0635\u0648\u0631\u0629: ' + $('image').first().json.image, \n   '\u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a sticker: ' + $('Stickers').first().json.Stickers))) }}",
+              "type": "string"
+            },
+            {
+              "id": "f71a20c2-20a8-4a0a-96ed-17dfc6cdfead",
+              "name": "image_base64",
+              "value": "={{ $if($('image').isExecuted, 'data:image/jpeg;base64,' + $('Get Image Base64').first().json.data.base64, '') }}",
               "type": "string"
             }
           ]
@@ -677,10 +683,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8528,
-        5024
+        -3408,
+        2912
       ],
-      "id": "3f811a31-e70d-4582-8de2-a8949e4e49de",
+      "id": "31193450-24e7-4f67-a699-35d30077248b",
       "name": "Memory + Model PreEnter2"
     },
     {
@@ -712,10 +718,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8720,
-        5024
+        -3168,
+        2912
       ],
-      "id": "4c014f39-d1d5-47d5-ab88-712a4867f509",
+      "id": "e6352227-1653-4fcf-9b89-a2805ad247b9",
       "name": "Set metadata3"
     },
     {
@@ -723,16 +729,16 @@
         "promptType": "define",
         "text": "={{ $('Memory + Model PreEnter2').item.json.Input }}",
         "options": {
-          "systemMessage": "You are a deterministic router+query-reformer for Mr. AI RAG.\nInputs:\n- current_message (string)\n- previous_messages (array of {role,content})\n- last_namespace (string|null)\n- detected_language (\"ar\"|\"en\")\n\nTask A — classify:\nChoose EXACTLY one label: Who_Are_We_And_Related_Information | Terms_And_Conditions_Data_Privacy_Policy | Practical_Case_Studies_and_why_us.\nRules: if vague/ack (\"تمام\",\"more?\") → continue last_namespace; if multi-intent → pick the primary intent; if confidence <0.5 → Who_Are_We_And_Related_Information; greetings fall under Who_Are_We_And_Related_Information.\n\nTask B — reform:\nRewrite a concise semantic search query for the chosen label using context.\nKeep 5–20 tokens; preserve proper names, numbers, currency; add ≤2 helpful synonyms/domain terms; remove filler/pronouns; keep constraints (expert/service, date/time, locale, language).\nIf too vague, add a short HyDE (≤25 tokens) describing what a relevant doc would say.\n\nStrict output (one line, minified JSON only):\n{\"category\":\"<label>\",\"query\":\"<short query>\",\"alternates\":[\"...\"],\"negative_terms\":[\"...\"],\"hyde\":\"...\",\"language\":\"ar|en\"}\n\nHard limits: total output ≤ ~80 tokens; no text outside JSON; no line breaks; no explanations; temperature low for stable routing.\n"
+          "systemMessage": "You are a deterministic router+query-reformer for Mr. AI RAG.\nInputs:\n- current_message (string)\n- previous_messages (array of {role,content})\n- last_namespace (string|null)\n- detected_language (\"ar\"|\"en\")\n\nTask A \u2014 classify:\nChoose EXACTLY one label: Who_Are_We_And_Related_Information | Terms_And_Conditions_Data_Privacy_Policy | Practical_Case_Studies_and_why_us.\nRules: if vague/ack (\"\u062a\u0645\u0627\u0645\",\"more?\") \u2192 continue last_namespace; if multi-intent \u2192 pick the primary intent; if confidence <0.5 \u2192 Who_Are_We_And_Related_Information; greetings fall under Who_Are_We_And_Related_Information.\n\nTask B \u2014 reform:\nRewrite a concise semantic search query for the chosen label using context.\nKeep 5\u201320 tokens; preserve proper names, numbers, currency; add \u22642 helpful synonyms/domain terms; remove filler/pronouns; keep constraints (expert/service, date/time, locale, language).\nIf too vague, add a short HyDE (\u226425 tokens) describing what a relevant doc would say.\n\nStrict output (one line, minified JSON only):\n{\"category\":\"<label>\",\"query\":\"<short query>\",\"alternates\":[\"...\"],\"negative_terms\":[\"...\"],\"hyde\":\"...\",\"language\":\"ar|en\"}\n\nHard limits: total output \u2264 ~80 tokens; no text outside JSON; no line breaks; no explanations; temperature low for stable routing.\n"
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        8864,
-        5024
+        -3024,
+        2912
       ],
-      "id": "47e9e27f-8298-4b07-90d9-d02b4c946c74",
+      "id": "6d8f165a-6779-4523-90fa-8aafd4094d2e",
       "name": "Reformer"
     },
     {
@@ -743,10 +749,10 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        9024,
-        5232
+        -2864,
+        3136
       ],
-      "id": "f43f3ab3-c3c4-452b-8215-cd88a4009ae5",
+      "id": "49706b7d-af16-4f86-94a0-11ffa969d86a",
       "name": "Simple Memory"
     },
     {
@@ -772,12 +778,12 @@
           ]
         }
       },
-      "id": "fdd7f2c4-bf9f-40e6-ba7b-520bbdc26402",
+      "id": "f17b9e43-3296-4841-8a1d-854cf0a4efb4",
       "name": "Azure OpenAI Chat Model5",
       "type": "@n8n/n8n-nodes-langchain.code",
       "position": [
-        8784,
-        5184
+        -3104,
+        3088
       ],
       "typeVersion": 1
     },
@@ -844,10 +850,10 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.3,
       "position": [
-        8848,
-        5328
+        -3040,
+        3232
       ],
-      "id": "62895ecc-eb6e-4ba7-8280-67953be52693",
+      "id": "a26f064e-9ff7-4721-a214-0be381529fe8",
       "name": "Log Reformer Rekaz"
     },
     {
@@ -879,10 +885,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9136,
-        5008
+        -2752,
+        2912
       ],
-      "id": "be2c6eed-d6b8-47b5-805f-7823b157116a",
+      "id": "96e65a42-f071-4cf9-b5fc-537bdcce3f4b",
       "name": "Set metadata4"
     },
     {
@@ -892,12 +898,12 @@
           "attributes": [
             {
               "name": "category",
-              "description": "تصنيف السؤال من هذه القائمة فقط: Who_Are_We_And_Related_Information أو Practical_Case_Studies_and_why_us أو Terms_And_Conditions_Data_Privacy_Policy",
+              "description": "\u062a\u0635\u0646\u064a\u0641 \u0627\u0644\u0633\u0624\u0627\u0644 \u0645\u0646 \u0647\u0630\u0647 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0641\u0642\u0637: Who_Are_We_And_Related_Information \u0623\u0648 Practical_Case_Studies_and_why_us \u0623\u0648 Terms_And_Conditions_Data_Privacy_Policy",
               "required": true
             },
             {
               "name": "reformer_data",
-              "description": "كل البيانات الأخرى (query, alternates, negative_terms, hyde, language)",
+              "description": "\u0643\u0644 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0623\u062e\u0631\u0649 (query, alternates, negative_terms, hyde, language)",
               "required": true
             }
           ]
@@ -907,10 +913,10 @@
       "type": "@n8n/n8n-nodes-langchain.informationExtractor",
       "typeVersion": 1.2,
       "position": [
-        9280,
-        5008
+        -2608,
+        2912
       ],
-      "id": "b2c1d404-f9cb-4dca-8d53-0b7e8c18dea6",
+      "id": "3e55d2b0-f0a9-4c00-9bee-27682c6949cb",
       "name": "Information Extractor"
     },
     {
@@ -936,12 +942,12 @@
           ]
         }
       },
-      "id": "77c626f0-3baa-4364-9f48-cff5c8e67b2d",
+      "id": "3e078a69-110d-45e5-8d29-abcda8c8479b",
       "name": "Azure OpenAI Chat Model7",
       "type": "@n8n/n8n-nodes-langchain.code",
       "position": [
-        9248,
-        5184
+        -2640,
+        3088
       ],
       "typeVersion": 1
     },
@@ -1008,10 +1014,10 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.3,
       "position": [
-        9312,
-        5328
+        -2576,
+        3216
       ],
-      "id": "4b47c6d7-d993-4d59-90cd-311ba69d1980",
+      "id": "a3cd94ae-f062-464d-bedf-b34d53baa6b9",
       "name": "Log Reformer Rekaz4"
     },
     {
@@ -1037,10 +1043,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9584,
-        5024
+        -2304,
+        2912
       ],
-      "id": "1aba9fc2-d101-4930-a5dd-14862171b052",
+      "id": "36a4b19f-412e-477f-80e0-c77d7bbf9e1e",
       "name": "Edit Fields1"
     },
     {
@@ -1061,10 +1067,10 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
       "typeVersion": 1.3,
       "position": [
-        9712,
-        5024
+        -2176,
+        2912
       ],
-      "id": "3520038b-f00c-42ac-9894-aeb3e709459d",
+      "id": "d2e5aef7-8e94-45df-83f1-ed7a5b1142d0",
       "name": "Pinecone Vector Store1",
       "credentials": {
         "pineconeApi": {
@@ -1083,10 +1089,10 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        9712,
-        5184
+        -2176,
+        3072
       ],
-      "id": "57431b9d-2a54-4ce7-a543-1c94448f3464",
+      "id": "3766cff0-7623-440e-82d1-2094fb513295",
       "name": "Embeddings Azure OpenAI",
       "credentials": {
         "azureOpenAiApi": {
@@ -1109,10 +1115,10 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        9984,
-        5024
+        -1904,
+        2912
       ],
-      "id": "1063ed24-a9ca-4e43-9d38-111900de27df",
+      "id": "3f759e50-8267-40aa-b122-8df8250ad88e",
       "name": "Aggregate1"
     },
     {
@@ -1138,10 +1144,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        10112,
-        5024
+        -1776,
+        2912
       ],
-      "id": "20a92d90-7226-4df6-a141-b823e82acb9f",
+      "id": "41f71577-973a-4476-8967-686e45f101d6",
       "name": "Text3"
     },
     {
@@ -1173,10 +1179,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        10256,
-        5024
+        -1632,
+        2912
       ],
-      "id": "d40dfdc4-5264-4a0b-ba95-c26375cf77ae",
+      "id": "43aadcb0-d74f-4953-9bd1-0f485139f8ab",
       "name": "Set metadata2"
     },
     {
@@ -1184,17 +1190,17 @@
         "promptType": "define",
         "text": "={{ $('Text3').item.json['Text from user'] }}",
         "options": {
-          "systemMessage": "=أنت \"عمر\" مساعد ذكي لحجز تذاكر فعالية \"كن نجماً - Be Star\" 🌟\n📋 معلومات الفعالية:\n🎉 الاسم: كن نجماً - Be Star\n📅 الموعد: 11 فبراير 2026\n📍 المكان: سوهاج - الكوامل - قاعة قناة السويس\n💰 الأسعار:\n- VIP: 500 جنيه\n- طلبة: 100 جنيه\n💳 الدفع: فودافون كاش على الرقم 01557368364\nالوقت الحالي: {{ $now.format('dd/LLL/yyyy h:mm A') }}\n═══════════════════════════════════════════\n📋 استراتيجية المحادثة\nالمرحلة 1: الترحيب (على قد السؤال!)\nلما العميل يبعت تحية:\n- \"وعليكم السلام ورحمة الله 😊 أهلاً بيك! معاك عمر من فعالية كن نجماً. أقدر أساعدك بإيه؟\"\n❌ ماتعرضش تفاصيل قبل ما يسأل\n---\nالمرحلة 2: الرد على الأسئلة\n- ردّ على سؤال العميل بالظبط (2-3 جمل)\n- لو عايز يحجز → وجّهه لخطوات الحجز\n---\nالمرحلة 3: جمع بيانات الحجز (سؤال واحد/رسالة)\n⚠️ لو العميل قال معلومة قبل كده، ماتسألش عليها تاني.\n1. الاسم بالكامل؟\n2. الإيميل؟\n3. نوع التذكرة (VIP أو طلبة)؟\n4. عدد التذاكر؟\n---\nالمرحلة 4: الدفع\n\"تمام يا فندم! 💰 المبلغ المطلوب [المبلغ] جنيه\n---\nادفع على فودافون كاش: 01557368364\n---\nوابعتلي صورة إيصال الدفع عشان نأكد الحجز ✅\"\n---\nالمرحلة 5: استلام إثبات الدفع\nلو العميل بعت صورة:\n\"شكراً يا فندم! 📸 استلمنا إيصال الدفع. الأدمن هيراجعه وهيبعتلك التذكرة قريب إن شاء الله ✅\"\n═══════════════════════════════════════════\n📦 بيانات من قاعدة البيانات:\n{{ $('Text3').item.json['Text  from database'] }}\n═══════════════════════════════════════════\n📝 تعليمات إضافية:\n{{ $if($('Access Control4').isExecuted, $('Access Control4').item.json.knowledge_base.additional_instructions, '') }}\n═══════════════════════════════════════════\n🎁 عروض حالياً:\n{{ $if($('Access Control4').isExecuted, $('Access Control4').item.json.knowledge_base.current_offers, '') }}\n═══════════════════════════════════════════\n✅ قواعد:\n- سؤال واحد في كل رسالة\n- استخدم \"---\" لتقسيم الرسائل الطويلة\n- اتكلم بالعامية المصرية الودودة\n- استخدم الإيموجي باعتدال\n- ماتستخدمش markdown أو HTML\n- ماتكررش سؤال على معلومة اتقالت\n- لو سأل خارج الموضوع: \"بعتذر يا فندم 🙏 أنا تخصصي فقط في فعالية كن نجماً\"\n═══════════════════════════════════════════\nالتنسيق:\n✅ نص عادي | إيموجي | أسطر جديدة | ---\n❌ markdown | \\n | <br> | HTML tags\n═══════════════════════════════════════════",
+          "systemMessage": "=\u0623\u0646\u062a \"\u0639\u0645\u0631\" \u0645\u0633\u0627\u0639\u062f \u0630\u0643\u064a \u0644\u062d\u062c\u0632 \u062a\u0630\u0627\u0643\u0631 \u0641\u0639\u0627\u0644\u064a\u0629 \"\u0643\u0646 \u0646\u062c\u0645\u0627\u064b - Be Star\" \ud83c\udf1f\n\ud83d\udccb \u0645\u0639\u0644\u0648\u0645\u0627\u062a \u0627\u0644\u0641\u0639\u0627\u0644\u064a\u0629:\n\ud83c\udf89 \u0627\u0644\u0627\u0633\u0645: \u0643\u0646 \u0646\u062c\u0645\u0627\u064b - Be Star\n\ud83d\udcc5 \u0627\u0644\u0645\u0648\u0639\u062f: 11 \u0641\u0628\u0631\u0627\u064a\u0631 2026\n\ud83d\udccd \u0627\u0644\u0645\u0643\u0627\u0646: \u0633\u0648\u0647\u0627\u062c - \u0627\u0644\u0643\u0648\u0627\u0645\u0644 - \u0642\u0627\u0639\u0629 \u0642\u0646\u0627\u0629 \u0627\u0644\u0633\u0648\u064a\u0633\n\ud83d\udcb0 \u0627\u0644\u0623\u0633\u0639\u0627\u0631:\n- VIP: 500 \u062c\u0646\u064a\u0647\n- \u0637\u0644\u0628\u0629: 100 \u062c\u0646\u064a\u0647\n\ud83d\udcb3 \u0627\u0644\u062f\u0641\u0639: \u0641\u0648\u062f\u0627\u0641\u0648\u0646 \u0643\u0627\u0634 \u0639\u0644\u0649 \u0627\u0644\u0631\u0642\u0645 01557368364\n\u0627\u0644\u0648\u0642\u062a \u0627\u0644\u062d\u0627\u0644\u064a: {{ $now.format('dd/LLL/yyyy h:mm A') }}\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\ud83d\udccb \u0627\u0633\u062a\u0631\u0627\u062a\u064a\u062c\u064a\u0629 \u0627\u0644\u0645\u062d\u0627\u062f\u062b\u0629\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 1: \u0627\u0644\u062a\u0631\u062d\u064a\u0628 (\u0639\u0644\u0649 \u0642\u062f \u0627\u0644\u0633\u0624\u0627\u0644!)\n\u0644\u0645\u0627 \u0627\u0644\u0639\u0645\u064a\u0644 \u064a\u0628\u0639\u062a \u062a\u062d\u064a\u0629:\n- \"\u0648\u0639\u0644\u064a\u0643\u0645 \u0627\u0644\u0633\u0644\u0627\u0645 \u0648\u0631\u062d\u0645\u0629 \u0627\u0644\u0644\u0647 \ud83d\ude0a \u0623\u0647\u0644\u0627\u064b \u0628\u064a\u0643! \u0645\u0639\u0627\u0643 \u0639\u0645\u0631 \u0645\u0646 \u0641\u0639\u0627\u0644\u064a\u0629 \u0643\u0646 \u0646\u062c\u0645\u0627\u064b. \u0623\u0642\u062f\u0631 \u0623\u0633\u0627\u0639\u062f\u0643 \u0628\u0625\u064a\u0647\u061f\"\n\u274c \u0645\u0627\u062a\u0639\u0631\u0636\u0634 \u062a\u0641\u0627\u0635\u064a\u0644 \u0642\u0628\u0644 \u0645\u0627 \u064a\u0633\u0623\u0644\n---\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 2: \u0627\u0644\u0631\u062f \u0639\u0644\u0649 \u0627\u0644\u0623\u0633\u0626\u0644\u0629\n- \u0631\u062f\u0651 \u0639\u0644\u0649 \u0633\u0624\u0627\u0644 \u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0627\u0644\u0638\u0628\u0637 (2-3 \u062c\u0645\u0644)\n- \u0644\u0648 \u0639\u0627\u064a\u0632 \u064a\u062d\u062c\u0632 \u2192 \u0648\u062c\u0651\u0647\u0647 \u0644\u062e\u0637\u0648\u0627\u062a \u0627\u0644\u062d\u062c\u0632\n---\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\ud83d\udccb \u0646\u0638\u0627\u0645 \u0627\u0644\u062d\u062c\u0632 \u0627\u0644\u062c\u062f\u064a\u062f \u2014 \u062c\u0645\u0639 \u0628\u064a\u0627\u0646\u0627\u062a \u0643\u0644 \u062a\u0630\u0643\u0631\u0629 \u0639\u0644\u0649 \u062d\u062f\u0629\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\n\u26a0\ufe0f \u0642\u0627\u0639\u062f\u0629 \u0630\u0647\u0628\u064a\u0629: \u0643\u0644 \u062a\u0630\u0643\u0631\u0629 = array \u0645\u0633\u062a\u0642\u0644 \u0628\u0640 4 \u062e\u0627\u0646\u0627\u062a \u0625\u0644\u0632\u0627\u0645\u064a\u0629. \u0645\u0627\u062a\u0633\u062a\u062e\u062f\u0645\u0634 \u0623\u062f\u0627\u0629 create_booking \u063a\u064a\u0631 \u0644\u0645\u0627 \u0627\u0644\u0640 4 \u062e\u0627\u0646\u0627\u062a \u062a\u0643\u0645\u0644 \u0644\u0643\u0644 \u062a\u0630\u0643\u0631\u0629.\n\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 3: \u0627\u0633\u0623\u0644 \u0639\u0646 \u0639\u062f\u062f \u0627\u0644\u062a\u0630\u0627\u0643\u0631\n- \u0627\u0633\u0623\u0644 \u0627\u0644\u0639\u0645\u064a\u0644: \u0639\u0627\u064a\u0632 \u0643\u0627\u0645 \u062a\u0630\u0643\u0631\u0629\u061f\n- \u062e\u0632\u0646 \u0627\u0644\u0639\u062f\u062f \u0641\u064a \u0630\u0627\u0643\u0631\u062a\u0643\n---\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 4: \u062c\u0645\u0639 \u0628\u064a\u0627\u0646\u0627\u062a \u0643\u0644 \u062a\u0630\u0643\u0631\u0629 (\u0633\u0624\u0627\u0644 \u0648\u0627\u062d\u062f/\u0631\u0633\u0627\u0644\u0629)\n\u0644\u0643\u0644 \u062a\u0630\u0643\u0631\u0629 \u0627\u062c\u0645\u0639 \u0627\u0644\u0640 4 \u062e\u0627\u0646\u0627\u062a \u062f\u064a:\n1. \u0627\u0644\u0627\u0633\u0645 \u0628\u0627\u0644\u0643\u0627\u0645\u0644 (\u0627\u0633\u0645 \u0635\u0627\u062d\u0628 \u0627\u0644\u062a\u0630\u0643\u0631\u0629)\n2. \u0646\u0648\u0639 \u0627\u0644\u062a\u0630\u0643\u0631\u0629 (VIP \u0623\u0648 \u0637\u0644\u0628\u0629)\n3. \u0627\u0644\u0625\u064a\u0645\u064a\u0644\n4. \u0635\u0648\u0631\u0629 \u0625\u062b\u0628\u0627\u062a \u0627\u0644\u062f\u0641\u0639\n\n\u26a0\ufe0f \u0644\u0648 \u0627\u0644\u0639\u0645\u064a\u0644 \u0642\u0627\u0644 \u0645\u0639\u0644\u0648\u0645\u0629 \u0642\u0628\u0644 \u0643\u062f\u0647\u060c \u0645\u0627\u062a\u0633\u0623\u0644\u0634 \u0639\u0644\u064a\u0647\u0627 \u062a\u0627\u0646\u064a.\n\u26a0\ufe0f \u0644\u0648 \u0623\u0643\u062a\u0631 \u0645\u0646 \u062a\u0630\u0643\u0631\u0629: \u0627\u062c\u0645\u0639 \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062a\u0630\u0643\u0631\u0629 \u0627\u0644\u0623\u0648\u0644\u0649 \u0627\u0644\u0623\u0631\u0628\u0639\u0629 \u0627\u0644\u0623\u0648\u0644\u060c \u0648\u0628\u0639\u062f\u064a\u0646 \u0627\u0646\u062a\u0642\u0644 \u0644\u0644\u062a\u0630\u0643\u0631\u0629 \u0627\u0644\u062a\u0627\u0646\u064a\u0629.\n\u26a0\ufe0f \u0644\u0648 \u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a \u0628\u064a\u0627\u0646\u0627\u062a \u062c\u0632\u0626\u064a\u0629 \u0628\u0633 \u2192 \u062e\u0632\u0646\u0647\u0627 \u0648\u0627\u0633\u0623\u0644 \u0639\u0646 \u0627\u0644\u0628\u0627\u0642\u064a. \u0645\u0627\u062a\u0628\u0639\u062a\u0634 \u062d\u0627\u062c\u0629 \u0644\u0644\u0645\u0646\u0635\u0629.\n---\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 5: \u0627\u0644\u062f\u0641\u0639\n\"\u062a\u0645\u0627\u0645 \u064a\u0627 \u0641\u0646\u062f\u0645! \ud83d\udcb0 \u0627\u0644\u0645\u0628\u0644\u063a \u0627\u0644\u0645\u0637\u0644\u0648\u0628 [\u0627\u0644\u0645\u0628\u0644\u063a] \u062c\u0646\u064a\u0647\n---\n\u0627\u062f\u0641\u0639 \u0639\u0644\u0649 \u0641\u0648\u062f\u0627\u0641\u0648\u0646 \u0643\u0627\u0634: 01557368364\n---\n\u0648\u0627\u0628\u0639\u062a\u0644\u064a \u0635\u0648\u0631\u0629 \u0625\u064a\u0635\u0627\u0644 \u0627\u0644\u062f\u0641\u0639 \u0639\u0634\u0627\u0646 \u0646\u0623\u0643\u062f \u0627\u0644\u062d\u062c\u0632 \u2705\"\n---\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 6: \u0645\u0646\u0637\u0642 \u0635\u0648\u0631\u0629 \u0627\u0644\u062f\u0641\u0639\n\u0644\u0645\u0627 \u0627\u0644\u0639\u0645\u064a\u0644 \u064a\u0628\u0639\u062a \u0635\u0648\u0631\u0629:\n\n\ud83d\udd0d \u0623\u0648\u0644\u0627\u064b: \u0641\u0644\u062a\u0631\u0629 \u0627\u0644\u0635\u0648\u0631 \u063a\u064a\u0631 \u0627\u0644\u0645\u062a\u0639\u0644\u0642\u0629\n- \u0644\u0648 \u0627\u0644\u0635\u0648\u0631\u0629 \u0645\u0644\u0647\u0627\u0634 \u0623\u064a \u0639\u0644\u0627\u0642\u0629 \u0628\u0625\u062b\u0628\u0627\u062a \u062f\u0641\u0639 (\u0645\u064a\u0645\u060c \u0635\u0648\u0631\u0629 \u0634\u062e\u0635\u064a\u0629\u060c screenshot \u0639\u0634\u0648\u0627\u0626\u064a) \u0648\u0623\u0646\u062a \u0645\u062a\u0623\u0643\u062f 100% \u2192 \u062a\u062c\u0627\u0647\u0644\u0647\u0627 \u0648\u0642\u0648\u0644 \u0644\u0644\u0639\u0645\u064a\u0644: \"\u0627\u0644\u0635\u0648\u0631\u0629 \u062f\u064a \u0645\u0634 \u0625\u064a\u0635\u0627\u0644 \u062f\u0641\u0639. \u0627\u0628\u0639\u062a\u0644\u064a \u0635\u0648\u0631\u0629 \u0627\u0644\u0625\u064a\u0635\u0627\u0644 \u0644\u0648 \u0633\u0645\u062d\u062a.\"\n- \u0644\u0648 \u0645\u0634 \u0645\u062a\u0623\u0643\u062f \u2192 \u0627\u0633\u0623\u0644 \u0627\u0644\u0639\u0645\u064a\u0644: \"\u0647\u0644 \u062f\u064a \u0635\u0648\u0631\u0629 \u0625\u062b\u0628\u0627\u062a \u0627\u0644\u062f\u0641\u0639\u061f\"\n\n\ud83d\udcb0 \u062b\u0627\u0646\u064a\u0627\u064b: \u062a\u062d\u0644\u064a\u0644 \u0627\u0644\u0645\u0628\u0644\u063a\n- \u062d\u0644\u0644 \u0627\u0644\u0645\u0628\u0644\u063a \u0627\u0644\u0645\u0648\u062c\u0648\u062f \u0641\u064a \u0635\u0648\u0631\u0629 \u0627\u0644\u062f\u0641\u0639\n- \u0644\u0648 \u0627\u0644\u0645\u0628\u0644\u063a \u064a\u0633\u0627\u0648\u064a \u0645\u062c\u0645\u0648\u0639 \u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631 \u2192 \u0627\u0631\u0628\u0637\u0647\u0627 \u0628\u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631\n- \u0644\u0648 \u0627\u0644\u0645\u0628\u0644\u063a \u064a\u0633\u0627\u0648\u064a \u062a\u0630\u0643\u0631\u0629 \u0648\u0627\u062d\u062f\u0629 \u0628\u0633 \u2192 \u0627\u0633\u0623\u0644 \u0627\u0644\u0639\u0645\u064a\u0644: \"\u0627\u0644\u0625\u064a\u0635\u0627\u0644 \u062f\u0647 \u0644\u0623\u0646\u0647\u064a \u062a\u0630\u0643\u0631\u0629\u061f\"\n- \u0644\u0648 \u0627\u0644\u0645\u0628\u0644\u063a \u0645\u0634 \u0645\u0637\u0627\u0628\u0642 \u2192 \u0646\u0628\u0647 \u0627\u0644\u0639\u0645\u064a\u0644 \u0648\u0642\u0648\u0644\u0647 \u0627\u0644\u0645\u0628\u0644\u063a \u0627\u0644\u0635\u062d\u064a\u062d\n- \u0644\u0648 \u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a \u0635\u0648\u0631\u0629 \u0644\u0643\u0644 \u062a\u0630\u0643\u0631\u0629 \u2192 \u0627\u0631\u0628\u0637 \u0643\u0644 \u0635\u0648\u0631\u0629 \u0628\u0627\u0644\u062a\u0630\u0643\u0631\u0629 \u0627\u0644\u0645\u0646\u0627\u0633\u0628\u0629\n---\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 7: \u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0644\u0644\u0645\u0646\u0635\u0629\n\u26a0\ufe0f \u0645\u0647\u0645 \u062c\u062f\u0627\u064b: \u0645\u0627\u062a\u0633\u062a\u062e\u062f\u0645\u0634 \u0623\u062f\u0627\u0629 create_booking \u063a\u064a\u0631 \u0644\u0645\u0627 \u0627\u0644\u0640 4 \u062e\u0627\u0646\u0627\u062a \u062a\u0643\u0645\u0644 \u0644\u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631.\n\n\u0644\u0645\u0627 \u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631 \u062a\u0643\u062a\u0645\u0644 (4 \u062e\u0627\u0646\u0627\u062a \u0644\u0643\u0644 \u0648\u0627\u062d\u062f\u0629):\n- \u0627\u0633\u062a\u062e\u062f\u0645 \u0623\u062f\u0627\u0629 create_booking\n- \u0627\u0639\u0645\u0644 JSON array \u0641\u064a\u0647 \u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631. \u0643\u0644 \u062a\u0630\u0643\u0631\u0629 object \u0641\u064a\u0647:\n  {\"name\": \"\u0627\u0633\u0645 \u0635\u0627\u062d\u0628 \u0627\u0644\u062a\u0630\u0643\u0631\u0629\", \"ticket_type\": \"VIP\" \u0623\u0648 \"Student\", \"email\": \"\u0627\u0644\u0625\u064a\u0645\u064a\u0644\", \"payment_proof_info\": \"\u0648\u0635\u0641 \u0625\u064a\u0635\u0627\u0644 \u0627\u0644\u062f\u0641\u0639\"}\n\n\u0628\u0639\u062f \u0645\u0627 \u0627\u0644\u0623\u062f\u0627\u0629 \u062a\u0631\u062c\u0639 \u0628\u0646\u062c\u0627\u062d\u060c \u0631\u062f \u0639\u0644\u0649 \u0627\u0644\u0639\u0645\u064a\u0644:\n\"\u0634\u0643\u0631\u0627\u064b \u064a\u0627 \u0641\u0646\u062f\u0645! \ud83d\udcf8 \u0627\u0633\u062a\u0644\u0645\u0646\u0627 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0648\u062a\u0645 \u062a\u0633\u062c\u064a\u0644 \u062d\u062c\u0632\u0643 \u0628\u0646\u062c\u0627\u062d.\n\u0623\u0643\u0648\u0627\u062f \u0627\u0644\u062a\u0630\u0627\u0643\u0631: [\u0627\u0644\u0623\u0643\u0648\u0627\u062f \u0645\u0646 \u0627\u0644\u0623\u062f\u0627\u0629]\n\u0627\u0644\u0623\u062f\u0645\u0646 \u0647\u064a\u0631\u0627\u062c\u0639 \u0627\u0644\u0625\u064a\u0635\u0627\u0644 \u0648\u0647\u064a\u0628\u0639\u062a\u0644\u0643 \u0627\u0644\u062a\u0630\u0627\u0643\u0631 \u0642\u0631\u064a\u0628 \u0625\u0646 \u0634\u0627\u0621 \u0627\u0644\u0644\u0647 \u2705\"\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\ud83d\udce6 \u0628\u064a\u0627\u0646\u0627\u062a \u0645\u0646 \u0642\u0627\u0639\u062f\u0629 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a:\n{{ $('Text3').item.json['Text  from database'] }}\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\ud83d\udcdd \u062a\u0639\u0644\u064a\u0645\u0627\u062a \u0625\u0636\u0627\u0641\u064a\u0629:\n{{ $if($('Access Control4').isExecuted, $('Access Control4').item.json.knowledge_base.additional_instructions, '') }}\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\ud83c\udf81 \u0639\u0631\u0648\u0636 \u062d\u0627\u0644\u064a\u0627\u064b:\n{{ $if($('Access Control4').isExecuted, $('Access Control4').item.json.knowledge_base.current_offers, '') }}\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u2705 \u0642\u0648\u0627\u0639\u062f:\n- \u0633\u0624\u0627\u0644 \u0648\u0627\u062d\u062f \u0641\u064a \u0643\u0644 \u0631\u0633\u0627\u0644\u0629\n- \u0627\u0633\u062a\u062e\u062f\u0645 \"---\" \u0644\u062a\u0642\u0633\u064a\u0645 \u0627\u0644\u0631\u0633\u0627\u0626\u0644 \u0627\u0644\u0637\u0648\u064a\u0644\u0629\n- \u0627\u062a\u0643\u0644\u0645 \u0628\u0627\u0644\u0639\u0627\u0645\u064a\u0629 \u0627\u0644\u0645\u0635\u0631\u064a\u0629 \u0627\u0644\u0648\u062f\u0648\u062f\u0629\n- \u0627\u0633\u062a\u062e\u062f\u0645 \u0627\u0644\u0625\u064a\u0645\u0648\u062c\u064a \u0628\u0627\u0639\u062a\u062f\u0627\u0644\n- \u0645\u0627\u062a\u0633\u062a\u062e\u062f\u0645\u0634 markdown \u0623\u0648 HTML\n- \u0645\u0627\u062a\u0643\u0631\u0631\u0634 \u0633\u0624\u0627\u0644 \u0639\u0644\u0649 \u0645\u0639\u0644\u0648\u0645\u0629 \u0627\u062a\u0642\u0627\u0644\u062a\n- \u0644\u0648 \u0633\u0623\u0644 \u062e\u0627\u0631\u062c \u0627\u0644\u0645\u0648\u0636\u0648\u0639: \"\u0628\u0639\u062a\u0630\u0631 \u064a\u0627 \u0641\u0646\u062f\u0645 \ud83d\ude4f \u0623\u0646\u0627 \u062a\u062e\u0635\u0635\u064a \u0641\u0642\u0637 \u0641\u064a \u0641\u0639\u0627\u0644\u064a\u0629 \u0643\u0646 \u0646\u062c\u0645\u0627\u064b\"\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u0627\u0644\u062a\u0646\u0633\u064a\u0642:\n\u2705 \u0646\u0635 \u0639\u0627\u062f\u064a | \u0625\u064a\u0645\u0648\u062c\u064a | \u0623\u0633\u0637\u0631 \u062c\u062f\u064a\u062f\u0629 | ---\n\u274c markdown | \\n | <br> | HTML tags\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
           "returnIntermediateSteps": false
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        10624,
-        4864
+        -1360,
+        2912
       ],
-      "id": "ba2c31bd-7da8-4c21-a901-7ab21dad8bc6",
+      "id": "5ba90123-3b12-4c35-b1ff-60988e625bc8",
       "name": "Be Star Ticketing Agent"
     },
     {
@@ -1220,12 +1226,12 @@
           ]
         }
       },
-      "id": "6fc195f2-0015-4f73-9a14-6ec16095fd64",
+      "id": "ca80f21f-235e-42e7-9ed7-3424297ede2f",
       "name": "Azure OpenAI Chat Model4",
       "type": "@n8n/n8n-nodes-langchain.code",
       "position": [
-        10416,
-        5104
+        -1456,
+        3088
       ],
       "typeVersion": 1
     },
@@ -1239,10 +1245,10 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        10688,
-        5232
+        -1264,
+        3232
       ],
-      "id": "dce43c58-58bc-4029-a49d-cf75d12c77f4",
+      "id": "1652a5fa-c716-415d-90a2-901adb0b5a30",
       "name": "Postgres Chat Memory1",
       "credentials": {
         "postgres": {
@@ -1314,70 +1320,11 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.3,
       "position": [
-        10576,
-        5232
+        -1408,
+        3232
       ],
-      "id": "77b114f8-8326-4ff1-993b-fd03e10da250",
+      "id": "8d51a3bd-edda-475f-b81c-981096b36818",
       "name": "Log Reformer Rekaz3"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=Original Query: {{ $('Memory + Model PreEnter2').item.json.Input }}\n\nDraft Answer: {{ $json.output }}",
-        "options": {
-          "systemMessage": "=You are a \"Compliance Filter\" for كن نجماً (Be Star). 🛡️\nYour specific role is to PASS the \"Draft Answer\" to the user EXACTLY AS IT IS, unless a \"Fatal Error\" is detected.\n\n# 🚫 FATAL ERRORS (ONLY THESE REQUIRE INTERVENTION):\n1. **Out of Scope**: Discussing politics, religion, cooking, medical advice, or coding unrelated to كن نجماً event.\n2. **Hallucination**: Promising a specific price or feature NOT present in the provided context.\n3. **Harmful/Rude**: Profanity or insults.\n\n# 🚦 DECISION LOGIC (STRICT):\n- **IF NO FATAL ERROR IS FOUND:**\n  You MUST return the \"Draft Answer\" **WORD-FOR-WORD**.\n  - ❌ Do NOT summarize.\n  - ❌ Do NOT improve the style or tone.\n  - ❌ Do NOT change the dialect.\n  - ✅ **COPY & PASTE** the Draft Answer exactly.\n\n- **IF A FATAL ERROR IS FOUND:**\n  Only THEN, rewrite the answer to be a polite, formal refusal or correction (in Egyptian Arabic).\n  (Example: \"عذراً يا فندم، أنا تخصصي فقط في فعالية كن نجماً.\")"
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 1.6,
-      "position": [
-        11696,
-        4880
-      ],
-      "id": "5c6a7ebb-c03a-4549-ab07-7fa49cb63b9e",
-      "name": "Guardrails Supervisor"
-    },
-    {
-      "parameters": {
-        "model": "gpt-4.1-mini",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
-      "typeVersion": 1,
-      "position": [
-        11424,
-        5264
-      ],
-      "id": "85498b7b-e653-4892-b997-d3f61e40b035",
-      "name": "Azure OpenAI Chat Model1",
-      "credentials": {
-        "azureOpenAiApi": {
-          "id": "L4HdmJ5bGz2Owawh",
-          "name": "Azure Open AI account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "sessionIdType": "customKey",
-        "sessionKey": "={{ $('Memory + Model PreEnter2').first().json['Memory Key'] }}",
-        "tableName": "bestar_chat_history",
-        "contextWindowLength": 50
-      },
-      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
-      "typeVersion": 1.3,
-      "position": [
-        11824,
-        5296
-      ],
-      "id": "33584155-f433-4d4f-88e6-fef9d111b5bd",
-      "name": "Postgres Chat Memory",
-      "credentials": {
-        "postgres": {
-          "id": "nZpi0ecZbdqHX8nL",
-          "name": "Postgres account"
-        }
-      }
     },
     {
       "parameters": {
@@ -1400,10 +1347,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        12736,
-        4976
+        -960,
+        2912
       ],
-      "id": "432c5ea9-2f67-44b5-a6c3-8d0d8d16e747",
+      "id": "8dd08c21-d27d-498b-84ab-fc7404b0d88a",
       "name": "Log Usr Messages"
     },
     {
@@ -1417,10 +1364,10 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        13536,
-        5216
+        -800,
+        2912
       ],
-      "id": "98dc2f51-9118-43dc-ab1c-85b4464e48d5",
+      "id": "9959dbe5-2473-4151-ba72-74ad15c4e7ef",
       "name": "Send presence1",
       "retryOnFail": true,
       "credentials": {
@@ -1432,15 +1379,15 @@
     },
     {
       "parameters": {
-        "jsCode": "const DELIMITER = '---';\nconst rawOutput = $('Guardrails Supervisor').first().json.output || '';\nif (!rawOutput || rawOutput.trim().length === 0) { return [{ json: { text: '' } }]; }\nconst hasDelimiter = rawOutput.includes(DELIMITER);\nlet messages = [];\nif (hasDelimiter) { messages = rawOutput.split(DELIMITER).map(msg => msg.trim()).filter(msg => msg.length > 0); }\nelse { messages = [rawOutput.trim()]; }\nmessages = messages.map(msg => msg.replace(/---/g, '').trim());\nmessages = messages.filter(msg => msg.length > 0);\nif (messages.length === 0) { const cleanedOriginal = rawOutput.replace(/---/g, '').trim(); return [{ json: { text: cleanedOriginal || 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.' } }]; }\nreturn messages.map(text => ({ json: { text } }));"
+        "jsCode": "const DELIMITER = '---';\nconst rawOutput = $('Be Star Ticketing Agent').first().json.output || '';\nif (!rawOutput || rawOutput.trim().length === 0) { return [{ json: { text: '' } }]; }\nconst hasDelimiter = rawOutput.includes(DELIMITER);\nlet messages = [];\nif (hasDelimiter) { messages = rawOutput.split(DELIMITER).map(msg => msg.trim()).filter(msg => msg.length > 0); }\nelse { messages = [rawOutput.trim()]; }\nmessages = messages.map(msg => msg.replace(/---/g, '').trim());\nmessages = messages.filter(msg => msg.length > 0);\nif (messages.length === 0) { const cleanedOriginal = rawOutput.replace(/---/g, '').trim(); return [{ json: { text: cleanedOriginal || '\u0639\u0630\u0631\u0627\u064b\u060c \u062d\u062f\u062b \u062e\u0637\u0623. \u064a\u0631\u062c\u0649 \u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629 \u0645\u0631\u0629 \u0623\u062e\u0631\u0649.' } }]; }\nreturn messages.map(text => ({ json: { text } }));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13632,
-        5440
+        -640,
+        2912
       ],
-      "id": "a1d9b95c-6e94-4cd7-9111-2b2b4473aa6d",
+      "id": "23e58ff7-d088-4b02-86c2-d9e551c3ab07",
       "name": "Splite the messages"
     },
     {
@@ -1460,10 +1407,10 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        13808,
-        5392
+        -384,
+        2832
       ],
-      "id": "198e6f25-e508-4bf0-b96a-350de8fa45b5",
+      "id": "f468485d-14b3-4aad-b86a-c4a818d5429b",
       "name": "Send text",
       "retryOnFail": true,
       "executeOnce": true,
@@ -1500,10 +1447,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        13952,
-        5392
+        -240,
+        2832
       ],
-      "id": "461da543-db3b-4e69-b7ee-370d52acfeee",
+      "id": "964877e6-1ac4-427f-b7c0-ac5655bb75c5",
       "name": "Log AI Messages1"
     },
     {
@@ -1513,10 +1460,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13808,
-        5552
+        -384,
+        2992
       ],
-      "id": "69fe3c09-ac5b-40ff-bb95-54efc0265803",
+      "id": "ddb6656e-4de5-4020-9562-51660a5cf844",
       "name": "Skip First One"
     },
     {
@@ -1526,10 +1473,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        13968,
-        5552
+        -208,
+        2992
       ],
-      "id": "25a504b2-d07f-49aa-b437-f4a06e1f839b",
+      "id": "3dfc4a9e-46a4-4e31-a3ae-02bc2c8885e6",
       "name": "Loop Over Items"
     },
     {
@@ -1537,10 +1484,10 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        14176,
-        5408
+        -16,
+        2848
       ],
-      "id": "12c04e42-2767-4b85-981d-6c6bc88d9c93",
+      "id": "5e87b07c-da8d-4c4b-9ba7-551887a040f0",
       "name": "No Operation, do nothing"
     },
     {
@@ -1554,10 +1501,10 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        14144,
-        5568
+        -32,
+        3008
       ],
-      "id": "147c0a6a-631f-4abd-be80-6482901e4fd4",
+      "id": "dddda8c5-4c0e-4201-b402-9ba3abf11cc8",
       "name": "Send text1",
       "retryOnFail": true,
       "credentials": {
@@ -1588,31 +1535,24 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        14336,
-        5568
+        144,
+        3008
       ],
-      "id": "b122c0c9-bd9f-4681-b0aa-ff3e6eb1fdee",
+      "id": "209796c6-df93-44be-9367-9cc2d4cc6e8d",
       "name": "Log AI Messages"
     },
     {
       "parameters": {
         "resource": "messages-api",
-        "operation": "send-media",
-        "instanceName": "Mr. AI",
-        "remoteJid": "={{ $json.phone }}@s.whatsapp.net",
-        "mediaUrl": "={{ $json.pdf_url }}",
-        "mediaType": "document",
-        "fileName": "={{ $json.code }}.pdf",
-        "caption": "🎫 تذكرتك جاهزة! نتمنى لك وقتاً ممتعاً في كن نجماً",
-        "options_message": {}
+        "operation": "send-media"
       },
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        6176,
-        6600
+        -5376,
+        3104
       ],
-      "id": "33a8d0fa-3674-4d80-b5a7-f573c5c3d4f1",
+      "id": "0f0b5d5e-a9d3-4ff8-8f14-df900dfb812a",
       "name": "Send PDF Ticket",
       "credentials": {
         "evolutionApi": {
@@ -1626,16 +1566,16 @@
         "resource": "messages-api",
         "instanceName": "Mr. AI",
         "remoteJid": "={{ $json.phone }}@s.whatsapp.net",
-        "messageText": "✅ تم تأكيد حجزك بنجاح!\n\nاسم الحضور: {{ $json.name }}\nنوع التذكرة: {{ $json.ticket_type }}\nكود التذكرة: {{ $json.code }}\n\n📍 العنوان: سوهاج - الكوامل - قاعة قناة السويس\n📅 الموعد: 11 فبراير 2026",
+        "messageText": "\u2705 \u062a\u0645 \u062a\u0623\u0643\u064a\u062f \u062d\u062c\u0632\u0643 \u0628\u0646\u062c\u0627\u062d!\n\n\u0627\u0633\u0645 \u0627\u0644\u062d\u0636\u0648\u0631: {{ $json.name }}\n\u0646\u0648\u0639 \u0627\u0644\u062a\u0630\u0643\u0631\u0629: {{ $json.ticket_type }}\n\u0643\u0648\u062f \u0627\u0644\u062a\u0630\u0643\u0631\u0629: {{ $json.code }}\n\n\ud83d\udccd \u0627\u0644\u0639\u0646\u0648\u0627\u0646: \u0633\u0648\u0647\u0627\u062c - \u0627\u0644\u0643\u0648\u0627\u0645\u0644 - \u0642\u0627\u0639\u0629 \u0642\u0646\u0627\u0629 \u0627\u0644\u0633\u0648\u064a\u0633\n\ud83d\udcc5 \u0627\u0644\u0645\u0648\u0639\u062f: 11 \u0641\u0628\u0631\u0627\u064a\u0631 2026",
         "options_message": {}
       },
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        6416,
-        6600
+        -5136,
+        3104
       ],
-      "id": "46d07dee-2391-4c33-827d-f6d57e0a8547",
+      "id": "1a7745b4-6a54-433f-8122-ddfc087eb686",
       "name": "Send Confirmation Text",
       "credentials": {
         "evolutionApi": {
@@ -1646,206 +1586,158 @@
     },
     {
       "parameters": {
+        "content": "## Approval Flow",
+        "height": 240,
+        "width": 800,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5712,
+        3024
+      ],
+      "id": "9189d159-24ad-4566-a855-90a87b9194bb",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Triggers + The Access\n",
+        "height": 352,
+        "width": 800,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5712,
+        2656
+      ],
+      "typeVersion": 1,
+      "id": "51105085-7994-4909-b8a4-463d0cf26bd4",
+      "name": "Sticky Note18"
+    },
+    {
+      "parameters": {
         "content": "# Inputs\n",
-        "height": 912,
+        "height": 736,
         "width": 1376
       },
       "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
       "position": [
-        7088,
-        4816
+        -4896,
+        2656
       ],
-      "id": "a948ff74-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "content": "# Voice\n",
-        "height": 256,
-        "width": 976,
-        "color": 3
-      },
-      "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [
-        7408,
-        5408
-      ],
-      "id": "c17763e8-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "content": "## Text or Voice\n",
-        "height": 208,
-        "width": 208,
-        "color": 7
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        7152,
-        5440
-      ],
-      "id": "6e7f5b10-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "content": "# Text\n",
-        "height": 176,
-        "width": 656,
-        "color": 3
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        7648,
-        4944
-      ],
-      "id": "20fa2687-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "content": "# Anaysis image",
-        "height": 304,
-        "width": 1264
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        7168,
-        5792
-      ],
-      "id": "da72f62f-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "content": "# Anaysis stickers\n",
-        "height": 240,
-        "width": 1264
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        7168,
-        6176
-      ],
-      "id": "73960d5d-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "content": "# Orchestrator Agent\n",
-        "height": 752,
-        "width": 768,
-        "color": 5
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        10384,
-        4768
-      ],
-      "id": "12a57df2-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
+      "id": "51511f4c-4730-4d38-945c-61c865671d94",
+      "name": "Sticky Note19"
     },
     {
       "parameters": {
         "content": "# Rag \n",
-        "height": 720,
-        "width": 1920
+        "height": 560,
+        "width": 1984
       },
       "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
       "position": [
-        8480,
-        4768
+        -3504,
+        2832
       ],
-      "id": "55bc4455-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
+      "typeVersion": 1,
+      "id": "3da4ffd8-98f6-49f5-b31f-912e1cb3c2a2",
+      "name": "Sticky Note25",
+      "disabled": true
     },
     {
       "parameters": {
-        "content": "## Mr Ai Guard ",
-        "height": 752,
-        "width": 1024,
-        "color": 7
+        "content": "# Orchestrator Agent\n\n",
+        "height": 560,
+        "width": 496,
+        "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
       "position": [
-        11360,
-        4800
+        -1504,
+        2832
       ],
-      "id": "58b87122-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
+      "typeVersion": 1,
+      "id": "a148e92b-5075-4d7d-b02b-3473833f72d0",
+      "name": "Sticky Note24"
     },
     {
       "parameters": {
         "content": "# Output\n",
         "height": 784,
-        "width": 1536
+        "width": 1456
       },
       "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
       "position": [
-        12608,
-        4704
+        -992,
+        2608
       ],
-      "id": "50162fcd-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
+      "typeVersion": 1,
+      "id": "d92de44b-071a-434b-a359-be8feefeb0fd",
+      "name": "Sticky Note6"
     },
     {
       "parameters": {
-        "content": "## Whatsapp",
-        "height": 192,
-        "width": 560,
-        "color": 7
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b1b5a783-b19c-427d-bcce-8ba5dfb9c60c",
+              "leftValue": "={{ $json.body.data.key.remoteJid }}",
+              "rightValue": "@s.whatsapp.net",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
       "position": [
-        13456,
-        5184
+        -5536,
+        2784
       ],
-      "id": "c5873594-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
+      "id": "b5331a08-c067-489e-872b-7915c7561eae",
+      "name": "If"
     },
     {
       "parameters": {
-        "content": "## Splite the messeges",
-        "height": 384,
-        "width": 924,
-        "color": 3
+        "toolDescription": "\u0623\u062f\u0627\u0629 \u062a\u0633\u062c\u064a\u0644 \u062d\u062c\u0632 \u0627\u0644\u062a\u0630\u0627\u0643\u0631 \u0639\u0644\u0649 \u0627\u0644\u0645\u0646\u0635\u0629. \u0627\u0633\u062a\u062e\u062f\u0645\u0647\u0627 \u0628\u0633 \u0644\u0645\u0627 \u062a\u062c\u0645\u0639 \u0627\u0644\u0640 4 \u062e\u0627\u0646\u0627\u062a \u0627\u0644\u0625\u0644\u0632\u0627\u0645\u064a\u0629 (\u0627\u0633\u0645\u060c \u0646\u0648\u0639 \u062a\u0630\u0643\u0631\u0629\u060c \u0625\u064a\u0645\u064a\u0644\u060c \u0635\u0648\u0631\u0629 \u0625\u062b\u0628\u0627\u062a \u062f\u0641\u0639) \u0644\u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631. \u0627\u0628\u0639\u062a tickets_json \u0643\u0640 JSON array string \u0641\u064a\u0647 \u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631. \u0643\u0644 \u062a\u0630\u0643\u0631\u0629 object \u0641\u064a\u0647 name \u0648 ticket_type (VIP \u0623\u0648 Student) \u0648 email \u0648 payment_proof_info. \u0645\u0627\u062a\u0633\u062a\u062e\u062f\u0645\u0634 \u0627\u0644\u0623\u062f\u0627\u0629 \u062f\u064a \u063a\u064a\u0631 \u0644\u0645\u0627 \u0643\u0644 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u062a\u0643\u0648\u0646 \u0643\u0627\u0645\u0644\u0629 \u0644\u0643\u0644 \u062a\u0630\u0643\u0631\u0629.",
+        "method": "POST",
+        "url": "http://38.242.139.159:3005/api/tickets/whatsapp-booking",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ phone: $('User Phone ID').first().json.User_phone_ID, tickets: JSON.parse($fromAI('tickets_json', 'JSON array of ticket objects. Each object must have: name (string), ticket_type (VIP or Student), email (string), payment_proof_info (string describing the payment proof image). Example: [{\"name\":\"Ahmed\",\"ticket_type\":\"VIP\",\"email\":\"ahmed@mail.com\",\"payment_proof_info\":\"Vodafone Cash receipt 500 EGP\"}]', 'string')) }) }}",
+        "options": {}
       },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
       "position": [
-        13568,
-        5376
+        -1120,
+        3232
       ],
-      "id": "db56bba9-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "content": "## Approval Flow",
-        "height": 240,
-        "width": 560,
-        "color": 7
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        5856,
-        6528
-      ],
-      "id": "bestar-approval-sn-0000-0000-0000-000000000000",
-      "name": "Sticky Note"
+      "id": "b1355cca-cdf5-400c-bf5a-f1709d34dd81",
+      "name": "Create Booking Tool"
     }
   ],
   "connections": {
@@ -1853,7 +1745,18 @@
       "main": [
         [
           {
-            "node": "User Phone ID",
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send PDF Ticket",
             "type": "main",
             "index": 0
           }
@@ -2017,6 +1920,17 @@
       "main": [
         [
           {
+            "node": "Cost Calculator4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cost Calculator4": {
+      "main": [
+        [
+          {
             "node": "image",
             "type": "main",
             "index": 0
@@ -2101,6 +2015,39 @@
         ]
       ]
     },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Reformer",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Reformer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Reformer Rekaz": {
+      "ai_tool": [
+        [
+          {
+            "node": "Azure OpenAI Chat Model5",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Set metadata4": {
       "main": [
         [
@@ -2123,6 +2070,28 @@
         ]
       ]
     },
+    "Azure OpenAI Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Reformer Rekaz4": {
+      "ai_tool": [
+        [
+          {
+            "node": "Azure OpenAI Chat Model7",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Edit Fields1": {
       "main": [
         [
@@ -2140,6 +2109,17 @@
           {
             "node": "Aggregate1",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Azure OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
             "index": 0
           }
         ]
@@ -2178,67 +2158,12 @@
         ]
       ]
     },
-    "Simple Memory": {
-      "ai_memory": [
+    "Be Star Ticketing Agent": {
+      "main": [
         [
           {
-            "node": "Reformer",
-            "type": "ai_memory",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Log Reformer Rekaz": {
-      "ai_tool": [
-        [
-          {
-            "node": "Azure OpenAI Chat Model5",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Azure OpenAI Chat Model5": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Reformer",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Log Reformer Rekaz4": {
-      "ai_tool": [
-        [
-          {
-            "node": "Azure OpenAI Chat Model7",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Azure OpenAI Chat Model7": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Information Extractor",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Embeddings Azure OpenAI": {
-      "ai_embedding": [
-        [
-          {
-            "node": "Pinecone Vector Store1",
-            "type": "ai_embedding",
+            "node": "Log Usr Messages",
+            "type": "main",
             "index": 0
           }
         ]
@@ -2255,17 +2180,6 @@
         ]
       ]
     },
-    "Log Reformer Rekaz3": {
-      "ai_tool": [
-        [
-          {
-            "node": "Azure OpenAI Chat Model4",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Postgres Chat Memory1": {
       "ai_memory": [
         [
@@ -2277,45 +2191,12 @@
         ]
       ]
     },
-    "Be Star Ticketing Agent": {
-      "main": [
+    "Log Reformer Rekaz3": {
+      "ai_tool": [
         [
           {
-            "node": "Guardrails Supervisor",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Azure OpenAI Chat Model1": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Guardrails Supervisor",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Postgres Chat Memory": {
-      "ai_memory": [
-        [
-          {
-            "node": "Guardrails Supervisor",
-            "type": "ai_memory",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Guardrails Supervisor": {
-      "main": [
-        [
-          {
-            "node": "Log Usr Messages",
-            "type": "main",
+            "node": "Azure OpenAI Chat Model4",
+            "type": "ai_tool",
             "index": 0
           }
         ]
@@ -2421,17 +2302,6 @@
         ]
       ]
     },
-    "Approval Webhook": {
-      "main": [
-        [
-          {
-            "node": "Send PDF Ticket",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Send PDF Ticket": {
       "main": [
         [
@@ -2442,11 +2312,29 @@
           }
         ]
       ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "User Phone ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Booking Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Be Star Ticketing Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "pinData": {},
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "8df4082ac81111d2321c538ef34013493a96dd3b14b3af10e13ce9c3849e34d3"
-  }
+  "pinData": {}
 }
