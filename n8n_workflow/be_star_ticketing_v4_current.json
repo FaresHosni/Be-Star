@@ -1,0 +1,729 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "bestar-whatsapp",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -5696,
+        2784
+      ],
+      "id": "14603af2-9cf2-443a-9b6f-85ddb71c9ead",
+      "name": "Whatsapp",
+      "webhookId": "d8fa5154-f391-43c2-ad0c-f5c7b3eb2737"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "bestar-approval",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -5616,
+        3104
+      ],
+      "id": "e71d13f5-25ed-4ab8-adba-484fe804382b",
+      "name": "Approval Webhook",
+      "webhookId": "9e913b19-87ad-44f4-9dc4-4bdb4ae0f556"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "803c1504-5ff1-4d19-8d9b-7c933466e48d",
+              "name": "User_phone_ID",
+              "value": "={{\n(() => {\n  const data = $json.body?.data?.key;\n  let rawNumber = '';\n  if (data?.remoteJidAlt?.includes('@s.whatsapp.net')) {\n    rawNumber = data.remoteJidAlt.split('@')[0];\n  } else if (data?.remote3lidAlt?.includes('@s.whatsapp.net')) {\n    rawNumber = data.remote3lidAlt.split('@')[0];\n  } else if (data?.remoteJid?.includes('@s.whatsapp.net')) {\n    rawNumber = data.remoteJid.split('@')[0];\n  } else {\n    rawNumber = (data?.remoteJid || '').split('@')[0];\n  }\n  rawNumber = rawNumber.trim();\n  if (rawNumber.startsWith('20')) {\n    return '0' + rawNumber.slice(2);\n  }\n  return '+' + rawNumber;\n})()\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -5360,
+        2768
+      ],
+      "id": "c070b329-f50a-44da-98b5-27222a636316",
+      "name": "User Phone ID"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://access.mrailabs.com/api/check-access",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\"api_key\": \"Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38\", \"user_id\": $('User Phone ID').item.json.User_phone_ID, \"platform_type\": \"Whatsapp\", \"user_name\": $('Whatsapp').item.json.body.data.pushName}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -5200,
+        2768
+      ],
+      "id": "100f961d-3965-45f3-865c-e227321efcd0",
+      "name": "Access Control4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "857ccdd3-662c-44c6-aff6-9660ffa633fe",
+              "leftValue": "={{ $json.access }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -5040,
+        2768
+      ],
+      "id": "29220113-2744-4d33-84f9-d7166c00a127",
+      "name": "If8"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Whatsapp').first().json.body.data.messageType }}",
+                    "rightValue": "conversation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "35588a02-6475-400d-b869-da05d7ed0f3a"
+                  },
+                  {
+                    "leftValue": "={{ $('Whatsapp').first().json.body.data.messageType }}",
+                    "rightValue": "extendedTextMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "ext-text-msg-001"
+                  }
+                ],
+                "combinator": "or"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "83b9e800-99d0-4e31-8032-ae81aebe86d1",
+                    "leftValue": "={{ $('Whatsapp').first().json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b70e2cfc-8de2-4f4c-a6c0-77c2028ba78f",
+                    "leftValue": "={{ $('Whatsapp').first().json.body.data.messageType }}",
+                    "rightValue": "imageMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Photos"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8c9c8324-851d-4d68-ab24-34d545eb07da",
+                    "leftValue": "={{ $('Whatsapp').item.json.body.data.messageType }}",
+                    "rightValue": "stickerMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Stickers"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -4800,
+        2720
+      ],
+      "id": "e12844fd-bf0f-45bd-b44d-16186f7cc934",
+      "name": "Switch3",
+      "alwaysOutputData": false,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
+              "name": "Text",
+              "value": "={{ $('Whatsapp').first().json.body?.data?.message?.conversation ?? $('Whatsapp').first().json.body?.data?.message?.extendedTextMessage?.text ?? '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3680,
+        2704
+      ],
+      "id": "778d1395-4342-4ea0-b7aa-d6e7954f37e6",
+      "name": "Text4"
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "get-media-base64",
+        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
+        "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -4512,
+        2848
+      ],
+      "id": "e9be8c93-03dd-49bf-ba04-3342db1c4741",
+      "name": "Get media in base1",
+      "retryOnFail": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data.base64",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -4368,
+        2848
+      ],
+      "id": "9192fda2-931b-40f3-9db8-2872eb594ebb",
+      "name": "Convert to File",
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://38.242.139.159:5555/convert",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -4192,
+        2848
+      ],
+      "id": "43fcbbbf-d10f-4739-b70a-aaed19088677",
+      "name": "Convert Audio Type3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mrai-openai.openai.azure.com/openai/deployments/gpt-4o-transcribe/audio/transcriptions?api-version=2025-03-01-preview",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api-key",
+              "value": "5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "model",
+              "value": "gpt-4o-transcribe"
+            },
+            {
+              "name": "prompt",
+              "value": "\"Transcribe accurately. Speaker uses Arabic with English words mixed in. Keep English terms in English.\""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -4016,
+        2848
+      ],
+      "id": "4ff876fd-83d2-4a14-beda-7997ee9c38cd",
+      "name": "Transcribe a recording1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://access.mrailabs.com/api/log-usage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38"
+            },
+            {
+              "name": "execution_id",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "name": "request_type",
+              "value": "transcription"
+            },
+            {
+              "name": "model",
+              "value": "gpt-4o-transcribe"
+            },
+            {
+              "name": "input_tokens",
+              "value": "={{ $json.usage?.prompt_tokens ?? 0 }}"
+            },
+            {
+              "name": "output_tokens",
+              "value": "={{ $json.usage?.completion_tokens ?? 0 }}"
+            },
+            {
+              "name": "platform_user_id",
+              "value": "={{ $('User Phone ID').item.json.User_phone_ID }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3824,
+        2848
+      ],
+      "id": "cf9e3c69-ab30-419f-8621-6eac6beba7fe",
+      "name": "Cost Calculator"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
+              "name": "Voice",
+              "value": "={{ $('Transcribe a recording1').item.json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3680,
+        2848
+      ],
+      "id": "064dd7a7-671d-4881-91c6-95c1b5a4479b",
+      "name": "Voice"
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "get-media-base64",
+        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
+        "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -4512,
+        3024
+      ],
+      "id": "a6d8fe24-bcb0-41ef-98ed-3fba19227f0d",
+      "name": "Get Image Base64",
+      "retryOnFail": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mrai-openai.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api-key",
+              "value": "5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-ms-model-mesh-model-name",
+              "value": "mistral-medium-2505"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"وصف الصورة دي بالعربي بشكل مختصر. لو فيها نص أو كلام، اكتبه. لو فيها منتج أو خدمة أو شعار، وصفه.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -4016,
+        3024
+      ],
+      "id": "0147218b-10c1-4856-8ce0-d0a094b73b85",
+      "name": "Analyze Image (Mistral)2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://access.mrailabs.com/api/log-usage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38"
+            },
+            {
+              "name": "execution_id",
+              "value": "=n8n-exec-{{$executionId}}"
+            },
+            {
+              "name": "request_type",
+              "value": "chat"
+            },
+            {
+              "name": "model",
+              "value": "mistral-medium-2505"
+            },
+            {
+              "name": "input_tokens",
+              "value": "={{ $json.usage.prompt_tokens }}"
+            },
+            {
+              "name": "output_tokens",
+              "value": "={{ $json.usage.completion_tokens }}"
+            },
+            {
+              "name": "platform_user_id",
+              "value": "={{ $('User Phone ID').item.json.User_phone_ID }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3824,
+        3024
+      ],
+      "id": "da4b3b80-a653-456c-9f17-2c7d1f9ba257",
+      "name": "Cost Calculator4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
+              "name": "image",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3680,
+        3024
+      ],
+      "id": "9da2bf5d-627b-47d5-a2e0-7d81d81a1d78",
+      "name": "image"
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "get-media-base64",
+        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
+        "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -4512,
+        3232
+      ],
+      "id": "aff505f1-a02d-4b57-a926-61d2998e6806",
+      "name": "Get Stickers Base",
+      "retryOnFail": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mrai-openai.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api-key",
+              "value": "5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-ms-model-mesh-model-name",
+              "value": "mistral-medium-2505"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"وصف الصورة دي بالعربي بشكل مختصر. لو فيها نص أو كلام، اكتبه. لو فيها منتج أو خدمة أو شعار، وصفه.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -4016,
+        3232
+      ],
+      "id": "db76d5bd-887d-4b53-9cc7-61a21b96ba0c",
+      "name": "Analyze Strickers (Mistral)3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
+              "name": "Stickers",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3680,
+        3232
+      ],
+      "id": "d9813837-21db-4d64-95b2-42ceef4dd3ad",
+      "name": "Stickers"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a63db671-77e6-4370-b11f-92fc2767ee58",
+              "name": "Memory Key",
+              "value": "={{ $('User Phone ID').item.json.User_phone_ID }}",
+              "type": "string"
+            },
+            {
+              "id": "a12d20c8-7931-470c-a7df-70473f0be258",
+              "name": "Input",
+              "value": "={{ $if($('Text4').isExecuted, $('Text4').first().json.Text, \n   $if($('Voice').isExecuted, $('Voice').first().json.Voice, \n   $if($('image').isExecuted, 'العميل بعت صورة. وصف الصورة: ' + $('image').first().json.image, \n   'العميل بعت sticker: ' + $('Stickers').first().json.Stickers))) }}",
+              "type": "string"
+            },
+            {
+              "id": "f71a20c2-20a8-4a0a-96ed-17dfc6cdfead",
+              "name": "image_base64",
+              "value": "={{ $if($('image').isExecuted, 'data:image/jpeg;base64,' + $('Get Image Base64').first().json.data.base64, '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3408,
+        2912
+      ],
+      "id": "31193450-24e7-4f67-a699-35d30077248b",
+      "name": "Memory + Model PreEnter2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ca1744cf-69e7-4a85-81d3-2fb2b936e496",
+              "name": "workflow_id",
+              "value": "={{ $workflow.id }}",
+              "type": "string"
+            },
+            {
+              "id": "205c7c4d-2dfa-471f-9306-33d30e16722a",
+              "name": "execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            },
+            {
+              "id": "3fa4932f-c3cc-41a8-90a4-d1b3a2d32cdd",
+              "name": "client_id",
+              "value": "Be-Star",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3168,
+        2912
+      ],
+      "id": "e6352227-1653-4fcf-9b89-a2805ad247b9",
+      "name": "Set metadata3"
+    }
+  ],
+  "connections": {}
+}

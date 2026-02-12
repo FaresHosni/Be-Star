@@ -50,8 +50,17 @@ class TicketActivation(BaseModel):
     email: Optional[str] = None
 
 
+class TicketItem(BaseModel):
+    name: str
+    ticket_type: str  # "VIP" or "Student"
+    email: str
+    payment_proof_info: Optional[str] = None  # وصف صورة الدفع من الـ AI
+
+
 class WhatsAppBooking(BaseModel):
     phone: str
+    tickets: Optional[List[TicketItem]] = None  # New: array of tickets
+    # Backward compatibility
     name: Optional[str] = None
     ticket_type: Optional[str] = None  # "VIP" or "Student"
     payment_proof_base64: Optional[str] = None
@@ -68,8 +77,9 @@ from services import email_service
 async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: BackgroundTasks):
     """
     Unified Endpoint:
-    1. If user sends Image -> Updates 'PENDING' tickets (Payment Proof).
-    2. If user sends Text (w/ Ticket Type) -> Creates NEW ticket.
+    1. If 'tickets' array is provided -> Creates one ticket per item (new per-ticket flow).
+    2. If user sends Image -> Updates 'PENDING' tickets (Payment Proof).
+    3. If user sends Text (w/ Ticket Type) -> Creates NEW ticket (legacy single-ticket flow).
     """
     session = get_session()
     try:
@@ -80,9 +90,72 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
         if raw_phone.startswith("20"): possible_phones.add("0" + raw_phone[2:])
         possible_phones.add("2" + raw_phone if not raw_phone.startswith("2") else raw_phone)
 
+        # Normalize phone for DB storage
+        final_phone = raw_phone
+        if final_phone.startswith("0") and len(final_phone) == 11:
+            final_phone = "20" + final_phone[1:]
+
         customer = session.query(Customer).filter(Customer.phone.in_(possible_phones)).first()
 
-        # 2. Handle Payment Proof Update (If image provided + customer exists)
+        # ===== NEW: Handle tickets array (per-ticket flow) =====
+        if booking.tickets and len(booking.tickets) > 0:
+            # Create/Update Customer
+            first_ticket = booking.tickets[0]
+            if not customer:
+                customer = Customer(
+                    name=first_ticket.name,
+                    phone=final_phone,
+                    email=first_ticket.email
+                )
+                session.add(customer)
+                session.commit()
+                session.refresh(customer)
+
+            vip_price = int(os.getenv("VIP_PRICE", 500))
+            student_price = int(os.getenv("STUDENT_PRICE", 100))
+
+            created_tickets = []
+            for ticket_item in booking.tickets:
+                # Map ticket type
+                ticket_type_str = ticket_item.ticket_type.strip().upper()
+                ticket_type = TicketType.VIP if ticket_type_str in ("VIP", "في اي بي") else TicketType.STUDENT
+                price = vip_price if ticket_type == TicketType.VIP else student_price
+
+                # All 4 fields are required, so status is PAYMENT_SUBMITTED
+                ticket = Ticket(
+                    code=Ticket.generate_unique_code(session),
+                    ticket_type=ticket_type,
+                    price=price,
+                    customer_id=customer.id,
+                    guest_name=ticket_item.name,
+                    payment_method="Vodafone Cash",
+                    payment_proof=ticket_item.payment_proof_info,  # AI's description of proof
+                    status=TicketStatus.PAYMENT_SUBMITTED
+                )
+                session.add(ticket)
+                created_tickets.append(ticket)
+
+            session.commit()
+            for t in created_tickets:
+                session.refresh(t)
+
+            total_price = sum(t.price for t in created_tickets)
+            return {
+                "success": True,
+                "message": f"تم حجز {len(created_tickets)} تذكرة بنجاح. إجمالي: {total_price} جنيه. جاري المراجعة.",
+                "tickets": [
+                    {
+                        "ticket_id": t.id,
+                        "code": t.code,
+                        "name": t.guest_name,
+                        "type": t.ticket_type.value,
+                        "price": t.price,
+                        "status": t.status.value
+                    } for t in created_tickets
+                ]
+            }
+
+        # ===== LEGACY: Handle Payment Proof Update (If image provided + customer exists) =====
         if booking.payment_proof_base64 and customer:
             pending_tickets = session.query(Ticket).filter(
                 Ticket.customer_id == customer.id,
@@ -96,13 +169,11 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
                 else:
                     payment_proof = booking.payment_proof_base64
 
-                # Update ALL pending tickets (or FIFO if we want single, but safe to allow all for now)
                 for t in pending_tickets:
                     t.payment_proof = payment_proof
                     t.status = TicketStatus.PAYMENT_SUBMITTED
                 session.commit()
 
-                # Notify
                 msg = f"تم استلام إثبات الدفع لـ {len(pending_tickets)} تذاكر.\nجاري المراجعة... ⏳"
                 background_tasks.add_task(whatsapp_service.send_message, customer.phone, msg)
                 
@@ -112,14 +183,8 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
                     "updated_count": len(pending_tickets)
                 }
             
-            # If we are here, it means we have payment proof, BUT either:
-            # 1. Customer not found
-            # 2. No PENDING tickets found
-            # If ticket_type is ALSO missing, then this was definitely intended as a payment update.
             if not booking.ticket_type:
                  if customer:
-                     # Check if there are tickets that are ALREADY submitted (duplicate request check)
-                     # We check for tickets updated in the last 1 hour to be safe, or just any recent one.
                      recent_submitted = session.query(Ticket).filter(
                          Ticket.customer_id == customer.id,
                          Ticket.status == TicketStatus.PAYMENT_SUBMITTED
@@ -133,7 +198,6 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
                              "status": recent_submitted.status.value
                          }
 
-                     # Debug purpose: Find what tickets DO exist
                      all_tickets = session.query(Ticket).filter(Ticket.customer_id == customer.id).all()
                      tickets_status = [f"{t.code}:{t.status.value}" for t in all_tickets]
                      detail_msg = f"العميل موجود ({customer.phone})، لكن لا توجد تذاكر PENDING. التذاكر الموجودة: {tickets_status}"
@@ -142,15 +206,9 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
                  
                  raise HTTPException(status_code=404, detail=detail_msg)
 
-        # 3. Handle New Booking (Requires ticket_type)
+        # ===== LEGACY: Handle New Single Booking =====
         if not booking.ticket_type:
-             # If we reached here, it means no pending tickets were found to update, AND no ticket_type to create new.
              raise HTTPException(status_code=400, detail="يجب تحديد نوع التذكرة (VIP أو Student)")
-
-        # Create/Update Customer
-        # Use provided phone as primary if new
-        final_phone = raw_phone
-        if final_phone.startswith("0") and len(final_phone) == 11: final_phone = "20" + final_phone[1:] # Default DB format
 
         if not customer:
             customer = Customer(name=booking.name or "Guest", phone=final_phone, email=booking.email)
@@ -158,19 +216,15 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
             session.commit()
             session.refresh(customer)
         elif booking.name: 
-             # Optional: Update name if provided explicitly in new booking
              pass 
 
-        # Map ticket type
         ticket_type_str = booking.ticket_type.strip().upper()
         ticket_type = TicketType.VIP if ticket_type_str in ("VIP", "في اي بي") else TicketType.STUDENT
         
-        # Pricing
         vip_price = int(os.getenv("VIP_PRICE", 500))
         student_price = int(os.getenv("STUDENT_PRICE", 100))
         price = vip_price if ticket_type == TicketType.VIP else student_price
 
-        # Check for immediate payment proof
         status = TicketStatus.PENDING
         payment_proof = None
         if booking.payment_proof_base64:
@@ -180,7 +234,6 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
                 payment_proof = booking.payment_proof_base64
              status = TicketStatus.PAYMENT_SUBMITTED
 
-        # Create Ticket
         ticket = Ticket(
             code=Ticket.generate_unique_code(session),
             ticket_type=ticket_type,
