@@ -97,6 +97,13 @@ function LiveEngagement() {
         }
     }
 
+    const selectByType = (type) => {
+        const ids = filtered.filter(a => a.ticket_type === type).map(a => a.id)
+        setSelected(new Set(ids))
+    }
+
+    const clearSelection = () => setSelected(new Set())
+
     // Get phones for selected
     const getSelectedPhones = () => {
         return attendees.filter(a => selected.has(a.id)).map(a => a.phone).filter(p => p && p !== '—')
@@ -280,6 +287,39 @@ function LiveEngagement() {
                 />
             </div>
 
+            {/* Quick Select Filters */}
+            <div className="flex items-center gap-3 mb-6">
+                <span className="text-white/40 text-sm">تحديد سريع:</span>
+                <button onClick={toggleAll}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm transition-all ${selected.size === filtered.length && filtered.length > 0
+                            ? 'border-gold-500 bg-gold-500/15 text-gold-400'
+                            : 'border-white/15 text-white/50 hover:border-white/30 hover:text-white/70'
+                        }`}>
+                    <CheckSquare className="w-4 h-4" />
+                    الكل ({filtered.length})
+                </button>
+                <button onClick={() => selectByType('VIP')}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm transition-all ${selected.size > 0 && [...selected].every(id => filtered.find(a => a.id === id)?.ticket_type === 'VIP')
+                            ? 'border-yellow-500 bg-yellow-500/15 text-yellow-400'
+                            : 'border-yellow-500/20 text-yellow-400/60 hover:border-yellow-500/40 hover:text-yellow-400'
+                        }`}>
+                    ⭐ VIP ({filtered.filter(a => a.ticket_type === 'VIP').length})
+                </button>
+                <button onClick={() => selectByType('Student')}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm transition-all ${selected.size > 0 && [...selected].every(id => filtered.find(a => a.id === id)?.ticket_type === 'Student')
+                            ? 'border-blue-500 bg-blue-500/15 text-blue-400'
+                            : 'border-blue-500/20 text-blue-400/60 hover:border-blue-500/40 hover:text-blue-400'
+                        }`}>
+                    🎓 طلاب ({filtered.filter(a => a.ticket_type === 'Student').length})
+                </button>
+                {selected.size > 0 && (
+                    <button onClick={clearSelection}
+                        className="flex items-center gap-1 px-3 py-2 rounded-xl text-sm text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-all">
+                        <X className="w-4 h-4" /> إلغاء التحديد
+                    </button>
+                )}
+            </div>
+
             {/* Bulk Toolbar */}
             {selected.size > 0 && (
                 <div className="card mb-6 flex items-center justify-between" style={{ borderColor: 'rgba(212, 175, 55, 0.5)' }}>
@@ -422,8 +462,8 @@ function LiveEngagement() {
                                         key={tab.key}
                                         onClick={() => { setSendType(tab.key); setSendContent(''); setImagePreview(null); setImageFile(null) }}
                                         className={`flex flex-col items-center gap-1 p-3 rounded-xl border transition-all text-sm ${sendType === tab.key
-                                                ? 'border-gold-500 bg-gold-500/10 text-gold-400'
-                                                : 'border-white/10 text-white/50 hover:border-white/30'
+                                            ? 'border-gold-500 bg-gold-500/10 text-gold-400'
+                                            : 'border-white/10 text-white/50 hover:border-white/30'
                                             }`}
                                     >
                                         <Icon className="w-5 h-5" />

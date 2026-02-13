@@ -42,7 +42,7 @@ async def get_attendees():
     session = get_session()
     try:
         tickets = session.query(Ticket).filter(
-            Ticket.status.in_([TicketStatus.APPROVED, TicketStatus.ACTIVATED, TicketStatus.PAYMENT_SUBMITTED]),
+            Ticket.status == TicketStatus.APPROVED,
             Ticket.is_hidden == False
         ).order_by(Ticket.created_at.desc()).all()
 
