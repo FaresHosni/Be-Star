@@ -14,21 +14,29 @@ function Admins() {
     const navigate = useNavigate()
     const [admins, setAdmins] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         fetchAdmins()
     }, [])
 
     const fetchAdmins = async () => {
+        setLoading(true)
+        setError(null)
         try {
             const token = localStorage.getItem('token')
             const res = await fetch('/api/auth/admins', {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status}`)
+            }
             const data = await res.json()
-            setAdmins(data)
+            setAdmins(Array.isArray(data) ? data : [])
         } catch (error) {
             console.error('Error fetching admins:', error)
+            setError('حدث خطأ في تحميل المسؤولين')
+            setAdmins([])
         } finally {
             setLoading(false)
         }
@@ -77,6 +85,12 @@ function Admins() {
                 <div className="flex items-center justify-center py-20">
                     <Loader2 className="w-10 h-10 text-gold-500 animate-spin" />
                 </div>
+            ) : error ? (
+                <div className="card text-center py-20">
+                    <Shield className="w-16 h-16 text-red-400/30 mx-auto mb-4" />
+                    <p className="text-red-400">{error}</p>
+                    <button onClick={fetchAdmins} className="btn-gold mt-4">إعادة المحاولة</button>
+                </div>
             ) : admins.length === 0 ? (
                 <div className="card text-center py-20">
                     <Shield className="w-16 h-16 text-white/20 mx-auto mb-4" />
@@ -95,7 +109,7 @@ function Admins() {
                             <div className="flex items-start justify-between mb-4">
                                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gold-500 to-gold-400 flex items-center justify-center">
                                     <span className="text-xl font-bold text-dark-500">
-                                        {admin.name.charAt(0)}
+                                        {(admin.name || '?').charAt(0)}
                                     </span>
                                 </div>
                                 <span className={`badge ${admin.role === 'super_admin' ? 'badge-vip' : 'badge-approved'}`}>
