@@ -16,6 +16,7 @@ from routes.auth import router as auth_router
 from routes.distributors import router as distributors_router
 from routes.chat import router as chat_router
 from routes.stats import router as stats_router
+from routes.engagement import router as engagement_router
 
 # Import models to create tables
 from models import init_db
@@ -45,6 +46,7 @@ app.include_router(tickets_router, prefix="/api/tickets", tags=["Tickets"])
 app.include_router(distributors_router, prefix="/api/distributors", tags=["Distributors"])
 app.include_router(chat_router, prefix="/api/chat", tags=["Chat Widget"])
 app.include_router(stats_router, prefix="/api/stats", tags=["Statistics"])
+app.include_router(engagement_router, prefix="/api/engagement", tags=["Live Engagement"])
 
 
 @app.get("/")

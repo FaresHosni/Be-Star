@@ -63,6 +63,9 @@ class Ticket(Base):
     
     distributor_id = Column(Integer, ForeignKey("distributors.id"), nullable=True)
     
+    # Live Engagement: hide attendee from engagement list
+    is_hidden = Column(Boolean, default=False)
+    
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

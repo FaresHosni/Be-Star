@@ -8,6 +8,7 @@ import Admins from './pages/Admins'
 import AddAdmin from './pages/AddAdmin'
 import EditAdmin from './pages/EditAdmin'
 import Login from './pages/Login'
+import LiveEngagement from './pages/LiveEngagement'
 import ChatWidget from './components/ChatWidget'
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
                         <Route path="/admins" element={<Admins />} />
                         <Route path="/admins/add" element={<AddAdmin />} />
                         <Route path="/admins/edit/:id" element={<EditAdmin />} />
+                        <Route path="/engagement" element={<LiveEngagement />} />
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
                 </main>

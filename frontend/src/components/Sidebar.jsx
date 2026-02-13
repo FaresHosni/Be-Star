@@ -6,7 +6,8 @@ import {
     Users,
     LogOut,
     Star,
-    Shield
+    Shield,
+    Radio
 } from 'lucide-react'
 
 function Sidebar({ admin, onLogout }) {
@@ -17,6 +18,7 @@ function Sidebar({ admin, onLogout }) {
         { path: '/tickets', icon: Ticket, label: 'التذاكر' },
         { path: '/distributors', icon: Users, label: 'الموزعين' },
         { path: '/admins', icon: Shield, label: 'المسؤولين' },
+        { path: '/engagement', icon: Radio, label: 'التفاعل المباشر' },
     ]
 
     return (

@@ -91,3 +91,55 @@ class WhatsAppService:
         except Exception as e:
             logger.error(f"Failed to send PDF ticket to {phone}: {str(e)}")
             return None
+
+    async def send_image(self, phone: str, base64_data: str, caption: str = "") -> Optional[dict]:
+        """Send an image via base64 to a phone number"""
+        if not self.api_url or not self.api_key:
+            return None
+
+        # Format phone number
+        if phone.startswith("0") and len(phone) == 11:
+            phone = "20" + phone[1:]
+        elif not phone.startswith("20") and len(phone) == 10:
+             phone = "20" + phone
+
+        endpoint = f"{self.api_url}/message/sendMedia/{self.instance_name}"
+        
+        payload = {
+            "number": phone,
+            "mediatype": "image",
+            "mimetype": "image/jpeg",
+            "caption": caption,
+            "media": base64_data,
+            "fileName": "image.jpg"
+        }
+
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    endpoint, 
+                    json=payload, 
+                    headers=self._get_headers(),
+                    timeout=60.0
+                )
+                logger.info(f"WhatsApp Image Response ({phone}): {response.status_code}")
+                response.raise_for_status()
+                return response.json()
+        except Exception as e:
+            logger.error(f"Failed to send image to {phone}: {str(e)}")
+            return None
+
+    async def send_link(self, phone: str, url: str, title: str = "", description: str = "") -> Optional[dict]:
+        """Send a link message to a phone number"""
+        if not self.api_url or not self.api_key:
+            return None
+
+        # Format phone number
+        if phone.startswith("0") and len(phone) == 11:
+            phone = "20" + phone[1:]
+        elif not phone.startswith("20") and len(phone) == 10:
+             phone = "20" + phone
+
+        # Send as formatted text with link
+        message = f"🔗 *{title}*\n{description}\n\n{url}" if title else url
+        return await self.send_message(phone, message)
