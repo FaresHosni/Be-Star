@@ -147,6 +147,19 @@ def create_db_engine():
 def init_db():
     engine = create_db_engine()
     Base.metadata.create_all(bind=engine)
+    
+    # Auto-migration: Add missing columns to existing tables
+    from sqlalchemy import inspect, text
+    inspector = inspect(engine)
+    
+    # Check if 'is_hidden' column exists in 'tickets' table
+    if 'tickets' in inspector.get_table_names():
+        columns = [col['name'] for col in inspector.get_columns('tickets')]
+        if 'is_hidden' not in columns:
+            with engine.connect() as conn:
+                conn.execute(text("ALTER TABLE tickets ADD COLUMN is_hidden BOOLEAN DEFAULT 0"))
+                conn.commit()
+    
     return engine
 
 
