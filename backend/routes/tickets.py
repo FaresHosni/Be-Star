@@ -121,6 +121,16 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
                 ticket_type = TicketType.VIP if ticket_type_str in ("VIP", "في اي بي") else TicketType.STUDENT
                 price = vip_price if ticket_type == TicketType.VIP else student_price
 
+                # Process payment proof image
+                proof_data = None
+                if booking.payment_proof_base64:
+                    if not booking.payment_proof_base64.startswith("data:image"):
+                        proof_data = f"data:image/jpeg;base64,{booking.payment_proof_base64}"
+                    else:
+                        proof_data = booking.payment_proof_base64
+                elif ticket_item.payment_proof_info:
+                    proof_data = ticket_item.payment_proof_info
+
                 # All 4 fields are required, so status is PAYMENT_SUBMITTED
                 ticket = Ticket(
                     code=Ticket.generate_unique_code(session),
@@ -129,7 +139,7 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
                     customer_id=customer.id,
                     guest_name=ticket_item.name,
                     payment_method="Vodafone Cash",
-                    payment_proof=ticket_item.payment_proof_info,  # AI's description of proof
+                    payment_proof=proof_data,
                     status=TicketStatus.PAYMENT_SUBMITTED
                 )
                 session.add(ticket)

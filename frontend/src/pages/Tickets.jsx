@@ -295,11 +295,17 @@ function Tickets() {
                             {selectedTicket.payment_proof && (
                                 <div className="mt-4">
                                     <p className="text-white/50 mb-2">صورة إثبات الدفع:</p>
-                                    <img
-                                        src={selectedTicket.payment_proof}
-                                        alt="إثبات الدفع"
-                                        className="w-full rounded-lg border border-gold-500/30"
-                                    />
+                                    {selectedTicket.payment_proof.startsWith('data:image') || selectedTicket.payment_proof.startsWith('http') ? (
+                                        <img
+                                            src={selectedTicket.payment_proof}
+                                            alt="إثبات الدفع"
+                                            className="w-full rounded-lg border border-gold-500/30"
+                                        />
+                                    ) : (
+                                        <div className="p-3 rounded-lg bg-white/5 border border-gold-500/20 text-white/70 text-sm">
+                                            📎 {selectedTicket.payment_proof}
+                                        </div>
+                                    )}
                                 </div>
                             )}
 
