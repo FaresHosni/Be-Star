@@ -1,0 +1,335 @@
+{
+    "name": "Quiz Answer Handler",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "quiz-answer-webhook",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2.1,
+            "position": [
+                400,
+                300
+            ],
+            "id": "quiz-webhook-001",
+            "name": "Quiz Answer Webhook",
+            "webhookId": "quiz-answer-webhook-001"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "q-phone-001",
+                            "name": "phone",
+                            "value": "={{ $json.body.data.key.remoteJid.replace('@s.whatsapp.net','') }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "q-text-001",
+                            "name": "answer_text",
+                            "value": "={{ $json.body.data.message.conversation || $json.body.data.message.extendedTextMessage?.text || '' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "q-name-001",
+                            "name": "sender_name",
+                            "value": "={{ $json.body.data.pushName || 'Unknown' }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                620,
+                300
+            ],
+            "id": "quiz-extract-001",
+            "name": "Extract Answer Data"
+        },
+        {
+            "parameters": {
+                "url": "={{ $env.BACKEND_URL || 'http://backend:8000' }}/api/quiz/active-question",
+                "options": {
+                    "timeout": 10000
+                }
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                840,
+                300
+            ],
+            "id": "quiz-check-001",
+            "name": "Check Active Question"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "quiz-if-active-001",
+                            "leftValue": "={{ $json.has_active }}",
+                            "rightValue": true,
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                1060,
+                300
+            ],
+            "id": "quiz-if-001",
+            "name": "Has Active Question?"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "={{ $env.BACKEND_URL || 'http://backend:8000' }}/api/quiz/answer",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"phone\": \"{{ $('Extract Answer Data').item.json.phone }}\",\n  \"answer_text\": \"{{ $('Extract Answer Data').item.json.answer_text }}\",\n  \"sender_name\": \"{{ $('Extract Answer Data').item.json.sender_name }}\"\n}",
+                "options": {
+                    "timeout": 15000
+                }
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                1300,
+                200
+            ],
+            "id": "quiz-submit-001",
+            "name": "Submit Quiz Answer"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "quiz-correct-001",
+                            "leftValue": "={{ $json.is_correct }}",
+                            "rightValue": true,
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                1520,
+                200
+            ],
+            "id": "quiz-result-check-001",
+            "name": "Is Correct?"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "={{ $env.EVOLUTION_API_URL }}/message/sendText/{{ $env.EVOLUTION_INSTANCE_NAME }}",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "apikey",
+                            "value": "={{ $env.EVOLUTION_API_KEY }}"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"number\": \"{{ $('Extract Answer Data').item.json.phone }}\",\n  \"text\": \"✅ إجابة صحيحة! أحسنت 🎉\\n\\n🏆 النقاط: {{ $('Submit Quiz Answer').item.json.points_earned }}\\n📊 نسبة التشابه: {{ $('Submit Quiz Answer').item.json.similarity }}%\"\n}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                1740,
+                100
+            ],
+            "id": "quiz-reply-correct-001",
+            "name": "Reply Correct"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "={{ $env.EVOLUTION_API_URL }}/message/sendText/{{ $env.EVOLUTION_INSTANCE_NAME }}",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "apikey",
+                            "value": "={{ $env.EVOLUTION_API_KEY }}"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"number\": \"{{ $('Extract Answer Data').item.json.phone }}\",\n  \"text\": \"❌ إجابة خاطئة\\n\\n{{ $json.message || 'حاول في السؤال القادم!' }}\"\n}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                1740,
+                300
+            ],
+            "id": "quiz-reply-wrong-001",
+            "name": "Reply Wrong"
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                1300,
+                400
+            ],
+            "id": "quiz-noop-001",
+            "name": "No Active Quiz (Pass Through)"
+        }
+    ],
+    "connections": {
+        "Quiz Answer Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Extract Answer Data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract Answer Data": {
+            "main": [
+                [
+                    {
+                        "node": "Check Active Question",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Check Active Question": {
+            "main": [
+                [
+                    {
+                        "node": "Has Active Question?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Has Active Question?": {
+            "main": [
+                [
+                    {
+                        "node": "Submit Quiz Answer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "No Active Quiz (Pass Through)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Submit Quiz Answer": {
+            "main": [
+                [
+                    {
+                        "node": "Is Correct?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Is Correct?": {
+            "main": [
+                [
+                    {
+                        "node": "Reply Correct",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Reply Wrong",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "meta": {
+        "instanceId": "quiz-scoring-engine"
+    },
+    "tags": [
+        {
+            "name": "quiz",
+            "id": "quiz-tag-001"
+        }
+    ]
+}
