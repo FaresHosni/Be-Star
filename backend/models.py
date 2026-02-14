@@ -4,10 +4,11 @@ Be Star Ticketing System - Database Models
 from datetime import datetime
 import random
 import string
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey, Text, Enum as SQLEnum
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey, Text, Enum as SQLEnum, Float, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import enum
+import json
 
 Base = declarative_base()
 
@@ -128,6 +129,115 @@ class ChatMessage(Base):
     message = Column(Text, nullable=False)
     is_from_customer = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+# ═══════════════════════════════════════════
+# Quiz & Scoring Engine Models
+# ═══════════════════════════════════════════
+
+class QuestionType(str, enum.Enum):
+    MCQ = "mcq"                 # اختيار من متعدد
+    COMPLETION = "completion"   # إكمال (نص حر)
+
+
+class QuestionStatus(str, enum.Enum):
+    DRAFT = "draft"       # مسودة - لسه مترسلتش
+    ACTIVE = "active"     # نشط - اترسل ومستنين إجابات
+    EXPIRED = "expired"   # انتهى الوقت
+
+
+class QuizGroup(Base):
+    """مجموعات مخصصة للمسابقات (غير VIP/Student)"""
+    __tablename__ = "quiz_groups"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    description = Column(String(255), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    members = relationship("QuizGroupMember", back_populates="group", cascade="all, delete-orphan")
+
+
+class QuizGroupMember(Base):
+    """ربط مشارك (ticket) بمجموعة مسابقة"""
+    __tablename__ = "quiz_group_members"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    group_id = Column(Integer, ForeignKey("quiz_groups.id", ondelete="CASCADE"), nullable=False)
+    ticket_id = Column(Integer, ForeignKey("tickets.id", ondelete="CASCADE"), nullable=False)
+    
+    group = relationship("QuizGroup", back_populates="members")
+    ticket = relationship("Ticket")
+
+
+class Question(Base):
+    """سؤال مسابقة"""
+    __tablename__ = "questions"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    text = Column(Text, nullable=False)                     # نص السؤال
+    question_type = Column(SQLEnum(QuestionType), nullable=False)
+    correct_answer = Column(Text, nullable=False)            # الإجابة الصحيحة (للإكمال أو حرف MCQ)
+    points = Column(Integer, default=1)                      # عدد الدرجات
+    time_limit_seconds = Column(Integer, default=60)         # المدة بالثواني
+    status = Column(SQLEnum(QuestionStatus), default=QuestionStatus.DRAFT)
+    
+    # استهداف: JSON array من أنواع المجموعات
+    # مثال: ["VIP", "Student"] أو ["group:5"] أو ["all"]
+    target_groups = Column(Text, default='["all"]')
+    
+    # هل الإجابات بعد الوقت تتحسب؟
+    accept_late = Column(Boolean, default=False)
+    
+    sent_at = Column(DateTime, nullable=True)                # وقت الإرسال
+    expires_at = Column(DateTime, nullable=True)             # وقت الانتهاء
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    options = relationship("QuestionOption", back_populates="question", cascade="all, delete-orphan")
+    answers = relationship("Answer", back_populates="question", cascade="all, delete-orphan")
+    
+    def get_target_groups(self):
+        try:
+            return json.loads(self.target_groups or '["all"]')
+        except:
+            return ["all"]
+    
+    def set_target_groups(self, groups_list):
+        self.target_groups = json.dumps(groups_list, ensure_ascii=False)
+
+
+class QuestionOption(Base):
+    """خيارات السؤال (MCQ فقط)"""
+    __tablename__ = "question_options"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    question_id = Column(Integer, ForeignKey("questions.id", ondelete="CASCADE"), nullable=False)
+    label = Column(String(1), nullable=False)     # A, B, C, D
+    text = Column(Text, nullable=False)            # نص الخيار
+    is_correct = Column(Boolean, default=False)    # هل ده الإجابة الصح؟
+    
+    question = relationship("Question", back_populates="options")
+
+
+class Answer(Base):
+    """إجابة مشارك على سؤال"""
+    __tablename__ = "answers"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    question_id = Column(Integer, ForeignKey("questions.id", ondelete="CASCADE"), nullable=False)
+    ticket_id = Column(Integer, ForeignKey("tickets.id"), nullable=False)
+    phone = Column(String(20), nullable=False)      # رقم المشارك
+    
+    answer_text = Column(Text, nullable=False)       # الإجابة اللي بعتها
+    is_correct = Column(Boolean, default=False)      # صح ولا غلط
+    similarity_score = Column(Float, default=0.0)    # نسبة التشابه (للإكمال)
+    points_earned = Column(Integer, default=0)       # الدرجات المكتسبة
+    is_late = Column(Boolean, default=False)         # هل جاوب بعد الوقت؟
+    
+    answered_at = Column(DateTime, default=datetime.utcnow)
+    
+    question = relationship("Question", back_populates="answers")
+    ticket = relationship("Ticket")
 
 
 # Database setup

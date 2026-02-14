@@ -17,6 +17,7 @@ from routes.distributors import router as distributors_router
 from routes.chat import router as chat_router
 from routes.stats import router as stats_router
 from routes.engagement import router as engagement_router
+from routes.quiz import router as quiz_router
 
 # Import models to create tables
 from models import init_db
@@ -47,6 +48,7 @@ app.include_router(distributors_router, prefix="/api/distributors", tags=["Distr
 app.include_router(chat_router, prefix="/api/chat", tags=["Chat Widget"])
 app.include_router(stats_router, prefix="/api/stats", tags=["Statistics"])
 app.include_router(engagement_router, prefix="/api/engagement", tags=["Live Engagement"])
+app.include_router(quiz_router)  # Quiz router has its own /api/quiz prefix
 
 
 @app.get("/")
