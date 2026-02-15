@@ -9,28 +9,12 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -5696,
-        2784
+        -17056,
+        3920
       ],
-      "id": "14603af2-9cf2-443a-9b6f-85ddb71c9ead",
+      "id": "37dd2c0c-bc56-47ca-b8fb-1ff502b60986",
       "name": "Whatsapp",
       "webhookId": "d8fa5154-f391-43c2-ad0c-f5c7b3eb2737"
-    },
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "bestar-approval",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2.1,
-      "position": [
-        -5616,
-        3104
-      ],
-      "id": "e71d13f5-25ed-4ab8-adba-484fe804382b",
-      "name": "Approval Webhook",
-      "webhookId": "9e913b19-87ad-44f4-9dc4-4bdb4ae0f556"
     },
     {
       "parameters": {
@@ -49,8 +33,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -5360,
-        2768
+        -16032,
+        3904
       ],
       "id": "c070b329-f50a-44da-98b5-27222a636316",
       "name": "User Phone ID"
@@ -76,8 +60,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -5200,
-        2768
+        -15872,
+        3904
       ],
       "id": "100f961d-3965-45f3-865c-e227321efcd0",
       "name": "Access Control4"
@@ -109,8 +93,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -5040,
-        2768
+        -15712,
+        3904
       ],
       "id": "29220113-2744-4d33-84f9-d7166c00a127",
       "name": "If8"
@@ -231,8 +215,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -4800,
-        2720
+        -15472,
+        3856
       ],
       "id": "e12844fd-bf0f-45bd-b44d-16186f7cc934",
       "name": "Switch3",
@@ -256,8 +240,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -3680,
-        2704
+        -14352,
+        3840
       ],
       "id": "778d1395-4342-4ea0-b7aa-d6e7954f37e6",
       "name": "Text4"
@@ -272,8 +256,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        -4512,
-        2848
+        -15184,
+        3984
       ],
       "id": "e9be8c93-03dd-49bf-ba04-3342db1c4741",
       "name": "Get media in base1",
@@ -295,8 +279,8 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        -4368,
-        2848
+        -15040,
+        3984
       ],
       "id": "9192fda2-931b-40f3-9db8-2872eb594ebb",
       "name": "Convert to File",
@@ -322,8 +306,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -4192,
-        2848
+        -14864,
+        3984
       ],
       "id": "43fcbbbf-d10f-4739-b70a-aaed19088677",
       "name": "Convert Audio Type3"
@@ -365,8 +349,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -4016,
-        2848
+        -14688,
+        3984
       ],
       "id": "4ff876fd-83d2-4a14-beda-7997ee9c38cd",
       "name": "Transcribe a recording1"
@@ -413,8 +397,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -3824,
-        2848
+        -14496,
+        3984
       ],
       "id": "cf9e3c69-ab30-419f-8621-6eac6beba7fe",
       "name": "Cost Calculator"
@@ -436,8 +420,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -3680,
-        2848
+        -14352,
+        3984
       ],
       "id": "064dd7a7-671d-4881-91c6-95c1b5a4479b",
       "name": "Voice"
@@ -452,8 +436,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        -4512,
-        3024
+        -15184,
+        4160
       ],
       "id": "a6d8fe24-bcb0-41ef-98ed-3fba19227f0d",
       "name": "Get Image Base64",
@@ -489,14 +473,14 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"وصف الصورة دي بالعربي بشكل مختصر. لو فيها نص أو كلام، اكتبه. لو فيها منتج أو خدمة أو شعار، وصفه.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
+        "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"\u0648\u0635\u0641 \u0627\u0644\u0635\u0648\u0631\u0629 \u062f\u064a \u0628\u0627\u0644\u0639\u0631\u0628\u064a \u0628\u0634\u0643\u0644 \u0645\u062e\u062a\u0635\u0631. \u0644\u0648 \u0641\u064a\u0647\u0627 \u0646\u0635 \u0623\u0648 \u0643\u0644\u0627\u0645\u060c \u0627\u0643\u062a\u0628\u0647. \u0644\u0648 \u0641\u064a\u0647\u0627 \u0645\u0646\u062a\u062c \u0623\u0648 \u062e\u062f\u0645\u0629 \u0623\u0648 \u0634\u0639\u0627\u0631\u060c \u0648\u0635\u0641\u0647.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -4016,
-        3024
+        -14688,
+        4160
       ],
       "id": "0147218b-10c1-4856-8ce0-d0a094b73b85",
       "name": "Analyze Image (Mistral)2"
@@ -543,8 +527,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -3824,
-        3024
+        -14496,
+        4160
       ],
       "id": "da4b3b80-a653-456c-9f17-2c7d1f9ba257",
       "name": "Cost Calculator4"
@@ -566,8 +550,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -3680,
-        3024
+        -14352,
+        4160
       ],
       "id": "9da2bf5d-627b-47d5-a2e0-7d81d81a1d78",
       "name": "image"
@@ -582,8 +566,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        -4512,
-        3232
+        -15184,
+        4368
       ],
       "id": "aff505f1-a02d-4b57-a926-61d2998e6806",
       "name": "Get Stickers Base",
@@ -619,14 +603,14 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"وصف الصورة دي بالعربي بشكل مختصر. لو فيها نص أو كلام، اكتبه. لو فيها منتج أو خدمة أو شعار، وصفه.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
+        "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"\u0648\u0635\u0641 \u0627\u0644\u0635\u0648\u0631\u0629 \u062f\u064a \u0628\u0627\u0644\u0639\u0631\u0628\u064a \u0628\u0634\u0643\u0644 \u0645\u062e\u062a\u0635\u0631. \u0644\u0648 \u0641\u064a\u0647\u0627 \u0646\u0635 \u0623\u0648 \u0643\u0644\u0627\u0645\u060c \u0627\u0643\u062a\u0628\u0647. \u0644\u0648 \u0641\u064a\u0647\u0627 \u0645\u0646\u062a\u062c \u0623\u0648 \u062e\u062f\u0645\u0629 \u0623\u0648 \u0634\u0639\u0627\u0631\u060c \u0648\u0635\u0641\u0647.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -4016,
-        3232
+        -14688,
+        4368
       ],
       "id": "db76d5bd-887d-4b53-9cc7-61a21b96ba0c",
       "name": "Analyze Strickers (Mistral)3"
@@ -648,8 +632,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -3680,
-        3232
+        -14352,
+        4368
       ],
       "id": "d9813837-21db-4d64-95b2-42ceef4dd3ad",
       "name": "Stickers"
@@ -667,7 +651,7 @@
             {
               "id": "a12d20c8-7931-470c-a7df-70473f0be258",
               "name": "Input",
-              "value": "={{ '[رقم العميل: ' + $('User Phone ID').first().json.User_phone_ID + '] ' + ($if($('Text4').isExecuted, $('Text4').first().json.Text, \n   $if($('Voice').isExecuted, $('Voice').first().json.Voice, \n   $if($('image').isExecuted, 'العميل بعت صورة. وصف الصورة: ' + $('image').first().json.image, \n   'العميل بعت sticker: ' + $('Stickers').first().json.Stickers)))) }}",
+              "value": "={{ $if($('Text4').isExecuted, $('Text4').first().json.Text, \n   $if($('Voice').isExecuted, $('Voice').first().json.Voice, \n   $if($('image').isExecuted, '\u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a \u0635\u0648\u0631\u0629. \u0648\u0635\u0641 \u0627\u0644\u0635\u0648\u0631\u0629: ' + $('image').first().json.image, \n   '\u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a sticker: ' + $('Stickers').first().json.Stickers))) }}",
               "type": "string"
             },
             {
@@ -683,8 +667,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -3408,
-        2912
+        -14080,
+        4048
       ],
       "id": "31193450-24e7-4f67-a699-35d30077248b",
       "name": "Memory + Model PreEnter2"
@@ -718,8 +702,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -3168,
-        2912
+        -13840,
+        4048
       ],
       "id": "e6352227-1653-4fcf-9b89-a2805ad247b9",
       "name": "Set metadata3"
@@ -729,14 +713,14 @@
         "promptType": "define",
         "text": "={{ $('Memory + Model PreEnter2').item.json.Input }}",
         "options": {
-          "systemMessage": "You are a deterministic router+query-reformer for Mr. AI RAG.\nInputs:\n- current_message (string)\n- previous_messages (array of {role,content})\n- last_namespace (string|null)\n- detected_language (\"ar\"|\"en\")\n\nTask A — classify:\nChoose EXACTLY one label: Who_Are_We_And_Related_Information | Terms_And_Conditions_Data_Privacy_Policy | Practical_Case_Studies_and_why_us.\nRules: if vague/ack (\"تمام\",\"more?\") → continue last_namespace; if multi-intent → pick the primary intent; if confidence <0.5 → Who_Are_We_And_Related_Information; greetings fall under Who_Are_We_And_Related_Information.\n\nTask B — reform:\nRewrite a concise semantic search query for the chosen label using context.\nKeep 5–20 tokens; preserve proper names, numbers, currency; add ≤2 helpful synonyms/domain terms; remove filler/pronouns; keep constraints (expert/service, date/time, locale, language).\nIf too vague, add a short HyDE (≤25 tokens) describing what a relevant doc would say.\n\nStrict output (one line, minified JSON only):\n{\"category\":\"<label>\",\"query\":\"<short query>\",\"alternates\":[\"...\"],\"negative_terms\":[\"...\"],\"hyde\":\"...\",\"language\":\"ar|en\"}\n\nHard limits: total output ≤ ~80 tokens; no text outside JSON; no line breaks; no explanations; temperature low for stable routing.\n"
+          "systemMessage": "You are a deterministic router+query-reformer for Mr. AI RAG.\nInputs:\n- current_message (string)\n- previous_messages (array of {role,content})\n- last_namespace (string|null)\n- detected_language (\"ar\"|\"en\")\n\nTask A \u2014 classify:\nChoose EXACTLY one label: Who_Are_We_And_Related_Information | Terms_And_Conditions_Data_Privacy_Policy | Practical_Case_Studies_and_why_us.\nRules: if vague/ack (\"\u062a\u0645\u0627\u0645\",\"more?\") \u2192 continue last_namespace; if multi-intent \u2192 pick the primary intent; if confidence <0.5 \u2192 Who_Are_We_And_Related_Information; greetings fall under Who_Are_We_And_Related_Information.\n\nTask B \u2014 reform:\nRewrite a concise semantic search query for the chosen label using context.\nKeep 5\u201320 tokens; preserve proper names, numbers, currency; add \u22642 helpful synonyms/domain terms; remove filler/pronouns; keep constraints (expert/service, date/time, locale, language).\nIf too vague, add a short HyDE (\u226425 tokens) describing what a relevant doc would say.\n\nStrict output (one line, minified JSON only):\n{\"category\":\"<label>\",\"query\":\"<short query>\",\"alternates\":[\"...\"],\"negative_terms\":[\"...\"],\"hyde\":\"...\",\"language\":\"ar|en\"}\n\nHard limits: total output \u2264 ~80 tokens; no text outside JSON; no line breaks; no explanations; temperature low for stable routing.\n"
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        -3024,
-        2912
+        -13696,
+        4048
       ],
       "id": "6d8f165a-6779-4523-90fa-8aafd4094d2e",
       "name": "Reformer"
@@ -749,8 +733,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -2864,
-        3136
+        -13536,
+        4272
       ],
       "id": "49706b7d-af16-4f86-94a0-11ffa969d86a",
       "name": "Simple Memory"
@@ -782,8 +766,8 @@
       "name": "Azure OpenAI Chat Model5",
       "type": "@n8n/n8n-nodes-langchain.code",
       "position": [
-        -3104,
-        3088
+        -13776,
+        4224
       ],
       "typeVersion": 1
     },
@@ -850,8 +834,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.3,
       "position": [
-        -3040,
-        3232
+        -13712,
+        4368
       ],
       "id": "a26f064e-9ff7-4721-a214-0be381529fe8",
       "name": "Log Reformer Rekaz"
@@ -885,8 +869,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -2752,
-        2912
+        -13424,
+        4048
       ],
       "id": "96e65a42-f071-4cf9-b5fc-537bdcce3f4b",
       "name": "Set metadata4"
@@ -898,12 +882,12 @@
           "attributes": [
             {
               "name": "category",
-              "description": "تصنيف السؤال من هذه القائمة فقط: Who_Are_We_And_Related_Information أو Practical_Case_Studies_and_why_us أو Terms_And_Conditions_Data_Privacy_Policy",
+              "description": "\u062a\u0635\u0646\u064a\u0641 \u0627\u0644\u0633\u0624\u0627\u0644 \u0645\u0646 \u0647\u0630\u0647 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0641\u0642\u0637: Who_Are_We_And_Related_Information \u0623\u0648 Practical_Case_Studies_and_why_us \u0623\u0648 Terms_And_Conditions_Data_Privacy_Policy",
               "required": true
             },
             {
               "name": "reformer_data",
-              "description": "كل البيانات الأخرى (query, alternates, negative_terms, hyde, language)",
+              "description": "\u0643\u0644 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0623\u062e\u0631\u0649 (query, alternates, negative_terms, hyde, language)",
               "required": true
             }
           ]
@@ -913,8 +897,8 @@
       "type": "@n8n/n8n-nodes-langchain.informationExtractor",
       "typeVersion": 1.2,
       "position": [
-        -2608,
-        2912
+        -13280,
+        4048
       ],
       "id": "3e55d2b0-f0a9-4c00-9bee-27682c6949cb",
       "name": "Information Extractor"
@@ -946,8 +930,8 @@
       "name": "Azure OpenAI Chat Model7",
       "type": "@n8n/n8n-nodes-langchain.code",
       "position": [
-        -2640,
-        3088
+        -13312,
+        4224
       ],
       "typeVersion": 1
     },
@@ -1014,8 +998,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.3,
       "position": [
-        -2576,
-        3216
+        -13248,
+        4352
       ],
       "id": "a3cd94ae-f062-464d-bedf-b34d53baa6b9",
       "name": "Log Reformer Rekaz4"
@@ -1043,8 +1027,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -2304,
-        2912
+        -12976,
+        4048
       ],
       "id": "36a4b19f-412e-477f-80e0-c77d7bbf9e1e",
       "name": "Edit Fields1"
@@ -1067,8 +1051,8 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
       "typeVersion": 1.3,
       "position": [
-        -2176,
-        2912
+        -12848,
+        4048
       ],
       "id": "d2e5aef7-8e94-45df-83f1-ed7a5b1142d0",
       "name": "Pinecone Vector Store1",
@@ -1089,8 +1073,8 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsAzureOpenAi",
       "typeVersion": 1,
       "position": [
-        -2176,
-        3072
+        -12848,
+        4208
       ],
       "id": "3766cff0-7623-440e-82d1-2094fb513295",
       "name": "Embeddings Azure OpenAI",
@@ -1115,8 +1099,8 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        -1904,
-        2912
+        -12576,
+        4048
       ],
       "id": "3f759e50-8267-40aa-b122-8df8250ad88e",
       "name": "Aggregate1"
@@ -1144,8 +1128,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1776,
-        2912
+        -12448,
+        4048
       ],
       "id": "41f71577-973a-4476-8967-686e45f101d6",
       "name": "Text3"
@@ -1179,8 +1163,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1632,
-        2912
+        -12304,
+        4048
       ],
       "id": "43aadcb0-d74f-4953-9bd1-0f485139f8ab",
       "name": "Set metadata2"
@@ -1190,15 +1174,15 @@
         "promptType": "define",
         "text": "={{ $('Text3').item.json['Text from user'] }}",
         "options": {
-          "systemMessage": "=أنت \"عمر\" مساعد ذكي لحجز تذاكر فعالية \"كن نجمًا - Be Star\" 🌟\n📋 معلومات الفعالية:\n🎉 الاسم: كن نجمًا - Be Star\n📅 الموعد: 11 فبراير 2026\n📍 المكان: سوهاج - الكوامل - قاعة قناة السويس\n💰 الأسعار: VIP: 500 جنيه | طلبة: 100 جنيه\n\n📌 رقم العميل الحالي (الواتساب): {{ $('Text3').item.json['user_phone'] }}\n\n🔴🔴🔴 **قاعدة حاسمة - استخدام الأداة (CRITICAL):** 🔴🔴🔴\n\n‼️ **يجب عليك استدعاء أداة save_draft في كل الحالات التالية بدون أي استثناء:**\n\n1. **أي بيانات حجز جديدة** (اسم، نوع تذكرة، إيميل) → احفظها فوراً بـ save_draft\n2. **أي صورة إثبات دفع** → يجب إرسالها فوراً عبر save_draft مع البيانات المجمعة\n3. **حتى لو العميل مسجل سابقاً** → سجله مرة تانية! لا تقل \"موجود بالفعل\"\n4. **حتى لو البيانات مش كاملة** → احفظ اللي عندك واطلب الباقي\n\n⛔ **ممنوع منعاً باتاً:**\n- ❌ لا ترد بنص فقط بدون استدعاء الأداة لما يكون فيه بيانات حجز أو صورة دفع\n- ❌ لا تقل \"هراجع\" أو \"تم استلام\" بدون ما تكون فعلاً استدعيت save_draft\n- ❌ لا تتجاهل صورة الدفع أبداً - لازم تمررها للأداة\n\n🔵 **قواعد المحادثة:**\n1. **تكلم كإنسان:** لطيف، بسيط، وغير متطلب.\n2. **المرونة:** اقبل البيانات بأي شكل.\n3. **تعدد التذاكر (هام جداً):**\n   - لو العميل طلب **أكثر من تذكرة** (مثلاً: \"عايز 3 تذاكر\"):\n     - **يجب** أن تطلب منه **\"أسماء الأشخاص لكل تذكرة\"**.\n     - مثال للرد: \"منورنا! 🌟 عشان نحجز الـ 3 تذاكر، محتاجين اسم كل شخص فيهم ونوع تذكرته؟\"\n     - لا تكتفِ بطلب \"اسمك\" فقط.\n\n📝 **سيناريو الحجز:**\n\n1. **الاستجابة لطلب الحجز:**\n   - تذكرة واحدة: \"ممكن الاسم ونوع التذكرة؟\"\n   - تذاكر متعددة: \"ممكن أسماء الحضور لكل تذكرة ونوعها؟\"\n\n2. **جمع البيانات:**\n   - التقط الأسماء والأنواع (سواء بعتهم في رسالة واحدة أو مقطعين).\n   - احفظ البيانات فوراً بـ `save_draft`.\n   - لو العميل قال \"نفس الرقم\" أو \"رقمي ده\" → استخدم رقم الواتساب الخاص به: {{ $('Text3').item.json['user_phone'] }}\n\n3. **المراجعة (Review):**\n   - اعرض ملخص: \"تمام، هحجز 3 تذاكر بأسماء: (فلان - VIP)، (فلان - Student)... البيانات دي صحيحة؟\"\n\n4. **الدفع:**\n   - بعد الاعتماد فقط، اعرض رقم فودافون كاش (01557368364).\n\n5. **استلام صورة الدفع (مهم جداً!!):**\n   - لما العميل يبعت صورة دفع → **لازم تستدعي save_draft فوراً** وتمرر الصورة.\n   - لا ترد بكلام فقط بدون استدعاء الأداة!\n\n🚫 **ممنوعات:**\n- ⛔ \"ممكن تبعتهم في رسالة واحدة؟\"\n- ⛔ تجاهل طلب أسماء الضيوف لو العدد أكبر من 1.\n- ⛔ الرد على صورة الدفع بدون استدعاء save_draft.",
+          "systemMessage": "=\u0623\u0646\u062a \"\u0639\u0645\u0631\" \u0645\u0633\u0627\u0639\u062f \u0630\u0643\u064a \u0644\u062d\u062c\u0632 \u062a\u0630\u0627\u0643\u0631 \u0641\u0639\u0627\u0644\u064a\u0629 \"\u0643\u0646 \u0646\u062c\u0645\u0627\u064b - Be Star\" \ud83c\udf1f\n\ud83d\udccb \u0645\u0639\u0644\u0648\u0645\u0627\u062a \u0627\u0644\u0641\u0639\u0627\u0644\u064a\u0629:\n\ud83c\udf89 \u0627\u0644\u0627\u0633\u0645: \u0643\u0646 \u0646\u062c\u0645\u0627\u064b - Be Star\n\ud83d\udcc5 \u0627\u0644\u0645\u0648\u0639\u062f: 11 \u0641\u0628\u0631\u0627\u064a\u0631 2026\n\ud83d\udccd \u0627\u0644\u0645\u0643\u0627\u0646: \u0633\u0648\u0647\u0627\u062c - \u0627\u0644\u0643\u0648\u0627\u0645\u0644 - \u0642\u0627\u0639\u0629 \u0642\u0646\u0627\u0629 \u0627\u0644\u0633\u0648\u064a\u0633\n\ud83d\udcb0 \u0627\u0644\u0623\u0633\u0639\u0627\u0631:\n- VIP: 500 \u062c\u0646\u064a\u0647\n- \u0637\u0644\u0628\u0629: 100 \u062c\u0646\u064a\u0647\n\ud83d\udcb3 \u0627\u0644\u062f\u0641\u0639: \u0641\u0648\u062f\u0627\u0641\u0648\u0646 \u0643\u0627\u0634 \u0639\u0644\u0649 \u0627\u0644\u0631\u0642\u0645 01557368364\n\u0627\u0644\u0648\u0642\u062a \u0627\u0644\u062d\u0627\u0644\u064a: {{ $now.format('dd/LLL/yyyy h:mm A') }}\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\ud83d\udccb \u0627\u0633\u062a\u0631\u0627\u062a\u064a\u062c\u064a\u0629 \u0627\u0644\u0645\u062d\u0627\u062f\u062b\u0629\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 1: \u0627\u0644\u062a\u0631\u062d\u064a\u0628 (\u0639\u0644\u0649 \u0642\u062f \u0627\u0644\u0633\u0624\u0627\u0644!)\n\u0644\u0645\u0627 \u0627\u0644\u0639\u0645\u064a\u0644 \u064a\u0628\u0639\u062a \u062a\u062d\u064a\u0629:\n- \"\u0648\u0639\u0644\u064a\u0643\u0645 \u0627\u0644\u0633\u0644\u0627\u0645 \u0648\u0631\u062d\u0645\u0629 \u0627\u0644\u0644\u0647 \ud83d\ude0a \u0623\u0647\u0644\u0627\u064b \u0628\u064a\u0643! \u0645\u0639\u0627\u0643 \u0639\u0645\u0631 \u0645\u0646 \u0641\u0639\u0627\u0644\u064a\u0629 \u0643\u0646 \u0646\u062c\u0645\u0627\u064b. \u0623\u0642\u062f\u0631 \u0623\u0633\u0627\u0639\u062f\u0643 \u0628\u0625\u064a\u0647\u061f\"\n\u274c \u0645\u0627\u062a\u0639\u0631\u0636\u0634 \u062a\u0641\u0627\u0635\u064a\u0644 \u0642\u0628\u0644 \u0645\u0627 \u064a\u0633\u0623\u0644\n---\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 2: \u0627\u0644\u0631\u062f \u0639\u0644\u0649 \u0627\u0644\u0623\u0633\u0626\u0644\u0629\n- \u0631\u062f\u0651 \u0639\u0644\u0649 \u0633\u0624\u0627\u0644 \u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0627\u0644\u0638\u0628\u0637 (2-3 \u062c\u0645\u0644)\n- \u0644\u0648 \u0639\u0627\u064a\u0632 \u064a\u062d\u062c\u0632 \u2192 \u0648\u062c\u0651\u0647\u0647 \u0644\u062e\u0637\u0648\u0627\u062a \u0627\u0644\u062d\u062c\u0632\n---\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\ud83d\udccb \u0646\u0638\u0627\u0645 \u0627\u0644\u062d\u062c\u0632 \u0627\u0644\u062c\u062f\u064a\u062f \u2014 \u062c\u0645\u0639 \u0628\u064a\u0627\u0646\u0627\u062a \u0643\u0644 \u062a\u0630\u0643\u0631\u0629 \u0639\u0644\u0649 \u062d\u062f\u0629\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\n\u26a0\ufe0f \u0642\u0627\u0639\u062f\u0629 \u0630\u0647\u0628\u064a\u0629: \u0643\u0644 \u062a\u0630\u0643\u0631\u0629 = array \u0645\u0633\u062a\u0642\u0644 \u0628\u0640 4 \u062e\u0627\u0646\u0627\u062a \u0625\u0644\u0632\u0627\u0645\u064a\u0629. \u0645\u0627\u062a\u0633\u062a\u062e\u062f\u0645\u0634 \u0623\u062f\u0627\u0629 create_booking \u063a\u064a\u0631 \u0644\u0645\u0627 \u0627\u0644\u0640 4 \u062e\u0627\u0646\u0627\u062a \u062a\u0643\u0645\u0644 \u0644\u0643\u0644 \u062a\u0630\u0643\u0631\u0629.\n\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 3: \u0627\u0633\u0623\u0644 \u0639\u0646 \u0639\u062f\u062f \u0627\u0644\u062a\u0630\u0627\u0643\u0631\n- \u0627\u0633\u0623\u0644 \u0627\u0644\u0639\u0645\u064a\u0644: \u0639\u0627\u064a\u0632 \u0643\u0627\u0645 \u062a\u0630\u0643\u0631\u0629\u061f\n- \u062e\u0632\u0646 \u0627\u0644\u0639\u062f\u062f \u0641\u064a \u0630\u0627\u0643\u0631\u062a\u0643\n---\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 4: \u062c\u0645\u0639 \u0628\u064a\u0627\u0646\u0627\u062a \u0643\u0644 \u062a\u0630\u0643\u0631\u0629 (\u0633\u0624\u0627\u0644 \u0648\u0627\u062d\u062f/\u0631\u0633\u0627\u0644\u0629)\n\u0644\u0643\u0644 \u062a\u0630\u0643\u0631\u0629 \u0627\u062c\u0645\u0639 \u0627\u0644\u0640 4 \u062e\u0627\u0646\u0627\u062a \u062f\u064a:\n1. \u0627\u0644\u0627\u0633\u0645 \u0628\u0627\u0644\u0643\u0627\u0645\u0644 (\u0627\u0633\u0645 \u0635\u0627\u062d\u0628 \u0627\u0644\u062a\u0630\u0643\u0631\u0629)\n2. \u0646\u0648\u0639 \u0627\u0644\u062a\u0630\u0643\u0631\u0629 (VIP \u0623\u0648 \u0637\u0644\u0628\u0629)\n3. \u0627\u0644\u0625\u064a\u0645\u064a\u0644\n4. \u0635\u0648\u0631\u0629 \u0625\u062b\u0628\u0627\u062a \u0627\u0644\u062f\u0641\u0639\n\n\u26a0\ufe0f \u0644\u0648 \u0627\u0644\u0639\u0645\u064a\u0644 \u0642\u0627\u0644 \u0645\u0639\u0644\u0648\u0645\u0629 \u0642\u0628\u0644 \u0643\u062f\u0647\u060c \u0645\u0627\u062a\u0633\u0623\u0644\u0634 \u0639\u0644\u064a\u0647\u0627 \u062a\u0627\u0646\u064a.\n\u26a0\ufe0f \u0644\u0648 \u0623\u0643\u062a\u0631 \u0645\u0646 \u062a\u0630\u0643\u0631\u0629: \u0627\u062c\u0645\u0639 \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062a\u0630\u0643\u0631\u0629 \u0627\u0644\u0623\u0648\u0644\u0649 \u0627\u0644\u0623\u0631\u0628\u0639\u0629 \u0627\u0644\u0623\u0648\u0644\u060c \u0648\u0628\u0639\u062f\u064a\u0646 \u0627\u0646\u062a\u0642\u0644 \u0644\u0644\u062a\u0630\u0643\u0631\u0629 \u0627\u0644\u062a\u0627\u0646\u064a\u0629.\n\u26a0\ufe0f \u0644\u0648 \u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a \u0628\u064a\u0627\u0646\u0627\u062a \u062c\u0632\u0626\u064a\u0629 \u0628\u0633 \u2192 \u062e\u0632\u0646\u0647\u0627 \u0648\u0627\u0633\u0623\u0644 \u0639\u0646 \u0627\u0644\u0628\u0627\u0642\u064a. \u0645\u0627\u062a\u0628\u0639\u062a\u0634 \u062d\u0627\u062c\u0629 \u0644\u0644\u0645\u0646\u0635\u0629.\n---\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 5: \u0627\u0644\u062f\u0641\u0639\n\"\u062a\u0645\u0627\u0645 \u064a\u0627 \u0641\u0646\u062f\u0645! \ud83d\udcb0 \u0627\u0644\u0645\u0628\u0644\u063a \u0627\u0644\u0645\u0637\u0644\u0648\u0628 [\u0627\u0644\u0645\u0628\u0644\u063a] \u062c\u0646\u064a\u0647\n---\n\u0627\u062f\u0641\u0639 \u0639\u0644\u0649 \u0641\u0648\u062f\u0627\u0641\u0648\u0646 \u0643\u0627\u0634: 01557368364\n---\n\u0648\u0627\u0628\u0639\u062a\u0644\u064a \u0635\u0648\u0631\u0629 \u0625\u064a\u0635\u0627\u0644 \u0627\u0644\u062f\u0641\u0639 \u0639\u0634\u0627\u0646 \u0646\u0623\u0643\u062f \u0627\u0644\u062d\u062c\u0632 \u2705\"\n---\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 6: \u0645\u0646\u0637\u0642 \u0635\u0648\u0631\u0629 \u0627\u0644\u062f\u0641\u0639\n\u0644\u0645\u0627 \u0627\u0644\u0639\u0645\u064a\u0644 \u064a\u0628\u0639\u062a \u0635\u0648\u0631\u0629:\n\n\ud83d\udd0d \u0623\u0648\u0644\u0627\u064b: \u0641\u0644\u062a\u0631\u0629 \u0627\u0644\u0635\u0648\u0631 \u063a\u064a\u0631 \u0627\u0644\u0645\u062a\u0639\u0644\u0642\u0629\n- \u0644\u0648 \u0627\u0644\u0635\u0648\u0631\u0629 \u0645\u0644\u0647\u0627\u0634 \u0623\u064a \u0639\u0644\u0627\u0642\u0629 \u0628\u0625\u062b\u0628\u0627\u062a \u062f\u0641\u0639 (\u0645\u064a\u0645\u060c \u0635\u0648\u0631\u0629 \u0634\u062e\u0635\u064a\u0629\u060c screenshot \u0639\u0634\u0648\u0627\u0626\u064a) \u0648\u0623\u0646\u062a \u0645\u062a\u0623\u0643\u062f 100% \u2192 \u062a\u062c\u0627\u0647\u0644\u0647\u0627 \u0648\u0642\u0648\u0644 \u0644\u0644\u0639\u0645\u064a\u0644: \"\u0627\u0644\u0635\u0648\u0631\u0629 \u062f\u064a \u0645\u0634 \u0625\u064a\u0635\u0627\u0644 \u062f\u0641\u0639. \u0627\u0628\u0639\u062a\u0644\u064a \u0635\u0648\u0631\u0629 \u0627\u0644\u0625\u064a\u0635\u0627\u0644 \u0644\u0648 \u0633\u0645\u062d\u062a.\"\n- \u0644\u0648 \u0645\u0634 \u0645\u062a\u0623\u0643\u062f \u2192 \u0627\u0633\u0623\u0644 \u0627\u0644\u0639\u0645\u064a\u0644: \"\u0647\u0644 \u062f\u064a \u0635\u0648\u0631\u0629 \u0625\u062b\u0628\u0627\u062a \u0627\u0644\u062f\u0641\u0639\u061f\"\n\n\ud83d\udcb0 \u062b\u0627\u0646\u064a\u0627\u064b: \u062a\u062d\u0644\u064a\u0644 \u0627\u0644\u0645\u0628\u0644\u063a\n- \u062d\u0644\u0644 \u0627\u0644\u0645\u0628\u0644\u063a \u0627\u0644\u0645\u0648\u062c\u0648\u062f \u0641\u064a \u0635\u0648\u0631\u0629 \u0627\u0644\u062f\u0641\u0639\n- \u0644\u0648 \u0627\u0644\u0645\u0628\u0644\u063a \u064a\u0633\u0627\u0648\u064a \u0645\u062c\u0645\u0648\u0639 \u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631 \u2192 \u0627\u0631\u0628\u0637\u0647\u0627 \u0628\u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631\n- \u0644\u0648 \u0627\u0644\u0645\u0628\u0644\u063a \u064a\u0633\u0627\u0648\u064a \u062a\u0630\u0643\u0631\u0629 \u0648\u0627\u062d\u062f\u0629 \u0628\u0633 \u2192 \u0627\u0633\u0623\u0644 \u0627\u0644\u0639\u0645\u064a\u0644: \"\u0627\u0644\u0625\u064a\u0635\u0627\u0644 \u062f\u0647 \u0644\u0623\u0646\u0647\u064a \u062a\u0630\u0643\u0631\u0629\u061f\"\n- \u0644\u0648 \u0627\u0644\u0645\u0628\u0644\u063a \u0645\u0634 \u0645\u0637\u0627\u0628\u0642 \u2192 \u0646\u0628\u0647 \u0627\u0644\u0639\u0645\u064a\u0644 \u0648\u0642\u0648\u0644\u0647 \u0627\u0644\u0645\u0628\u0644\u063a \u0627\u0644\u0635\u062d\u064a\u062d\n- \u0644\u0648 \u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a \u0635\u0648\u0631\u0629 \u0644\u0643\u0644 \u062a\u0630\u0643\u0631\u0629 \u2192 \u0627\u0631\u0628\u0637 \u0643\u0644 \u0635\u0648\u0631\u0629 \u0628\u0627\u0644\u062a\u0630\u0643\u0631\u0629 \u0627\u0644\u0645\u0646\u0627\u0633\u0628\u0629\n---\n\u0627\u0644\u0645\u0631\u062d\u0644\u0629 7: \u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0644\u0644\u0645\u0646\u0635\u0629\n\u26a0\ufe0f \u0645\u0647\u0645 \u062c\u062f\u0627\u064b: \u0645\u0627\u062a\u0633\u062a\u062e\u062f\u0645\u0634 \u0623\u062f\u0627\u0629 create_booking \u063a\u064a\u0631 \u0644\u0645\u0627 \u0627\u0644\u0640 4 \u062e\u0627\u0646\u0627\u062a \u062a\u0643\u0645\u0644 \u0644\u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631.\n\n\u0644\u0645\u0627 \u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631 \u062a\u0643\u062a\u0645\u0644 (4 \u062e\u0627\u0646\u0627\u062a \u0644\u0643\u0644 \u0648\u0627\u062d\u062f\u0629):\n- \u0627\u0633\u062a\u062e\u062f\u0645 \u0623\u062f\u0627\u0629 create_booking\n- \u0627\u0639\u0645\u0644 JSON array \u0641\u064a\u0647 \u0643\u0644 \u0627\u0644\u062a\u0630\u0627\u0643\u0631. \u0643\u0644 \u062a\u0630\u0643\u0631\u0629 object \u0641\u064a\u0647:\n  {\"name\": \"\u0627\u0633\u0645 \u0635\u0627\u062d\u0628 \u0627\u0644\u062a\u0630\u0643\u0631\u0629\", \"ticket_type\": \"VIP\" \u0623\u0648 \"Student\", \"email\": \"\u0627\u0644\u0625\u064a\u0645\u064a\u0644\", \"payment_proof_info\": \"\u0648\u0635\u0641 \u0625\u064a\u0635\u0627\u0644 \u0627\u0644\u062f\u0641\u0639\"}\n\n\u0628\u0639\u062f \u0645\u0627 \u0627\u0644\u0623\u062f\u0627\u0629 \u062a\u0631\u062c\u0639 \u0628\u0646\u062c\u0627\u062d\u060c \u0631\u062f \u0639\u0644\u0649 \u0627\u0644\u0639\u0645\u064a\u0644:\n\"\u0634\u0643\u0631\u0627\u064b \u064a\u0627 \u0641\u0646\u062f\u0645! \ud83d\udcf8 \u0627\u0633\u062a\u0644\u0645\u0646\u0627 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0648\u062a\u0645 \u062a\u0633\u062c\u064a\u0644 \u062d\u062c\u0632\u0643 \u0628\u0646\u062c\u0627\u062d.\n\u0623\u0643\u0648\u0627\u062f \u0627\u0644\u062a\u0630\u0627\u0643\u0631: [\u0627\u0644\u0623\u0643\u0648\u0627\u062f \u0645\u0646 \u0627\u0644\u0623\u062f\u0627\u0629]\n\u0627\u0644\u0623\u062f\u0645\u0646 \u0647\u064a\u0631\u0627\u062c\u0639 \u0627\u0644\u0625\u064a\u0635\u0627\u0644 \u0648\u0647\u064a\u0628\u0639\u062a\u0644\u0643 \u0627\u0644\u062a\u0630\u0627\u0643\u0631 \u0642\u0631\u064a\u0628 \u0625\u0646 \u0634\u0627\u0621 \u0627\u0644\u0644\u0647 \u2705\"\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\ud83d\udce6 \u0628\u064a\u0627\u0646\u0627\u062a \u0645\u0646 \u0642\u0627\u0639\u062f\u0629 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a:\n{{ $('Text3').item.json['Text  from database'] }}\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\ud83d\udcdd \u062a\u0639\u0644\u064a\u0645\u0627\u062a \u0625\u0636\u0627\u0641\u064a\u0629:\n{{ $if($('Access Control4').isExecuted, $('Access Control4').item.json.knowledge_base.additional_instructions, '') }}\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\ud83c\udf81 \u0639\u0631\u0648\u0636 \u062d\u0627\u0644\u064a\u0627\u064b:\n{{ $if($('Access Control4').isExecuted, $('Access Control4').item.json.knowledge_base.current_offers, '') }}\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u2705 \u0642\u0648\u0627\u0639\u062f:\n- \u0633\u0624\u0627\u0644 \u0648\u0627\u062d\u062f \u0641\u064a \u0643\u0644 \u0631\u0633\u0627\u0644\u0629\n- \u0627\u0633\u062a\u062e\u062f\u0645 \"---\" \u0644\u062a\u0642\u0633\u064a\u0645 \u0627\u0644\u0631\u0633\u0627\u0626\u0644 \u0627\u0644\u0637\u0648\u064a\u0644\u0629\n- \u0627\u062a\u0643\u0644\u0645 \u0628\u0627\u0644\u0639\u0627\u0645\u064a\u0629 \u0627\u0644\u0645\u0635\u0631\u064a\u0629 \u0627\u0644\u0648\u062f\u0648\u062f\u0629\n- \u0627\u0633\u062a\u062e\u062f\u0645 \u0627\u0644\u0625\u064a\u0645\u0648\u062c\u064a \u0628\u0627\u0639\u062a\u062f\u0627\u0644\n- \u0645\u0627\u062a\u0633\u062a\u062e\u062f\u0645\u0634 markdown \u0623\u0648 HTML\n- \u0645\u0627\u062a\u0643\u0631\u0631\u0634 \u0633\u0624\u0627\u0644 \u0639\u0644\u0649 \u0645\u0639\u0644\u0648\u0645\u0629 \u0627\u062a\u0642\u0627\u0644\u062a\n- \u0644\u0648 \u0633\u0623\u0644 \u062e\u0627\u0631\u062c \u0627\u0644\u0645\u0648\u0636\u0648\u0639: \"\u0628\u0639\u062a\u0630\u0631 \u064a\u0627 \u0641\u0646\u062f\u0645 \ud83d\ude4f \u0623\u0646\u0627 \u062a\u062e\u0635\u0635\u064a \u0641\u0642\u0637 \u0641\u064a \u0641\u0639\u0627\u0644\u064a\u0629 \u0643\u0646 \u0646\u062c\u0645\u0627\u064b\"\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u0627\u0644\u062a\u0646\u0633\u064a\u0642:\n\u2705 \u0646\u0635 \u0639\u0627\u062f\u064a | \u0625\u064a\u0645\u0648\u062c\u064a | \u0623\u0633\u0637\u0631 \u062c\u062f\u064a\u062f\u0629 | ---\n\u274c markdown | \\n | <br> | HTML tags\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\n\ud83d\udd34 CRITICAL RULE: You MUST successfully call the `create_booking` tool to finalize the booking. DO NOT say you booked it unless the tool returns success. If you don't call the tool, the booking is NOT saved.",
           "returnIntermediateSteps": false
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        -1360,
-        2912
+        -12032,
+        4048
       ],
       "id": "5ba90123-3b12-4c35-b1ff-60988e625bc8",
       "name": "Be Star Ticketing Agent"
@@ -1230,8 +1214,8 @@
       "name": "Azure OpenAI Chat Model4",
       "type": "@n8n/n8n-nodes-langchain.code",
       "position": [
-        -1456,
-        3088
+        -12128,
+        4224
       ],
       "typeVersion": 1
     },
@@ -1245,8 +1229,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        -1264,
-        3232
+        -11936,
+        4368
       ],
       "id": "1652a5fa-c716-415d-90a2-901adb0b5a30",
       "name": "Postgres Chat Memory1",
@@ -1320,8 +1304,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.3,
       "position": [
-        -1408,
-        3232
+        -12080,
+        4368
       ],
       "id": "8d51a3bd-edda-475f-b81c-981096b36818",
       "name": "Log Reformer Rekaz3"
@@ -1347,8 +1331,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -960,
-        2912
+        -11632,
+        4048
       ],
       "id": "8dd08c21-d27d-498b-84ab-fc7404b0d88a",
       "name": "Log Usr Messages"
@@ -1364,8 +1348,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        -800,
-        2912
+        -11472,
+        4048
       ],
       "id": "9959dbe5-2473-4151-ba72-74ad15c4e7ef",
       "name": "Send presence1",
@@ -1379,13 +1363,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const DELIMITER = '---';\nconst rawOutput = $('Be Star Ticketing Agent').first().json.output || '';\nif (!rawOutput || rawOutput.trim().length === 0) { return [{ json: { text: '' } }]; }\nconst hasDelimiter = rawOutput.includes(DELIMITER);\nlet messages = [];\nif (hasDelimiter) { messages = rawOutput.split(DELIMITER).map(msg => msg.trim()).filter(msg => msg.length > 0); }\nelse { messages = [rawOutput.trim()]; }\nmessages = messages.map(msg => msg.replace(/---/g, '').trim());\nmessages = messages.filter(msg => msg.length > 0);\nif (messages.length === 0) { const cleanedOriginal = rawOutput.replace(/---/g, '').trim(); return [{ json: { text: cleanedOriginal || 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.' } }]; }\nreturn messages.map(text => ({ json: { text } }));"
+        "jsCode": "const DELIMITER = '---';\nconst rawOutput = $('Be Star Ticketing Agent').first().json.output || '';\nif (!rawOutput || rawOutput.trim().length === 0) { return [{ json: { text: '' } }]; }\nconst hasDelimiter = rawOutput.includes(DELIMITER);\nlet messages = [];\nif (hasDelimiter) { messages = rawOutput.split(DELIMITER).map(msg => msg.trim()).filter(msg => msg.length > 0); }\nelse { messages = [rawOutput.trim()]; }\nmessages = messages.map(msg => msg.replace(/---/g, '').trim());\nmessages = messages.filter(msg => msg.length > 0);\nif (messages.length === 0) { const cleanedOriginal = rawOutput.replace(/---/g, '').trim(); return [{ json: { text: cleanedOriginal || '\u0639\u0630\u0631\u0627\u064b\u060c \u062d\u062f\u062b \u062e\u0637\u0623. \u064a\u0631\u062c\u0649 \u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629 \u0645\u0631\u0629 \u0623\u062e\u0631\u0649.' } }]; }\nreturn messages.map(text => ({ json: { text } }));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -640,
-        2912
+        -11312,
+        4048
       ],
       "id": "23e58ff7-d088-4b02-86c2-d9e551c3ab07",
       "name": "Splite the messages"
@@ -1407,8 +1391,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        -384,
-        2832
+        -11056,
+        3968
       ],
       "id": "f468485d-14b3-4aad-b86a-c4a818d5429b",
       "name": "Send text",
@@ -1447,8 +1431,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -240,
-        2832
+        -10912,
+        3968
       ],
       "id": "964877e6-1ac4-427f-b7c0-ac5655bb75c5",
       "name": "Log AI Messages1"
@@ -1460,8 +1444,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -384,
-        2992
+        -11056,
+        4128
       ],
       "id": "ddb6656e-4de5-4020-9562-51660a5cf844",
       "name": "Skip First One"
@@ -1473,8 +1457,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -208,
-        2992
+        -10880,
+        4128
       ],
       "id": "3dfc4a9e-46a4-4e31-a3ae-02bc2c8885e6",
       "name": "Loop Over Items"
@@ -1484,8 +1468,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -16,
-        2848
+        -10688,
+        3984
       ],
       "id": "5e87b07c-da8d-4c4b-9ba7-551887a040f0",
       "name": "No Operation, do nothing"
@@ -1501,8 +1485,8 @@
       "type": "n8n-nodes-evolution-api-english.evolutionApi",
       "typeVersion": 1,
       "position": [
-        -32,
-        3008
+        -10704,
+        4144
       ],
       "id": "dddda8c5-4c0e-4201-b402-9ba3abf11cc8",
       "name": "Send text1",
@@ -1535,54 +1519,11 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        144,
-        3008
+        -10528,
+        4144
       ],
       "id": "209796c6-df93-44be-9367-9cc2d4cc6e8d",
       "name": "Log AI Messages"
-    },
-    {
-      "parameters": {
-        "resource": "messages-api",
-        "operation": "send-media"
-      },
-      "type": "n8n-nodes-evolution-api-english.evolutionApi",
-      "typeVersion": 1,
-      "position": [
-        -5376,
-        3104
-      ],
-      "id": "0f0b5d5e-a9d3-4ff8-8f14-df900dfb812a",
-      "name": "Send PDF Ticket",
-      "credentials": {
-        "evolutionApi": {
-          "id": "IGwXyU5Jbou5S5V3",
-          "name": "Business Number"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "messages-api",
-        "instanceName": "Mr. AI",
-        "remoteJid": "={{ $json.phone }}@s.whatsapp.net",
-        "messageText": "✅ تم تأكيد حجزك بنجاح!\n\nاسم الحضور: {{ $json.name }}\nنوع التذكرة: {{ $json.ticket_type }}\nكود التذكرة: {{ $json.code }}\n\n📍 العنوان: سوهاج - الكوامل - قاعة قناة السويس\n📅 الموعد: 11 فبراير 2026",
-        "options_message": {}
-      },
-      "type": "n8n-nodes-evolution-api-english.evolutionApi",
-      "typeVersion": 1,
-      "position": [
-        -5136,
-        3104
-      ],
-      "id": "1a7745b4-6a54-433f-8122-ddfc087eb686",
-      "name": "Send Confirmation Text",
-      "credentials": {
-        "evolutionApi": {
-          "id": "IGwXyU5Jbou5S5V3",
-          "name": "Business Number"
-        }
-      }
     },
     {
       "parameters": {
@@ -1705,10 +1646,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -5536,
-        2784
+        -16208,
+        3920
       ],
-      "id": "b5331a08-c067-489e-872b-7915c7561eae",
+      "id": "da57936c-8823-449e-b411-34a187ec85c3",
       "name": "If"
     },
     {
@@ -1727,17 +1668,189 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{\n{\n  \"user_phone\": $('User Phone ID').first().json.User_phone_ID,\n  \"ticket_index\": $fromAI(\"ticket_index\", \"1\"),\n  \"field\": $fromAI(\"field\", \"name\"),\n  \"value\": (\n    ($fromAI(\"value\", \"\") || \"\").includes(\"وصف الصورة\") || \n    ($fromAI(\"value\", \"\") || \"\").includes(\"User sent image\") ||\n    ($fromAI(\"value\", \"\") || \"\").includes(\"العميل بعت صورة\")\n  ) && $('Get Image Base64') && $('Get Image Base64').first() ? \"data:image/jpeg;base64,\" + $('Get Image Base64').first().json.data.base64 : $fromAI(\"value\", \"\").replace(/```/g, \"\").trim()\n}\n}}",
+        "jsonBody": "={{\n{\n  \"user_phone\": $('User Phone ID').first().json.User_phone_ID,\n  \"ticket_index\": $fromAI(\"ticket_index\", \"1\"),\n  \"field\": $fromAI(\"field\", \"name\"),\n  \"value\": (\n    ($fromAI(\"value\", \"\") || \"\").includes(\"\u0648\u0635\u0641 \u0627\u0644\u0635\u0648\u0631\u0629\") || \n    ($fromAI(\"value\", \"\") || \"\").includes(\"User sent image\") ||\n    ($fromAI(\"value\", \"\") || \"\").includes(\"\u0627\u0644\u0639\u0645\u064a\u0644 \u0628\u0639\u062a \u0635\u0648\u0631\u0629\")\n  ) && $('Get Image Base64') && $('Get Image Base64').first() ? \"data:image/jpeg;base64,\" + $('Get Image Base64').first().json.data.base64 : $fromAI(\"value\", \"\").replace(/```/g, \"\").trim()\n}\n}}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.4,
       "position": [
-        -1120,
-        3232
+        -11792,
+        4368
       ],
-      "id": "b1355cca-cdf5-400c-bf5a-f1709d34dd81",
+      "id": "e0a0b8c4-dc89-407e-bfb2-e210165803e6",
       "name": "Save Draft Tool"
+    },
+    {
+      "parameters": {
+        "url": "http://38.242.139.159:3005/api/quiz/active-question",
+        "options": {
+          "timeout": 8000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -14192,
+        3720
+      ],
+      "id": "quiz-check-001",
+      "name": "Check Active Quiz",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "qc1",
+              "leftValue": "={{ $json.has_active }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -14000,
+        3720
+      ],
+      "id": "quiz-if-001",
+      "name": "Quiz Active?"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://38.242.139.159:3005/api/quiz/answer",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"phone\": \"{{ $('User Phone ID').item.json.User_phone_ID }}\",\n  \"answer_text\": \"{{ $('Text4').item.json.Text }}\",\n  \"sender_name\": \"{{ $('Whatsapp').item.json.body.data.pushName || 'Unknown' }}\"\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -13760,
+        3620
+      ],
+      "id": "quiz-submit-001",
+      "name": "Submit Quiz Answer"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "qc2",
+              "leftValue": "={{ $json.is_correct }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -13520,
+        3620
+      ],
+      "id": "quiz-if-correct-001",
+      "name": "Is Answer Correct?"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
+        "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
+        "messageText": "={{ '\u2705 \u0625\u062c\u0627\u0628\u0629 \u0635\u062d\u064a\u062d\u0629! \u0623\u062d\u0633\u0646\u062a \ud83c\udf89\\n\\n\ud83c\udfc6 \u0627\u0644\u0646\u0642\u0627\u0637: ' + $('Submit Quiz Answer').item.json.points_earned + '\\n\ud83d\udcca \u0646\u0633\u0628\u0629 \u0627\u0644\u062a\u0634\u0627\u0628\u0647: ' + ($('Submit Quiz Answer').item.json.similarity || 100) + '%' }}",
+        "options_message": {
+          "quoted": {
+            "messageQuoted": {
+              "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -13280,
+        3520
+      ],
+      "id": "quiz-reply-correct-001",
+      "name": "Quiz Reply Correct",
+      "retryOnFail": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
+        "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
+        "messageText": "={{ '\u274c \u0625\u062c\u0627\u0628\u0629 \u062e\u0627\u0637\u0626\u0629\\n\\n' + ($('Submit Quiz Answer').item.json.message || '\u062d\u0627\u0648\u0644 \u0641\u064a \u0627\u0644\u0633\u0624\u0627\u0644 \u0627\u0644\u0642\u0627\u062f\u0645! \ud83d\udcaa') }}",
+        "options_message": {
+          "quoted": {
+            "messageQuoted": {
+              "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -13280,
+        3720
+      ],
+      "id": "quiz-reply-wrong-001",
+      "name": "Quiz Reply Wrong",
+      "retryOnFail": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
     }
   ],
   "connections": {
@@ -1746,17 +1859,6 @@
         [
           {
             "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Approval Webhook": {
-      "main": [
-        [
-          {
-            "node": "Send PDF Ticket",
             "type": "main",
             "index": 0
           }
@@ -1832,7 +1934,7 @@
       "main": [
         [
           {
-            "node": "Memory + Model PreEnter2",
+            "node": "Check Active Quiz",
             "type": "main",
             "index": 0
           }
@@ -2302,17 +2404,6 @@
         ]
       ]
     },
-    "Send PDF Ticket": {
-      "main": [
-        [
-          {
-            "node": "Send Confirmation Text",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If": {
       "main": [
         [
@@ -2324,7 +2415,7 @@
         ]
       ]
     },
-    "Create Booking Tool": {
+    "Save Draft Tool": {
       "ai_tool": [
         [
           {
@@ -2334,7 +2425,69 @@
           }
         ]
       ]
+    },
+    "Check Active Quiz": {
+      "main": [
+        [
+          {
+            "node": "Quiz Active?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Quiz Active?": {
+      "main": [
+        [
+          {
+            "node": "Submit Quiz Answer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Memory + Model PreEnter2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Submit Quiz Answer": {
+      "main": [
+        [
+          {
+            "node": "Is Answer Correct?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Answer Correct?": {
+      "main": [
+        [
+          {
+            "node": "Quiz Reply Correct",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Quiz Reply Wrong",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "pinData": {}
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8df4082ac81111d2321c538ef34013493a96dd3b14b3af10e13ce9c3849e34d3"
+  }
 }
