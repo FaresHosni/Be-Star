@@ -1761,89 +1761,26 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "qc2",
-              "leftValue": "={{ $json.is_correct }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "equals"
-              }
+        "resource": "messages-api",
+        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
+        "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
+        "messageText": "\u2705 \u062a\u0645 \u0627\u0633\u062a\u0644\u0627\u0645 \u0625\u062c\u0627\u0628\u062a\u0643\u060c \u064a\u062a\u0645 \u0645\u0631\u0627\u062c\u0639\u0629 \u0627\u0644\u0625\u062c\u0627\u0628\u0627\u062a \ud83d\udccb",
+        "options_message": {
+          "quoted": {
+            "messageQuoted": {
+              "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
             }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
+          }
+        }
       },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
       "position": [
-        -13520,
+        -13280,
         3620
       ],
-      "id": "quiz-if-correct-001",
-      "name": "Is Answer Correct?"
-    },
-    {
-      "parameters": {
-        "resource": "messages-api",
-        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
-        "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
-        "messageText": "={{ '\u2705 \u0625\u062c\u0627\u0628\u0629 \u0635\u062d\u064a\u062d\u0629! \u0623\u062d\u0633\u0646\u062a \ud83c\udf89\\n\\n\ud83c\udfc6 \u0627\u0644\u0646\u0642\u0627\u0637: ' + $('Submit Quiz Answer').item.json.points_earned + '\\n\ud83d\udcca \u0646\u0633\u0628\u0629 \u0627\u0644\u062a\u0634\u0627\u0628\u0647: ' + ($('Submit Quiz Answer').item.json.similarity || 100) + '%' }}",
-        "options_message": {
-          "quoted": {
-            "messageQuoted": {
-              "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
-            }
-          }
-        }
-      },
-      "type": "n8n-nodes-evolution-api-english.evolutionApi",
-      "typeVersion": 1,
-      "position": [
-        -13280,
-        3520
-      ],
-      "id": "quiz-reply-correct-001",
-      "name": "Quiz Reply Correct",
-      "retryOnFail": true,
-      "credentials": {
-        "evolutionApi": {
-          "id": "IGwXyU5Jbou5S5V3",
-          "name": "Business Number"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "messages-api",
-        "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
-        "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
-        "messageText": "={{ '\u274c \u0625\u062c\u0627\u0628\u0629 \u062e\u0627\u0637\u0626\u0629\\n\\n' + ($('Submit Quiz Answer').item.json.message || '\u062d\u0627\u0648\u0644 \u0641\u064a \u0627\u0644\u0633\u0624\u0627\u0644 \u0627\u0644\u0642\u0627\u062f\u0645! \ud83d\udcaa') }}",
-        "options_message": {
-          "quoted": {
-            "messageQuoted": {
-              "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
-            }
-          }
-        }
-      },
-      "type": "n8n-nodes-evolution-api-english.evolutionApi",
-      "typeVersion": 1,
-      "position": [
-        -13280,
-        3720
-      ],
-      "id": "quiz-reply-wrong-001",
-      "name": "Quiz Reply Wrong",
+      "id": "quiz-reply-001",
+      "name": "Quiz Reply",
       "retryOnFail": true,
       "credentials": {
         "evolutionApi": {
@@ -2459,25 +2396,7 @@
       "main": [
         [
           {
-            "node": "Is Answer Correct?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Is Answer Correct?": {
-      "main": [
-        [
-          {
-            "node": "Quiz Reply Correct",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Quiz Reply Wrong",
+            "node": "Quiz Reply",
             "type": "main",
             "index": 0
           }
