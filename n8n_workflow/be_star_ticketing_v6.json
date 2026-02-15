@@ -1842,7 +1842,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://38.242.139.159:3005/api/tickets/save-draft",
+        "url": "http://38.242.139.159:3005/api/tickets/create-booking",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [

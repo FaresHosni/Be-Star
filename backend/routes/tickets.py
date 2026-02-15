@@ -763,3 +763,100 @@ async def save_draft(update: DraftUpdate, background_tasks: BackgroundTasks):
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         session.close()
+
+
+# ── New: Complete booking from AI Switch path ─────────────────────
+
+class TicketInfo(BaseModel):
+    name: str
+    type: str  # "VIP" or "Student"
+
+class BookingData(BaseModel):
+    name: str
+    email: Optional[str] = None
+    phone: str
+    ticket_type: str  # "VIP" or "Student"
+    ticket_count: int = 1
+    tickets: Optional[List[TicketInfo]] = None
+
+class CreateBookingRequest(BaseModel):
+    user_phone: str
+    booking_data: BookingData
+    image_base64: Optional[str] = ""
+
+
+@router.post("/create-booking", response_model=dict)
+async def create_booking(req: CreateBookingRequest):
+    """
+    Create booking from the deterministic AI Switch path.
+    Accepts full booking_data JSON and creates tickets.
+    """
+    session = get_session()
+    try:
+        bd = req.booking_data
+
+        # Normalize phone
+        raw_phone = req.user_phone
+        normalized_phone = raw_phone
+        if normalized_phone.startswith("0") and len(normalized_phone) == 11:
+            normalized_phone = "20" + normalized_phone[1:]
+
+        # Ensure Customer exists
+        customer = session.query(Customer).filter(
+            Customer.phone == normalized_phone
+        ).first()
+        if not customer:
+            customer = Customer(
+                name=bd.name,
+                phone=normalized_phone,
+                email=bd.email or ""
+            )
+            session.add(customer)
+            session.commit()
+            session.refresh(customer)
+
+        # Prices
+        vip_price = int(os.getenv("VIP_PRICE", 500))
+        student_price = int(os.getenv("STUDENT_PRICE", 100))
+
+        # Build ticket list
+        ticket_list = bd.tickets or [TicketInfo(name=bd.name, type=bd.ticket_type)]
+
+        created_tickets = []
+        for t_info in ticket_list:
+            tt_str = t_info.type.strip().upper()
+            tt_enum = TicketType.VIP if "VIP" in tt_str else TicketType.STUDENT
+            price = vip_price if tt_enum == TicketType.VIP else student_price
+
+            ticket = Ticket(
+                code=Ticket.generate_unique_code(session),
+                ticket_type=tt_enum,
+                price=price,
+                customer_id=customer.id,
+                guest_name=t_info.name,
+                guest_phone=bd.phone or req.user_phone,
+                payment_method="Vodafone Cash",
+                payment_proof=req.image_base64 or "",
+                status=TicketStatus.PAYMENT_SUBMITTED
+            )
+            session.add(ticket)
+            session.commit()
+            session.refresh(ticket)
+            created_tickets.append({
+                "code": ticket.code,
+                "name": ticket.guest_name,
+                "type": tt_enum.value,
+                "price": price
+            })
+
+        return {
+            "status": "completed",
+            "message": f"تم إنشاء {len(created_tickets)} تذكرة بنجاح",
+            "tickets": created_tickets
+        }
+
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        session.close()
