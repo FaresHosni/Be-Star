@@ -801,6 +801,19 @@ async def create_booking(req: CreateBookingRequest):
         if normalized_phone.startswith("0") and len(normalized_phone) == 11:
             normalized_phone = "20" + normalized_phone[1:]
 
+        # Check for image in request OR draft
+        final_image = req.image_base64 or ""
+        
+        # If no image in current request, try to find it in the latest incomplete draft for this user
+        if not final_image:
+            draft = session.query(TicketDraft).filter(
+                TicketDraft.user_phone == req.user_phone,
+                TicketDraft.is_completed == False,
+                TicketDraft.payment_proof != None
+            ).order_by(TicketDraft.id.desc()).first()
+            if draft and draft.payment_proof:
+                final_image = draft.payment_proof
+
         # Ensure Customer exists
         customer = session.query(Customer).filter(
             Customer.phone == normalized_phone
@@ -836,7 +849,7 @@ async def create_booking(req: CreateBookingRequest):
                 guest_name=t_info.name,
                 guest_phone=bd.phone or req.user_phone,
                 payment_method="Vodafone Cash",
-                payment_proof=req.image_base64 or "",
+                payment_proof=final_image,  # Use resolved image
                 status=TicketStatus.PAYMENT_SUBMITTED
             )
             session.add(ticket)
@@ -848,6 +861,15 @@ async def create_booking(req: CreateBookingRequest):
                 "type": tt_enum.value,
                 "price": price
             })
+        
+        # Mark used draft as completed if it exists
+        draft = session.query(TicketDraft).filter(
+            TicketDraft.user_phone == req.user_phone,
+            TicketDraft.is_completed == False
+        ).order_by(TicketDraft.id.desc()).first()
+        if draft:
+            draft.is_completed = True
+            session.commit()
 
         return {
             "status": "completed",

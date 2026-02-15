@@ -1920,6 +1920,33 @@
       ],
       "id": "set-message-001",
       "name": "Set AI Message"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://38.242.139.159:3005/api/tickets/save-draft",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  user_phone: $('User Phone ID').first().json.User_phone_ID,\n  ticket_index: 0,\n  field: 'payment_proof',\n  value: 'data:image/jpeg;base64,' + $('Get Image Base64').first().json.data.base64\n}) }}",
+        "options": {}
+      },
+      "name": "Save Image to Draft",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -14216,
+        4048
+      ],
+      "id": "save-image-draft-001"
     }
   ],
   "connections": {
@@ -2113,7 +2140,7 @@
       "main": [
         [
           {
-            "node": "Memory + Model PreEnter2",
+            "node": "Save Image to Draft",
             "type": "main",
             "index": 0
           }
@@ -2569,6 +2596,17 @@
         [
           {
             "node": "Log Usr Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Image to Draft": {
+      "main": [
+        [
+          {
+            "node": "Memory + Model PreEnter2",
             "type": "main",
             "index": 0
           }
