@@ -269,7 +269,25 @@ def init_db():
             with engine.connect() as conn:
                 conn.execute(text("ALTER TABLE tickets ADD COLUMN is_hidden BOOLEAN DEFAULT 0"))
                 conn.commit()
-    
+
+    # Check if 'is_active' column exists in 'admins' table
+    if 'admins' in inspector.get_table_names():
+        columns = [col['name'] for col in inspector.get_columns('admins')]
+        if 'is_active' not in columns:
+            with engine.connect() as conn:
+                conn.execute(text("ALTER TABLE admins ADD COLUMN is_active BOOLEAN DEFAULT 1"))
+                conn.commit()
+
+    # Check for guest_name and guest_phone in tickets
+    if 'tickets' in inspector.get_table_names():
+        columns = [col['name'] for col in inspector.get_columns('tickets')]
+        with engine.connect() as conn:
+            if 'guest_name' not in columns:
+                conn.execute(text("ALTER TABLE tickets ADD COLUMN guest_name TEXT"))
+            if 'guest_phone' not in columns:
+                conn.execute(text("ALTER TABLE tickets ADD COLUMN guest_phone TEXT"))
+            conn.commit()
+
     return engine
 
 
