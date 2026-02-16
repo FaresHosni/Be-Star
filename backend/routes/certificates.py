@@ -28,45 +28,43 @@ class SendThanksRequest(BaseModel):
 
 @router.get("/participants")
 async def get_participants(sort_by: str = "points"):
-    """Get all quiz participants with their scores and ranking"""
+    """Get all approved ticket holders with their quiz scores and ranking"""
     session = get_session()
     try:
-        from sqlalchemy import text
+        from models import Ticket, Customer, Answer
+        from sqlalchemy import func, Integer as SAInteger
         
-        # Get all participants with their scores from quiz_answers
-        query = text("""
-            SELECT 
-                t.id as ticket_id,
-                COALESCE(t.guest_name, c.name) as guest_name,
-                COALESCE(t.guest_phone, c.phone) as phone,
-                COALESCE(
-                    (SELECT COUNT(*) FROM quiz_answers qa WHERE qa.ticket_id = t.id),
-                    0
-                ) as total_answers,
-                COALESCE(
-                    (SELECT COUNT(*) FROM quiz_answers qa WHERE qa.ticket_id = t.id AND qa.is_correct = 1),
-                    0
-                ) as correct_answers,
-                COALESCE(
-                    (SELECT SUM(qa.points) FROM quiz_answers qa WHERE qa.ticket_id = t.id),
-                    0
-                ) as total_points
-            FROM tickets t
-            JOIN customers c ON t.customer_id = c.id
-            WHERE t.status = 'approved'
-            AND t.id IN (SELECT DISTINCT ticket_id FROM quiz_answers)
-        """)
+        # Get all approved tickets
+        tickets = session.query(Ticket).filter(Ticket.status == 'approved').all()
         
-        result = session.execute(query)
+        # Get quiz scores per ticket
+        score_query = session.query(
+            Answer.ticket_id,
+            func.sum(Answer.points_earned).label("total_points"),
+            func.count(Answer.id).label("total_answers"),
+            func.sum(func.cast(Answer.is_correct, SAInteger)).label("correct_answers"),
+        ).group_by(Answer.ticket_id).all()
+        
+        score_map = {}
+        for row in score_query:
+            score_map[row.ticket_id] = {
+                "total_points": int(row.total_points or 0),
+                "total_answers": int(row.total_answers or 0),
+                "correct_answers": int(row.correct_answers or 0),
+            }
+        
         participants = []
-        for row in result:
+        for t in tickets:
+            customer = t.customer
+            scores = score_map.get(t.id, {"total_points": 0, "total_answers": 0, "correct_answers": 0})
             participants.append({
-                "ticket_id": row[0],
-                "guest_name": row[1],
-                "phone": row[2],
-                "total_answers": row[3],
-                "correct_answers": row[4],
-                "total_points": row[5]
+                "ticket_id": t.id,
+                "guest_name": t.guest_name or (customer.name if customer else "—"),
+                "phone": customer.phone if customer else (t.guest_phone or "—"),
+                "ticket_type": t.ticket_type or "—",
+                "total_points": scores["total_points"],
+                "total_answers": scores["total_answers"],
+                "correct_answers": scores["correct_answers"],
             })
         
         # Sort
