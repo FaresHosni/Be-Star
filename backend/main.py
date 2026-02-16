@@ -18,6 +18,7 @@ from routes.chat import router as chat_router
 from routes.stats import router as stats_router
 from routes.engagement import router as engagement_router
 from routes.quiz import router as quiz_router
+from routes.certificates import router as certificates_router
 
 # Import models to create tables
 from models import init_db
@@ -49,6 +50,7 @@ app.include_router(chat_router, prefix="/api/chat", tags=["Chat Widget"])
 app.include_router(stats_router, prefix="/api/stats", tags=["Statistics"])
 app.include_router(engagement_router, prefix="/api/engagement", tags=["Live Engagement"])
 app.include_router(quiz_router)  # Quiz router has its own /api/quiz prefix
+app.include_router(certificates_router, prefix="/api/certificates", tags=["Certificates"])
 
 
 @app.get("/")

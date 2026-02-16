@@ -259,6 +259,35 @@ def create_db_engine():
     return engine
 
 
+class CertificateLog(Base):
+    """Log of sent certificates"""
+    __tablename__ = "certificate_logs"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(Integer, nullable=True)
+    guest_name = Column(String(100), nullable=True)
+    phone = Column(String(20), nullable=True)
+    total_points = Column(Integer, default=0)
+    rank = Column(Integer, nullable=True)
+    status = Column(String(20), default="sent")  # sent / failed
+    error_message = Column(Text, nullable=True)
+    sent_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ThankYouLog(Base):
+    """Log of sent thank you messages"""
+    __tablename__ = "thankyou_logs"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(Integer, nullable=True)
+    guest_name = Column(String(100), nullable=True)
+    phone = Column(String(20), nullable=True)
+    message_text = Column(Text, nullable=True)
+    status = Column(String(20), default="sent")  # sent / failed
+    error_message = Column(Text, nullable=True)
+    sent_at = Column(DateTime, default=datetime.utcnow)
+
+
 def init_db():
     engine = create_db_engine()
     Base.metadata.create_all(bind=engine)

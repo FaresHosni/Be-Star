@@ -143,3 +143,44 @@ class WhatsAppService:
         # Send as formatted text with link
         message = f"🔗 *{title}*\n{description}\n\n{url}" if title else url
         return await self.send_message(phone, message)
+
+    async def send_certificate(self, phone: str, pdf_base64: str, guest_name: str, rank: int = 0) -> Optional[dict]:
+        """Send a certificate PDF document via WhatsApp"""
+        if not self.api_url or not self.api_key:
+            return None
+
+        # Format phone number
+        if phone.startswith("0") and len(phone) == 11:
+            phone = "20" + phone[1:]
+        elif not phone.startswith("20") and len(phone) == 10:
+             phone = "20" + phone
+
+        rank_text = f" 🏆 (المركز {rank})" if rank else ""
+        caption = f"🌟 مبروك يا {guest_name}!{rank_text}\n\nدي شهادة تقديرك من إيفنت كن نجماً ⭐\nفخورين بيك وبمشاركتك! 🎉"
+
+        endpoint = f"{self.api_url}/message/sendMedia/{self.instance_name}"
+        
+        payload = {
+            "number": phone,
+            "mediatype": "document",
+            "mimetype": "application/pdf",
+            "caption": caption,
+            "media": pdf_base64,
+            "fileName": f"certificate_{guest_name}.pdf"
+        }
+
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    endpoint, 
+                    json=payload, 
+                    headers=self._get_headers(),
+                    timeout=60.0
+                )
+                logger.info(f"WhatsApp Certificate Response ({phone}): {response.status_code}")
+                response.raise_for_status()
+                return response.json()
+        except Exception as e:
+            logger.error(f"Failed to send certificate to {phone}: {str(e)}")
+            return None
+
