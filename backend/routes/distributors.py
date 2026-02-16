@@ -54,7 +54,7 @@ async def create_distributor(data: DistributorCreate):
         session.close()
 
 
-@router.get("/", response_model=List[dict])
+@router.get("/")
 async def get_all_distributors(active_only: bool = False):
     """Get all distributors"""
     session = get_session()

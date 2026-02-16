@@ -27,9 +27,10 @@ function Distributors() {
 
     const fetchDistributors = async () => {
         try {
-            const res = await fetch('/api/distributors')
+            const res = await fetch('/api/distributors/')
             const data = await res.json()
-            setDistributors(data)
+            console.log('Distributors API response:', res.status, data)
+            setDistributors(Array.isArray(data) ? data : [])
         } catch (error) {
             console.error('Error fetching distributors:', error)
         } finally {
