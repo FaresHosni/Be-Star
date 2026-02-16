@@ -463,6 +463,7 @@ export default function QuizEngine() {
                                 <tr>
                                     <th>المركز</th>
                                     <th>الاسم</th>
+                                    <th>رقم الواتساب</th>
                                     <th>النوع</th>
                                     <th>الإجابات</th>
                                     <th>الصحيحة</th>
@@ -474,6 +475,7 @@ export default function QuizEngine() {
                                     <tr key={p.ticket_id} className={p.rank <= 3 ? 'bg-gold-500/5' : ''}>
                                         <td className="text-center">{rankBadge(p.rank)}</td>
                                         <td className="font-semibold">{p.guest_name}</td>
+                                        <td className="text-white/50 text-sm" dir="ltr">{p.phone}</td>
                                         <td>
                                             {p.ticket_type === 'VIP'
                                                 ? <span className="px-2 py-0.5 rounded bg-yellow-500/20 text-yellow-400 text-xs">VIP</span>
@@ -642,8 +644,8 @@ export default function QuizEngine() {
                                             <button key={u.v}
                                                 onClick={() => setQForm({ ...qForm, time_unit: u.v })}
                                                 className={`px-2 py-0.5 rounded text-[10px] transition-all ${qForm.time_unit === u.v
-                                                        ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30'
-                                                        : 'bg-white/5 text-white/40 border border-white/10 hover:text-white/60'
+                                                    ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30'
+                                                    : 'bg-white/5 text-white/40 border border-white/10 hover:text-white/60'
                                                     }`}>{u.l}</button>
                                         ))}
                                     </div>
