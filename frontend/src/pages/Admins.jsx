@@ -9,6 +9,7 @@ import {
     Mail,
     ArrowRight
 } from 'lucide-react'
+import { apiFetch } from '../utils/api'
 
 function Admins() {
     const navigate = useNavigate()
@@ -24,10 +25,7 @@ function Admins() {
         setLoading(true)
         setError(null)
         try {
-            const token = localStorage.getItem('token')
-            const res = await fetch('/api/auth/admins', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            })
+            const res = await apiFetch('/api/auth/admins')
             if (!res.ok) {
                 throw new Error(`HTTP ${res.status}`)
             }
@@ -45,10 +43,8 @@ function Admins() {
     const handleDelete = async (id) => {
         if (!confirm('هل أنت متأكد من حذف هذا الأدمن؟')) return
         try {
-            const token = localStorage.getItem('token')
-            await fetch(`/api/auth/admins/${id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
+            await apiFetch(`/api/auth/admins/${id}`, {
+                method: 'DELETE'
             })
             fetchAdmins()
         } catch (error) {

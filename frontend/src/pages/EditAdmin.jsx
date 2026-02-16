@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { Shield, User, Mail, Eye, EyeOff, ArrowRight, Save } from 'lucide-react'
+import { apiFetch } from '../utils/api'
 
 function EditAdmin() {
     const navigate = useNavigate()
@@ -31,12 +32,10 @@ function EditAdmin() {
         setError('')
 
         try {
-            const token = localStorage.getItem('token')
-            const res = await fetch(`/api/auth/admins/${id}`, {
+            const res = await apiFetch(`/api/auth/admins/${id}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
             })

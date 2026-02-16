@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Shield, User, Mail, Eye, EyeOff, ArrowRight, Plus, Sparkles } from 'lucide-react'
+import { apiFetch } from '../utils/api'
 
 function AddAdmin() {
     const navigate = useNavigate()
@@ -20,12 +21,10 @@ function AddAdmin() {
         setError('')
 
         try {
-            const token = localStorage.getItem('token')
-            const res = await fetch('/api/auth/register', {
+            const res = await apiFetch('/api/auth/register', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
             })
