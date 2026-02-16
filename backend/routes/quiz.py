@@ -574,7 +574,7 @@ def get_leaderboard(group: Optional[str] = None):
             
             leaderboard.append({
                 "ticket_id": ticket.id,
-                "guest_name": ticket.guest_name,
+                "guest_name": ticket.guest_name or (ticket.customer.phone if ticket.customer else "—"),
                 "phone": ticket.customer.phone if ticket.customer else "—",
                 "ticket_type": safe_value(ticket.ticket_type),
                 "total_points": int(row.total_points or 0),
