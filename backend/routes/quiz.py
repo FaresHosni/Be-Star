@@ -274,7 +274,7 @@ def _get_target_phones(session, target_groups: list) -> list:
         if target == "all":
             # All approved tickets
             tickets = session.query(Ticket).filter(
-                Ticket.status.in_([TicketStatus.APPROVED, TicketStatus.ACTIVATED]),
+                func.lower(Ticket.status).in_(['approved', 'activated']),
                 Ticket.is_hidden == False
             ).all()
             for t in tickets:
@@ -286,7 +286,7 @@ def _get_target_phones(session, target_groups: list) -> list:
             ticket_type = TicketType.VIP if target == "VIP" else TicketType.STUDENT
             tickets = session.query(Ticket).filter(
                 Ticket.ticket_type == ticket_type,
-                Ticket.status.in_([TicketStatus.APPROVED, TicketStatus.ACTIVATED]),
+                func.lower(Ticket.status).in_(['approved', 'activated']),
                 Ticket.is_hidden == False
             ).all()
             for t in tickets:
