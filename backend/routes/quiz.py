@@ -55,6 +55,7 @@ class AnswerSubmit(BaseModel):
     phone: str
     question_id: int
     answer_text: str
+    sender_name: str = ""
 
 
 # ═══════════════════════════════════════════
@@ -462,6 +463,11 @@ def submit_answer(data: AnswerSubmit):
             is_late=is_late,
         )
         session.add(answer)
+        
+        # Save sender name to ticket if guest_name is empty
+        if data.sender_name and not ticket.guest_name:
+            ticket.guest_name = data.sender_name
+        
         session.commit()
         
         # Response message
