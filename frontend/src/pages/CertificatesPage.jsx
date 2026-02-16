@@ -23,6 +23,7 @@ function CertificatesPage() {
         '🌟 شكراً لك يا {name} على مشاركتك في إيفنت كن نجماً!\n\nحصلت على {points} نقطة 🏆\n\nفخورين بيك وبتميزك! ⭐'
     )
     const [sendResult, setSendResult] = useState(null)
+    const [previewMessage, setPreviewMessage] = useState(null)
 
     useEffect(() => {
         fetchData()
@@ -336,7 +337,6 @@ function CertificatesPage() {
                                     <th className="text-center p-4 text-white/30 text-xs font-medium">النقاط</th>
                                     <th className="text-center p-4 text-white/30 text-xs font-medium">الإجابات</th>
                                     <th className="text-center p-4 text-white/30 text-xs font-medium">الصحيحة</th>
-                                    <th className="text-center p-4 text-white/30 text-xs font-medium w-20">الشهادة</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -396,16 +396,7 @@ function CertificatesPage() {
                                             <span className="text-white/20 text-xs mx-1">/</span>
                                             <span className="text-white/30 text-xs">{p.total_answers}</span>
                                         </td>
-                                        <td className="p-4 text-center">
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); previewCertificate(p.ticket_id) }}
-                                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gold-500/10 text-gold-400 hover:bg-gold-500/20 border border-gold-500/20 text-xs font-medium transition-colors"
-                                                title="عرض الشهادة"
-                                            >
-                                                <Eye className="w-3.5 h-3.5" />
-                                                عرض
-                                            </button>
-                                        </td>
+
                                     </tr>
                                 ))}
                             </tbody>
@@ -495,13 +486,48 @@ function CertificatesPage() {
                                 <tr key={log.id} className="border-b border-white/5 hover:bg-white/5">
                                     <td className="p-4 text-white font-medium">{log.guest_name}</td>
                                     <td className="p-4 text-white/40 text-sm font-mono">{log.phone}</td>
-                                    <td className="p-4 text-white/50 text-sm max-w-xs truncate">{log.message_text}</td>
+                                    <td className="p-4 text-white/50 text-sm max-w-xs">
+                                        <div className="flex items-center gap-2">
+                                            <span className="truncate max-w-[200px]">{log.message_text}</span>
+                                            <button
+                                                onClick={() => setPreviewMessage({ name: log.guest_name, text: log.message_text })}
+                                                className="flex-shrink-0 p-1 rounded-md hover:bg-white/10 text-white/30 hover:text-gold-400 transition-colors"
+                                                title="عرض الرسالة كاملة"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </td>
                                     <td className="p-4 text-center">{getStatusBadge(log.status)}</td>
                                     <td className="p-4 text-white/30 text-xs">{formatDate(log.sent_at)}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
+                </div>
+            )}
+
+            {/* ═══════ Message Preview Modal ═══════ */}
+            {previewMessage && (
+                <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 backdrop-blur-sm" onClick={() => setPreviewMessage(null)}>
+                    <div className="bg-dark-400 rounded-2xl p-6 w-full max-w-lg border border-gold-500/20 shadow-2xl shadow-gold-500/10 animate-fade-in" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-pink-500/20 to-purple-500/20 flex items-center justify-center">
+                                    <MessageCircle className="w-5 h-5 text-pink-400" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-pink-300">الرسالة المرسلة</h3>
+                                    <p className="text-white/40 text-xs">إلى: {previewMessage.name}</p>
+                                </div>
+                            </div>
+                            <button onClick={() => setPreviewMessage(null)}
+                                className="text-white/40 hover:text-white text-xl">✕</button>
+                        </div>
+                        <div className="p-4 rounded-xl bg-dark-300/50 border border-white/5 whitespace-pre-wrap text-white/80 text-sm leading-relaxed max-h-[60vh] overflow-y-auto" dir="rtl">
+                            {previewMessage.text}
+                        </div>
+                    </div>
                 </div>
             )}
 
