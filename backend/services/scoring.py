@@ -75,7 +75,7 @@ def calculate_similarity(answer: str, correct: str) -> float:
         return basic_similarity(norm_answer, norm_correct)
 
 
-def evaluate_answer(answer_text: str, correct_answer: str, question_type: str, threshold: float = 80.0) -> dict:
+def evaluate_answer(answer_text: str, correct_answer: str, question_type: str, threshold: float = 90.0) -> dict:
     """
     Evaluate a participant's answer.
     
