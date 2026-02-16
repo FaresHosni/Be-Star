@@ -128,7 +128,8 @@ async def send_certificates(req: SendCertificatesRequest):
                 logger.info(f"PDF generated successfully, size: {len(pdf_bytes)} bytes")
                 
                 # Convert to base64
-                pdf_base64 = f"data:application/pdf;base64,{base64.b64encode(pdf_bytes).decode()}"
+                # Convert to raw base64 (Evolution API needs plain base64, NOT data URI)
+                pdf_base64 = base64.b64encode(pdf_bytes).decode()
                 logger.info(f"Base64 encoded, total length: {len(pdf_base64)}")
                 
                 # Send via WhatsApp
