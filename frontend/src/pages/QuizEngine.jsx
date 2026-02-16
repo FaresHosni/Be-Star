@@ -123,9 +123,16 @@ export default function QuizEngine() {
         try {
             const res = await fetch(`${API}/questions/${qid}/send`, { method: 'POST' })
             const data = await res.json()
-            alert(data.message)
-            fetchQuestions()
-        } catch (e) { console.error(e) }
+            if (!res.ok) {
+                alert(data.detail || 'حدث خطأ أثناء الإرسال')
+            } else {
+                alert(data.message)
+                fetchQuestions()
+            }
+        } catch (e) {
+            console.error(e)
+            alert('خطأ في الاتصال بالسيرفر')
+        }
     }
 
     const expireQuestion = async (qid) => {
@@ -234,8 +241,8 @@ export default function QuizEngine() {
                 {tabs.map(t => (
                     <button key={t.id} onClick={() => setActiveTab(t.id)}
                         className={`flex items-center gap-2 px-5 py-3 rounded-t-xl text-sm font-medium transition-all ${activeTab === t.id
-                                ? 'bg-gold-500/15 text-gold-400 border-b-2 border-gold-500'
-                                : 'text-white/50 hover:text-white/70 hover:bg-white/5'
+                            ? 'bg-gold-500/15 text-gold-400 border-b-2 border-gold-500'
+                            : 'text-white/50 hover:text-white/70 hover:bg-white/5'
                             }`}>
                         <t.icon className="w-4 h-4" /> {t.label}
                     </button>
@@ -312,8 +319,8 @@ export default function QuizEngine() {
                                             {q.options.map(opt => (
                                                 <div key={opt.label}
                                                     className={`px-3 py-2 rounded-lg text-sm ${opt.is_correct
-                                                            ? 'bg-green-500/15 text-green-400 border border-green-500/30'
-                                                            : 'bg-white/5 text-white/60 border border-white/10'
+                                                        ? 'bg-green-500/15 text-green-400 border border-green-500/30'
+                                                        : 'bg-white/5 text-white/60 border border-white/10'
                                                         }`}>
                                                     <span className="font-bold ml-2">{opt.label})</span> {opt.text}
                                                 </div>
@@ -417,8 +424,8 @@ export default function QuizEngine() {
                             {['all', 'VIP', 'Student', ...groups.map(g => `group:${g.id}`)].map(f => (
                                 <button key={f} onClick={() => setLbFilter(f)}
                                     className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${lbFilter === f
-                                            ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30'
-                                            : 'bg-white/5 text-white/50 hover:text-white/70'
+                                        ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30'
+                                        : 'bg-white/5 text-white/50 hover:text-white/70'
                                         }`}>
                                     {f === 'all' ? 'الكل' : f.startsWith('group:') ? groups.find(g => `group:${g.id}` === f)?.name : f}
                                 </button>
@@ -516,8 +523,8 @@ export default function QuizEngine() {
                                 <button key={t}
                                     onClick={() => setQForm({ ...qForm, question_type: t })}
                                     className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${qForm.question_type === t
-                                            ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30'
-                                            : 'bg-white/5 text-white/50 border border-white/10'
+                                        ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30'
+                                        : 'bg-white/5 text-white/50 border border-white/10'
                                         }`}>
                                     {t === 'mcq' ? '📋 اختيار من متعدد' : '✍️ إكمال'}
                                 </button>
@@ -545,8 +552,8 @@ export default function QuizEngine() {
                                             setQForm({ ...qForm, options: newOpts, correct_answer: opt.label })
                                         }}
                                             className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${opt.is_correct
-                                                    ? 'bg-green-500/30 text-green-400 border border-green-500'
-                                                    : 'bg-white/10 text-white/50 border border-white/20'
+                                                ? 'bg-green-500/30 text-green-400 border border-green-500'
+                                                : 'bg-white/10 text-white/50 border border-white/20'
                                                 }`}>
                                             {opt.label}
                                         </button>
@@ -615,8 +622,8 @@ export default function QuizEngine() {
                                             setQForm({ ...qForm, target_groups: tg })
                                         }}
                                         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${qForm.target_groups.includes(t)
-                                                ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30'
-                                                : 'bg-white/5 text-white/50 border border-white/10'
+                                            ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30'
+                                            : 'bg-white/5 text-white/50 border border-white/10'
                                             }`}>
                                         {t === 'all' ? '🌐 الكل' : t === 'VIP' ? '⭐ VIP' : t === 'Student' ? '🎓 طلبة' : groups.find(g => `group:${g.id}` === t)?.name}
                                     </button>
@@ -628,8 +635,8 @@ export default function QuizEngine() {
                         <div className="flex items-center gap-3 mb-6">
                             <button onClick={() => setQForm({ ...qForm, accept_late: !qForm.accept_late })}
                                 className={`w-5 h-5 rounded border ${qForm.accept_late
-                                        ? 'bg-gold-500 border-gold-500'
-                                        : 'border-white/30'
+                                    ? 'bg-gold-500 border-gold-500'
+                                    : 'border-white/30'
                                     }`} />
                             <span className="text-white/60 text-sm">قبول الإجابات بعد الوقت (بدون نقاط)</span>
                         </div>
@@ -690,8 +697,8 @@ export default function QuizEngine() {
                                             setGForm({ ...gForm, ticket_ids: [...ids] })
                                         }}
                                         className={`w-full text-right px-3 py-2 rounded-lg text-sm transition-all flex items-center justify-between ${gForm.ticket_ids.includes(a.id)
-                                                ? 'bg-gold-500/15 text-gold-400'
-                                                : 'text-white/60 hover:bg-white/5'
+                                            ? 'bg-gold-500/15 text-gold-400'
+                                            : 'text-white/60 hover:bg-white/5'
                                             }`}>
                                         <span>{a.guest_name}</span>
                                         <span className="text-xs text-white/30">{a.ticket_type}</span>
