@@ -19,19 +19,19 @@ async def get_dashboard_stats():
         
         # By status
         pending = session.query(func.count(Ticket.id)).filter(
-            Ticket.status.in_([TicketStatus.PENDING, TicketStatus.PAYMENT_SUBMITTED])
+            func.lower(Ticket.status).in_(['pending', 'payment_submitted'])
         ).scalar() or 0
         
         approved = session.query(func.count(Ticket.id)).filter(
-            Ticket.status == TicketStatus.APPROVED
+            func.lower(Ticket.status) == 'approved'
         ).scalar() or 0
         
         rejected = session.query(func.count(Ticket.id)).filter(
-            Ticket.status == TicketStatus.REJECTED
+            func.lower(Ticket.status) == 'rejected'
         ).scalar() or 0
         
         activated = session.query(func.count(Ticket.id)).filter(
-            Ticket.status == TicketStatus.ACTIVATED
+            func.lower(Ticket.status) == 'activated'
         ).scalar() or 0
         
         # By type
@@ -45,7 +45,7 @@ async def get_dashboard_stats():
         
         # Revenue
         total_revenue = session.query(func.sum(Ticket.price)).filter(
-            Ticket.status.in_([TicketStatus.APPROVED, TicketStatus.ACTIVATED])
+            func.lower(Ticket.status).in_(['approved', 'activated'])
         ).scalar() or 0
         
         # Customers count

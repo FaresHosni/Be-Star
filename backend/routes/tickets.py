@@ -9,6 +9,7 @@ import base64
 import os
 
 from models import get_session, Customer, Ticket, TicketType, TicketStatus, TicketDraft
+from sqlalchemy import func
 
 router = APIRouter()
 
@@ -373,7 +374,7 @@ async def get_all_tickets(status: Optional[str] = None):
         query = session.query(Ticket).join(Customer)
         
         if status:
-            query = query.filter(Ticket.status == status)
+            query = query.filter(func.lower(Ticket.status) == status.lower())
         
         tickets = query.order_by(Ticket.created_at.desc()).all()
         
@@ -597,7 +598,8 @@ async def download_ticket_pdf(ticket_id: int):
             raise HTTPException(status_code=404, detail="التذكرة غير موجودة")
         
         # Only allow download for approved or activated tickets
-        if ticket.status not in [TicketStatus.APPROVED, TicketStatus.ACTIVATED]:
+        current_status = ticket.status.value if hasattr(ticket.status, 'value') else str(ticket.status)
+        if current_status.lower() not in ['approved', 'activated']:
             raise HTTPException(status_code=400, detail="التذكرة غير معتمدة بعد")
         
         pdf_bytes = generate_ticket_pdf(

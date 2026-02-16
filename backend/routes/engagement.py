@@ -9,6 +9,7 @@ import base64
 import logging
 
 from models import get_session, Ticket, TicketStatus, Customer
+from sqlalchemy import func
 
 # WhatsApp Service
 from services.whatsapp_service import WhatsAppService
@@ -42,7 +43,7 @@ async def get_attendees():
     session = get_session()
     try:
         tickets = session.query(Ticket).filter(
-            Ticket.status == TicketStatus.APPROVED,
+            func.lower(Ticket.status) == 'approved',
             Ticket.is_hidden == False
         ).order_by(Ticket.created_at.desc()).all()
 
