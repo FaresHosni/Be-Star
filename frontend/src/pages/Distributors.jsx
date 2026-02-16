@@ -43,13 +43,13 @@ function Distributors() {
         try {
             let res
             if (editingDistributor) {
-                res = await fetch(`/api/distributors/${editingDistributor.id}`, {
+                res = await fetch(`/api/distributors/${editingDistributor.id}/`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 })
             } else {
-                res = await fetch('/api/distributors', {
+                res = await fetch('/api/distributors/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
@@ -65,7 +65,7 @@ function Distributors() {
             closeModal()
         } catch (error) {
             console.error('Error saving distributor:', error)
-            alert('خطأ في الاتصال بالسيرفر')
+            alert('خطأ في الاتصال بالسيرفر: ' + error.message)
         }
         setLoading(false)
     }
