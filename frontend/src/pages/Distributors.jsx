@@ -61,13 +61,13 @@ function Distributors() {
                 setLoading(false)
                 return
             }
-            fetchDistributors()
+            await fetchDistributors()
             closeModal()
         } catch (error) {
             console.error('Error saving distributor:', error)
             alert('خطأ في الاتصال بالسيرفر: ' + error.message)
+            setLoading(false)
         }
-        setLoading(false)
     }
 
     const handleToggleActive = async (distributor) => {
