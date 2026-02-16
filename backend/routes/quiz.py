@@ -189,11 +189,11 @@ def list_questions():
             result.append({
                 "id": q.id,
                 "text": q.text,
-                "question_type": q.question_type.value,
+                "question_type": safe_value(q.question_type),
                 "correct_answer": q.correct_answer,
                 "points": q.points,
                 "time_limit_seconds": q.time_limit_seconds,
-                "status": q.status.value,
+                "status": safe_value(q.status),
                 "target_groups": q.get_target_groups(),
                 "accept_late": q.accept_late,
                 "options": options_data,
@@ -433,11 +433,17 @@ def submit_answer(data: AnswerSubmit):
                 return {"success": False, "message": "انتهى وقت الإجابة ⏰"}
         
         # Evaluate answer
+        q_type = safe_value(question.question_type)
+        logger.info(f"[QUIZ DEBUG] question_id={question.id}, question_type='{q_type}', "
+                     f"correct_answer='{question.correct_answer}' (repr={repr(question.correct_answer)}), "
+                     f"answer_text='{data.answer_text}' (repr={repr(data.answer_text)})")
+        
         result = evaluate_answer(
             answer_text=data.answer_text,
             correct_answer=question.correct_answer,
-            question_type=question.question_type.value,
+            question_type=q_type,
         )
+        logger.info(f"[QUIZ DEBUG] evaluation result: {result}")
         
         points = question.points if result["is_correct"] and not is_late else 0
         
@@ -509,7 +515,7 @@ def get_active_question():
         return {
             "has_active": True,
             "question_id": active.id,
-            "question_type": active.question_type.value,
+            "question_type": safe_value(active.question_type),
             "expires_at": active.expires_at.isoformat() if active.expires_at else None,
         }
     finally:
@@ -618,7 +624,7 @@ def get_question_answers(question_id: int):
                 "id": question.id,
                 "text": question.text,
                 "correct_answer": question.correct_answer,
-                "question_type": question.question_type.value,
+                "question_type": safe_value(question.question_type),
             },
             "answers": result,
             "total": len(result),
@@ -647,7 +653,7 @@ def get_participant_results(ticket_id: int):
             question = session.query(Question).filter(Question.id == a.question_id).first()
             result.append({
                 "question_text": question.text if question else "—",
-                "question_type": question.question_type.value if question else "—",
+                "question_type": safe_value(question.question_type) if question else "—",
                 "answer_text": a.answer_text,
                 "is_correct": a.is_correct,
                 "similarity_score": a.similarity_score,
