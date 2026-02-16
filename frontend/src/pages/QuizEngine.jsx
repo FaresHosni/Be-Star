@@ -26,8 +26,8 @@ export default function QuizEngine() {
 
     // Question form
     const [qForm, setQForm] = useState({
-        text: '', question_type: 'mcq', correct_answer: '', points: 1,
-        time_limit_seconds: 60, target_groups: ['all'], accept_late: false,
+        text: '', question_type: 'mcq', correct_answer: '', points: '',
+        time_limit_seconds: '', time_unit: 'seconds', target_groups: ['all'], accept_late: false,
         correct_answers: [''],
         options: [
             { label: 'A', text: '', is_correct: true },
@@ -113,6 +113,14 @@ export default function QuizEngine() {
                 payload.correct_answer = qForm.correct_answers.filter(a => a.trim()).join('||')
             }
             delete payload.correct_answers
+            delete payload.time_unit
+            // Convert time based on unit
+            const timeVal = parseInt(qForm.time_limit_seconds) || 60
+            if (qForm.time_unit === 'minutes') payload.time_limit_seconds = timeVal * 60
+            else if (qForm.time_unit === 'hours') payload.time_limit_seconds = timeVal * 3600
+            else payload.time_limit_seconds = timeVal
+            // Default points if empty
+            if (!payload.points) payload.points = 1
             const res = await fetch(`${API}/questions`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -188,8 +196,8 @@ export default function QuizEngine() {
 
     const resetQForm = () => {
         setQForm({
-            text: '', question_type: 'mcq', correct_answer: '', points: 1,
-            time_limit_seconds: 60, target_groups: ['all'], accept_late: false,
+            text: '', question_type: 'mcq', correct_answer: '', points: '',
+            time_limit_seconds: '', time_unit: 'seconds', target_groups: ['all'], accept_late: false,
             correct_answers: [''],
             options: [
                 { label: 'A', text: '', is_correct: true },
@@ -621,15 +629,29 @@ export default function QuizEngine() {
                             <div>
                                 <label className="block text-white/60 text-sm mb-1">النقاط</label>
                                 <input type="number" value={qForm.points} min={1}
-                                    onChange={e => setQForm({ ...qForm, points: parseInt(e.target.value) || 1 })}
+                                    onChange={e => setQForm({ ...qForm, points: e.target.value })}
                                     className="input-gold w-full"
+                                    placeholder="1"
                                 />
                             </div>
                             <div>
-                                <label className="block text-white/60 text-sm mb-1">المدة (ثانية)</label>
-                                <input type="number" value={qForm.time_limit_seconds} min={10}
-                                    onChange={e => setQForm({ ...qForm, time_limit_seconds: parseInt(e.target.value) || 60 })}
+                                <div className="flex items-center justify-between mb-1">
+                                    <label className="text-white/60 text-sm">المدة</label>
+                                    <div className="flex gap-1">
+                                        {[{ v: 'seconds', l: 'ثانية' }, { v: 'minutes', l: 'دقيقة' }, { v: 'hours', l: 'ساعة' }].map(u => (
+                                            <button key={u.v}
+                                                onClick={() => setQForm({ ...qForm, time_unit: u.v })}
+                                                className={`px-2 py-0.5 rounded text-[10px] transition-all ${qForm.time_unit === u.v
+                                                        ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30'
+                                                        : 'bg-white/5 text-white/40 border border-white/10 hover:text-white/60'
+                                                    }`}>{u.l}</button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <input type="number" value={qForm.time_limit_seconds} min={1}
+                                    onChange={e => setQForm({ ...qForm, time_limit_seconds: e.target.value })}
                                     className="input-gold w-full"
+                                    placeholder={qForm.time_unit === 'seconds' ? '60' : qForm.time_unit === 'minutes' ? '1' : '1'}
                                 />
                             </div>
                         </div>
@@ -662,15 +684,7 @@ export default function QuizEngine() {
                             </div>
                         </div>
 
-                        {/* Accept Late */}
-                        <div className="flex items-center gap-3 mb-6">
-                            <button onClick={() => setQForm({ ...qForm, accept_late: !qForm.accept_late })}
-                                className={`w-5 h-5 rounded border ${qForm.accept_late
-                                    ? 'bg-gold-500 border-gold-500'
-                                    : 'border-white/30'
-                                    }`} />
-                            <span className="text-white/60 text-sm">قبول الإجابات بعد الوقت (بدون نقاط)</span>
-                        </div>
+
 
                         {/* Submit */}
                         <button onClick={createQuestion} disabled={loading || !qForm.text || (qForm.question_type === 'mcq' && !qForm.correct_answer) || (qForm.question_type === 'completion' && !qForm.correct_answers.some(a => a.trim()))}
