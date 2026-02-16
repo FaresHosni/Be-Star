@@ -84,8 +84,8 @@ async def get_recent_tickets(limit: int = 10):
                 "id": t.id,
                 "code": t.code,
                 "customer_name": t.customer.name,
-                "ticket_type": t.ticket_type.value,
-                "status": t.status.value,
+                "ticket_type": t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type),
+                "status": t.status.value if hasattr(t.status, 'value') else str(t.status),
                 "price": t.price,
                 "created_at": t.created_at.isoformat()
             } for t in tickets

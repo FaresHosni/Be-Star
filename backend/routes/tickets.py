@@ -354,8 +354,8 @@ async def check_customer_tickets(phone: str):
                 {
                     "id": t.id,
                     "code": t.code,
-                    "type": t.ticket_type.value,
-                    "status": t.status.value,
+                    "type": t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type),
+                    "status": t.status.value if hasattr(t.status, 'value') else str(t.status),
                     "price": t.price,
                     "guest_name": t.guest_name or customer.name
                 } for t in tickets
@@ -382,8 +382,8 @@ async def get_all_tickets(status: Optional[str] = None):
             {
                 "id": t.id,
                 "code": t.code,
-                "ticket_type": t.ticket_type.value,
-                "status": t.status.value,
+                "ticket_type": t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type),
+                "status": t.status.value if hasattr(t.status, 'value') else str(t.status),
                 "price": t.price,
                 # Use guest_name if available, else customer name
                 "customer_name": t.guest_name if t.guest_name else t.customer.name,
@@ -569,8 +569,8 @@ async def get_ticket(ticket_id: int):
         return {
             "id": ticket.id,
             "code": ticket.code,
-            "ticket_type": ticket.ticket_type.value,
-            "status": ticket.status.value,
+            "ticket_type": ticket.ticket_type.value if hasattr(ticket.ticket_type, 'value') else str(ticket.ticket_type),
+            "status": ticket.status.value if hasattr(ticket.status, 'value') else str(ticket.status),
             "price": ticket.price,
             "customer": {
                 "name": ticket.guest_name if ticket.guest_name else ticket.customer.name,

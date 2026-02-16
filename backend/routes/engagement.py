@@ -56,8 +56,8 @@ async def get_attendees():
                 "guest_name": t.guest_name or (customer.name if customer else "—"),
                 "phone": customer.phone if customer else (t.guest_phone or "—"),
                 "email": customer.email if customer else "—",
-                "ticket_type": t.ticket_type.value,
-                "status": t.status.value,
+                "ticket_type": t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type),
+                "status": t.status.value if hasattr(t.status, 'value') else str(t.status),
                 "created_at": t.created_at.isoformat() if t.created_at else None
             })
         
@@ -84,8 +84,8 @@ async def get_hidden_attendees():
                 "guest_name": t.guest_name or (customer.name if customer else "—"),
                 "phone": customer.phone if customer else (t.guest_phone or "—"),
                 "email": customer.email if customer else "—",
-                "ticket_type": t.ticket_type.value,
-                "status": t.status.value
+                "ticket_type": t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type),
+                "status": t.status.value if hasattr(t.status, 'value') else str(t.status)
             })
         
         return {"hidden": result, "count": len(result)}
