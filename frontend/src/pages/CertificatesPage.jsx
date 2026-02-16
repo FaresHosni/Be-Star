@@ -42,7 +42,7 @@ function CertificatesPage() {
 
     const fetchParticipants = async () => {
         try {
-            const res = await fetch(`${API}/participants/?sort_by=${sortBy}`)
+            const res = await fetch(`${API}/participants?sort_by=${sortBy}`)
             console.log('Certificates API status:', res.status)
             const data = await res.json()
             console.log('Certificates API data:', data)
@@ -59,7 +59,7 @@ function CertificatesPage() {
 
     const fetchCertLogs = async () => {
         try {
-            const res = await fetch(`${API}/logs/certificates/`)
+            const res = await fetch(`${API}/logs/certificates`)
             const data = await res.json()
             setCertLogs(Array.isArray(data) ? data : [])
         } catch (e) { console.error(e) }
@@ -67,7 +67,7 @@ function CertificatesPage() {
 
     const fetchThankLogs = async () => {
         try {
-            const res = await fetch(`${API}/logs/thanks/`)
+            const res = await fetch(`${API}/logs/thanks`)
             const data = await res.json()
             setThankLogs(Array.isArray(data) ? data : [])
         } catch (e) { console.error(e) }
@@ -110,7 +110,7 @@ function CertificatesPage() {
         setSending(true)
         setSendResult(null)
         try {
-            const res = await fetch(`${API}/send-certificates/`, {
+            const res = await fetch(`${API}/send-certificates`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ticket_ids: selectedIds })
@@ -133,7 +133,7 @@ function CertificatesPage() {
         setSending(true)
         setSendResult(null)
         try {
-            const res = await fetch(`${API}/send-thanks/`, {
+            const res = await fetch(`${API}/send-thanks`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ticket_ids: selectedIds, message: thanksMessage })
