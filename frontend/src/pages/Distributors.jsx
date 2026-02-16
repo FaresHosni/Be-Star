@@ -39,25 +39,35 @@ function Distributors() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setLoading(true)
         try {
+            let res
             if (editingDistributor) {
-                await fetch(`/api/distributors/${editingDistributor.id}`, {
+                res = await fetch(`/api/distributors/${editingDistributor.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 })
             } else {
-                await fetch('/api/distributors', {
+                res = await fetch('/api/distributors', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 })
             }
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}))
+                alert(err.detail || 'حدث خطأ أثناء الحفظ')
+                setLoading(false)
+                return
+            }
             fetchDistributors()
             closeModal()
         } catch (error) {
             console.error('Error saving distributor:', error)
+            alert('خطأ في الاتصال بالسيرفر')
         }
+        setLoading(false)
     }
 
     const handleToggleActive = async (distributor) => {

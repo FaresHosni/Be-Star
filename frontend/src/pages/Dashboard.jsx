@@ -26,7 +26,7 @@ function Dashboard() {
     const navigate = useNavigate()
     const [stats, setStats] = useState({
         total_tickets: 0,
-        by_status: { pending: 0, approved: 0, rejected: 0, activated: 0 },
+        by_status: { payment_submitted: 0, approved: 0, rejected: 0 },
         by_type: { vip: 0, student: 0 },
         total_revenue: 0,
         total_customers: 0
@@ -90,27 +90,22 @@ function Dashboard() {
 
     const pieData = [
         { name: 'معتمدة', value: stats.by_status.approved, color: '#22C55E' },
-        { name: 'معلقة', value: stats.by_status.pending, color: '#FBBF24' },
+        { name: 'في المراجعة', value: stats.by_status.payment_submitted, color: '#FBBF24' },
         { name: 'مرفوضة', value: stats.by_status.rejected, color: '#EF4444' },
-        { name: 'مفعّلة', value: stats.by_status.activated, color: '#D4AF37' },
     ]
 
     const getStatusBadge = (status) => {
         const badges = {
-            pending: 'badge-pending',
             payment_submitted: 'badge-pending',
             approved: 'badge-approved',
-            rejected: 'badge-rejected',
-            activated: 'badge-approved'
+            rejected: 'badge-rejected'
         }
         const labels = {
-            pending: 'معلق',
             payment_submitted: 'في المراجعة',
             approved: 'معتمد',
-            rejected: 'مرفوض',
-            activated: 'مفعّل'
+            rejected: 'مرفوض'
         }
-        return <span className={`badge ${badges[status]}`}>{labels[status]}</span>
+        return <span className={`badge ${badges[status] || 'badge-pending'}`}>{labels[status] || status}</span>
     }
 
     return (

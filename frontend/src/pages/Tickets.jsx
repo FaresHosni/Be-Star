@@ -69,13 +69,11 @@ function Tickets() {
 
     const getStatusBadge = (status) => {
         const badges = {
-            pending: { class: 'badge-pending', label: 'معلق' },
             payment_submitted: { class: 'badge-pending', label: 'في المراجعة' },
             approved: { class: 'badge-approved', label: 'معتمد' },
-            rejected: { class: 'badge-rejected', label: 'مرفوض' },
-            activated: { class: 'badge-approved', label: 'مفعّل' }
+            rejected: { class: 'badge-rejected', label: 'مرفوض' }
         }
-        const badge = badges[status] || badges.pending
+        const badge = badges[status] || badges.payment_submitted
         return <span className={`badge ${badge.class}`}>{badge.label}</span>
     }
 
@@ -134,11 +132,9 @@ function Tickets() {
                             className="input-gold w-auto"
                         >
                             <option value="all">جميع الحالات</option>
-                            <option value="pending">معلق</option>
                             <option value="payment_submitted">في المراجعة</option>
                             <option value="approved">معتمد</option>
                             <option value="rejected">مرفوض</option>
-                            <option value="activated">مفعّل</option>
                         </select>
                     </div>
                 </div>

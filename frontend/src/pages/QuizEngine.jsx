@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import {
     HelpCircle, Users, Trophy, ClipboardList, Plus, Send, Trash2, Clock,
     CheckCircle, XCircle, ChevronDown, ChevronUp, Search, Timer, Award, X,
-    BarChart3, Target, UserPlus
+    BarChart3, Target, UserPlus, Edit2
 } from 'lucide-react'
 
 const API = '/api/quiz'
@@ -18,6 +18,7 @@ export default function QuizEngine() {
     // Modals
     const [showCreateQ, setShowCreateQ] = useState(false)
     const [showCreateGroup, setShowCreateGroup] = useState(false)
+    const [editingGroup, setEditingGroup] = useState(null)
     const [showAnswers, setShowAnswers] = useState(null) // question_id
     const [answersData, setAnswersData] = useState(null)
 
@@ -171,14 +172,18 @@ export default function QuizEngine() {
     const createGroup = async () => {
         setLoading(true)
         try {
-            const res = await fetch(`${API}/groups`, {
-                method: 'POST',
+            const isEdit = !!editingGroup
+            const url = isEdit ? `${API}/groups/${editingGroup.id}` : `${API}/groups`
+            const method = isEdit ? 'PUT' : 'POST'
+            const res = await fetch(url, {
+                method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(gForm)
             })
             const data = await res.json()
             if (data.success) {
                 setShowCreateGroup(false)
+                setEditingGroup(null)
                 setGForm({ name: '', description: '', ticket_ids: [] })
                 fetchGroups()
             }
@@ -410,6 +415,18 @@ export default function QuizEngine() {
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <span className="text-white/40 text-sm">{g.member_count} عضو</span>
+                                            <button onClick={() => {
+                                                setEditingGroup(g)
+                                                setGForm({
+                                                    name: g.name,
+                                                    description: g.description || '',
+                                                    ticket_ids: g.members?.map(m => m.ticket_id) || []
+                                                })
+                                                setShowCreateGroup(true)
+                                            }}
+                                                className="p-2 rounded-lg bg-gold-500/20 text-gold-400 hover:bg-gold-500/30 transition-colors">
+                                                <Edit2 className="w-4 h-4" />
+                                            </button>
                                             <button onClick={() => deleteGroup(g.id)}
                                                 className="p-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors">
                                                 <Trash2 className="w-4 h-4" />
@@ -703,8 +720,8 @@ export default function QuizEngine() {
                 <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
                     <div className="bg-dark-400 rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto border border-gold-500/20">
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gold-400">مجموعة جديدة</h3>
-                            <button onClick={() => setShowCreateGroup(false)}
+                            <h3 className="text-xl font-bold text-gold-400">{editingGroup ? 'تعديل المجموعة' : 'مجموعة جديدة'}</h3>
+                            <button onClick={() => { setShowCreateGroup(false); setEditingGroup(null); setGForm({ name: '', description: '', ticket_ids: [] }) }}
                                 className="text-white/40 hover:text-white"><X className="w-5 h-5" /></button>
                         </div>
 
@@ -757,7 +774,7 @@ export default function QuizEngine() {
                         <button onClick={createGroup} disabled={loading || !gForm.name || gForm.ticket_ids.length === 0}
                             className="btn-gold w-full flex items-center justify-center gap-2">
                             {loading ? <Clock className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
-                            إنشاء المجموعة
+                            {editingGroup ? 'حفظ التعديلات' : 'إنشاء المجموعة'}
                         </button>
                     </div>
                 </div>
