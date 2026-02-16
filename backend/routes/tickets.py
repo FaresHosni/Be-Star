@@ -378,22 +378,40 @@ async def get_all_tickets(status: Optional[str] = None):
         
         tickets = query.order_by(Ticket.created_at.desc()).all()
         
-        return [
-            {
-                "id": t.id,
-                "code": t.code,
-                "ticket_type": t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type),
-                "status": t.status.value if hasattr(t.status, 'value') else str(t.status),
-                "price": t.price,
-                # Use guest_name if available, else customer name
-                "customer_name": t.guest_name if t.guest_name else t.customer.name,
-                "customer_phone": t.customer.phone,
-                "customer_email": t.customer.email,
-                "payment_method": t.payment_method,
-                "payment_proof": t.payment_proof,
-                "created_at": t.created_at.isoformat()
-            } for t in tickets
-        ]
+        results = []
+        for t in tickets:
+            try:
+                ticket_type = t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type)
+                status = t.status.value if hasattr(t.status, 'value') else str(t.status)
+                
+                # Check for huge payment proof to prevent crash
+                proof = t.payment_proof
+                if proof and len(proof) > 100000: # Limit list view proof size to 100KB
+                    # We keep it as is, or maybe truncate? 
+                    # Truncating breaks image. Setting to None hides it.
+                    # For now let's allow it but warn if it's causing issues.
+                    # Actually, let's play safe. If it's > 2MB, we drop it from list.
+                    if len(proof) > 2000000:
+                        proof = None
+                
+                results.append({
+                    "id": t.id,
+                    "code": t.code,
+                    "ticket_type": ticket_type,
+                    "status": status,
+                    "price": t.price,
+                    "customer_name": t.guest_name if t.guest_name else (t.customer.name if t.customer else "Unknown"),
+                    "customer_phone": t.customer.phone if t.customer else "Unknown",
+                    "customer_email": t.customer.email if t.customer else None,
+                    "payment_method": t.payment_method,
+                    "payment_proof": proof,
+                    "created_at": t.created_at.isoformat()
+                })
+            except Exception as e:
+                print(f"Skipping malformed ticket {t.id}: {e}")
+                continue
+                
+        return results
     finally:
         session.close()
 

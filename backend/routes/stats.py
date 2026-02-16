@@ -79,16 +79,23 @@ async def get_recent_tickets(limit: int = 10):
             Ticket.created_at.desc()
         ).limit(limit).all()
         
-        return [
-            {
-                "id": t.id,
-                "code": t.code,
-                "customer_name": t.customer.name,
-                "ticket_type": t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type),
-                "status": t.status.value if hasattr(t.status, 'value') else str(t.status),
-                "price": t.price,
-                "created_at": t.created_at.isoformat()
-            } for t in tickets
-        ]
+        results = []
+        for t in tickets:
+            try:
+                ticket_type = t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type)
+                status = t.status.value if hasattr(t.status, 'value') else str(t.status)
+                
+                results.append({
+                    "id": t.id,
+                    "code": t.code,
+                    "customer_name": t.customer.name,
+                    "ticket_type": ticket_type,
+                    "status": status,
+                    "price": t.price,
+                    "created_at": t.created_at.isoformat()
+                })
+            except Exception:
+                continue
+        return results
     finally:
         session.close()

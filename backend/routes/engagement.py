@@ -47,21 +47,27 @@ async def get_attendees():
             Ticket.is_hidden == False
         ).order_by(Ticket.created_at.desc()).all()
 
-        result = []
+        results = []
         for t in tickets:
-            customer = t.customer
-            result.append({
-                "id": t.id,
-                "code": t.code,
-                "guest_name": t.guest_name or (customer.name if customer else "—"),
-                "phone": customer.phone if customer else (t.guest_phone or "—"),
-                "email": customer.email if customer else "—",
-                "ticket_type": t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type),
-                "status": t.status.value if hasattr(t.status, 'value') else str(t.status),
-                "created_at": t.created_at.isoformat() if t.created_at else None
-            })
+            try:
+                customer = t.customer
+                ticket_type = t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type)
+                status = t.status.value if hasattr(t.status, 'value') else str(t.status)
+                
+                results.append({
+                    "id": t.id,
+                    "code": t.code,
+                    "guest_name": t.guest_name or (customer.name if customer else "—"),
+                    "phone": customer.phone if customer else (t.guest_phone or "—"),
+                    "email": customer.email if customer else "—",
+                    "ticket_type": ticket_type,
+                    "status": status,
+                    "created_at": t.created_at.isoformat() if t.created_at else None
+                })
+            except Exception:
+                continue
         
-        return {"attendees": result, "count": len(result)}
+        return {"attendees": results, "count": len(results)}
     finally:
         session.close()
 
@@ -75,20 +81,26 @@ async def get_hidden_attendees():
             Ticket.is_hidden == True
         ).order_by(Ticket.updated_at.desc()).all()
 
-        result = []
+        results = []
         for t in tickets:
-            customer = t.customer
-            result.append({
-                "id": t.id,
-                "code": t.code,
-                "guest_name": t.guest_name or (customer.name if customer else "—"),
-                "phone": customer.phone if customer else (t.guest_phone or "—"),
-                "email": customer.email if customer else "—",
-                "ticket_type": t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type),
-                "status": t.status.value if hasattr(t.status, 'value') else str(t.status)
-            })
+            try:
+                customer = t.customer
+                ticket_type = t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type)
+                status = t.status.value if hasattr(t.status, 'value') else str(t.status)
+                
+                results.append({
+                    "id": t.id,
+                    "code": t.code,
+                    "guest_name": t.guest_name or (customer.name if customer else "—"),
+                    "phone": customer.phone if customer else (t.guest_phone or "—"),
+                    "email": customer.email if customer else "—",
+                    "ticket_type": ticket_type,
+                    "status": status
+                })
+            except Exception:
+                continue
         
-        return {"hidden": result, "count": len(result)}
+        return {"hidden": results, "count": len(results)}
     finally:
         session.close()
 
