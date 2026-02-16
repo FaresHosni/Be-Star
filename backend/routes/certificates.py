@@ -118,15 +118,18 @@ async def send_certificates(req: SendCertificatesRequest):
         for p in selected:
             try:
                 # Generate PDF
+                logger.info(f"Generating certificate PDF for {p['guest_name']}")
                 pdf_bytes = generate_certificate_pdf(
                     guest_name=p["guest_name"],
                     total_points=p["total_points"],
                     rank=p["rank"],
                     total_participants=total_count
                 )
+                logger.info(f"PDF generated successfully, size: {len(pdf_bytes)} bytes")
                 
                 # Convert to base64
                 pdf_base64 = f"data:application/pdf;base64,{base64.b64encode(pdf_bytes).decode()}"
+                logger.info(f"Base64 encoded, total length: {len(pdf_base64)}")
                 
                 # Send via WhatsApp
                 wa_result = await whatsapp.send_certificate(
@@ -138,6 +141,7 @@ async def send_certificates(req: SendCertificatesRequest):
                 
                 status = "sent" if wa_result else "failed"
                 error_msg = None if wa_result else "فشل إرسال الواتساب"
+                logger.info(f"Certificate send result for {p['guest_name']}: {status}")
                 
                 # Log to DB
                 log = CertificateLog(

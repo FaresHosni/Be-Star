@@ -147,6 +147,7 @@ class WhatsAppService:
     async def send_certificate(self, phone: str, pdf_base64: str, guest_name: str, rank: int = 0) -> Optional[dict]:
         """Send a certificate PDF document via WhatsApp"""
         if not self.api_url or not self.api_key:
+            logger.error("WhatsApp not configured (missing api_url or api_key)")
             return None
 
         # Format phone number
@@ -166,21 +167,23 @@ class WhatsAppService:
             "mimetype": "application/pdf",
             "caption": caption,
             "media": pdf_base64,
-            "fileName": f"certificate_{guest_name}.pdf"
+            "fileName": "BeStarCertificate.pdf"
         }
 
         try:
+            logger.info(f"Sending certificate to {phone}, base64 length: {len(pdf_base64)}")
             async with httpx.AsyncClient() as client:
                 response = await client.post(
                     endpoint, 
                     json=payload, 
                     headers=self._get_headers(),
-                    timeout=60.0
+                    timeout=120.0
                 )
-                logger.info(f"WhatsApp Certificate Response ({phone}): {response.status_code}")
+                logger.info(f"WhatsApp Certificate Response ({phone}): {response.status_code} - {response.text[:500]}")
                 response.raise_for_status()
                 return response.json()
         except Exception as e:
             logger.error(f"Failed to send certificate to {phone}: {str(e)}")
             return None
+
 
