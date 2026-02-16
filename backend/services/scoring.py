@@ -102,12 +102,21 @@ def evaluate_answer(answer_text: str, correct_answer: str, question_type: str, t
         }
     
     elif question_type == "completion":
-        # Completion: fuzzy matching
-        similarity = calculate_similarity(answer_text, correct_answer)
-        is_correct = similarity >= threshold
+        # Completion: fuzzy matching against one or more correct answers (separated by ||)
+        correct_options = [c.strip() for c in correct_answer.split("||") if c.strip()]
+        if not correct_options:
+            return {"is_correct": False, "similarity_score": 0.0, "method": "no_correct_answer"}
+        
+        best_similarity = 0.0
+        for option in correct_options:
+            similarity = calculate_similarity(answer_text, option)
+            if similarity > best_similarity:
+                best_similarity = similarity
+        
+        is_correct = best_similarity >= threshold
         return {
             "is_correct": is_correct,
-            "similarity_score": round(similarity, 1),
+            "similarity_score": round(best_similarity, 1),
             "method": "fuzzy_match" if HAS_RAPIDFUZZ else "basic_match"
         }
     

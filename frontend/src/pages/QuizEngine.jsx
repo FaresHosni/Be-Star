@@ -28,6 +28,7 @@ export default function QuizEngine() {
     const [qForm, setQForm] = useState({
         text: '', question_type: 'mcq', correct_answer: '', points: 1,
         time_limit_seconds: 60, target_groups: ['all'], accept_late: false,
+        correct_answers: [''],
         options: [
             { label: 'A', text: '', is_correct: true },
             { label: 'B', text: '', is_correct: false },
@@ -108,7 +109,10 @@ export default function QuizEngine() {
             const payload = { ...qForm }
             if (qForm.question_type === 'completion') {
                 delete payload.options
+                // Join multiple correct answers with ||
+                payload.correct_answer = qForm.correct_answers.filter(a => a.trim()).join('||')
             }
+            delete payload.correct_answers
             const res = await fetch(`${API}/questions`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -186,6 +190,7 @@ export default function QuizEngine() {
         setQForm({
             text: '', question_type: 'mcq', correct_answer: '', points: 1,
             time_limit_seconds: 60, target_groups: ['all'], accept_late: false,
+            correct_answers: [''],
             options: [
                 { label: 'A', text: '', is_correct: true },
                 { label: 'B', text: '', is_correct: false },
@@ -578,16 +583,36 @@ export default function QuizEngine() {
                             </div>
                         )}
 
-                        {/* Completion Answer */}
+                        {/* Completion Answers (multiple) */}
                         {qForm.question_type === 'completion' && (
                             <div className="mb-4">
-                                <label className="block text-white/60 text-sm mb-1">الإجابة الصحيحة</label>
-                                <input value={qForm.correct_answer}
-                                    onChange={e => setQForm({ ...qForm, correct_answer: e.target.value })}
-                                    className="input-gold w-full"
-                                    placeholder="الإجابة المرجعية الصحيحة..."
-                                />
-                                <p className="text-white/30 text-xs mt-1">الإجابات المقاربة (80%+ تشابه) تُحتسب صحيحة</p>
+                                <label className="block text-white/60 text-sm mb-2">الإجابات الصحيحة</label>
+                                {qForm.correct_answers.map((ans, i) => (
+                                    <div key={i} className="flex items-center gap-2 mb-2">
+                                        <span className="text-gold-400 text-sm font-bold w-6">{i + 1}.</span>
+                                        <input value={ans}
+                                            onChange={e => {
+                                                const newAnswers = [...qForm.correct_answers]
+                                                newAnswers[i] = e.target.value
+                                                setQForm({ ...qForm, correct_answers: newAnswers })
+                                            }}
+                                            className="input-gold flex-1"
+                                            placeholder={`الإجابة الصحيحة ${i + 1}...`}
+                                        />
+                                        {qForm.correct_answers.length > 1 && (
+                                            <button onClick={() => {
+                                                const newAnswers = qForm.correct_answers.filter((_, j) => j !== i)
+                                                setQForm({ ...qForm, correct_answers: newAnswers })
+                                            }}
+                                                className="text-red-400 hover:text-red-300 text-lg px-1">×</button>
+                                        )}
+                                    </div>
+                                ))}
+                                <button onClick={() => setQForm({ ...qForm, correct_answers: [...qForm.correct_answers, ''] })}
+                                    className="text-gold-400 hover:text-gold-300 text-sm flex items-center gap-1 mt-1">
+                                    + إضافة إجابة صحيحة أخرى
+                                </button>
+                                <p className="text-white/30 text-xs mt-2">الإجابات المقاربة (90%+ تشابه) مع أي إجابة صحيحة تُحتسب صحيحة</p>
                             </div>
                         )}
 
@@ -648,7 +673,7 @@ export default function QuizEngine() {
                         </div>
 
                         {/* Submit */}
-                        <button onClick={createQuestion} disabled={loading || !qForm.text || (qForm.question_type === 'mcq' && !qForm.correct_answer)}
+                        <button onClick={createQuestion} disabled={loading || !qForm.text || (qForm.question_type === 'mcq' && !qForm.correct_answer) || (qForm.question_type === 'completion' && !qForm.correct_answers.some(a => a.trim()))}
                             className="btn-gold w-full flex items-center justify-center gap-2">
                             {loading ? <Clock className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                             إنشاء السؤال
