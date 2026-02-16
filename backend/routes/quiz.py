@@ -212,6 +212,9 @@ def list_questions():
 def create_question(data: QuestionCreate):
     session = get_session()
     try:
+        # Validate MCQ has a correct answer
+        if data.question_type == "mcq" and not data.correct_answer.strip():
+            raise HTTPException(status_code=400, detail="يجب تحديد الإجابة الصحيحة لسؤال الاختيار من متعدد")
         q = Question(
             text=data.text,
             question_type=QuestionType(data.question_type),

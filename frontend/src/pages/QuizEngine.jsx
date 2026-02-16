@@ -99,6 +99,12 @@ export default function QuizEngine() {
     const createQuestion = async () => {
         setLoading(true)
         try {
+            // Validate MCQ has a correct answer selected
+            if (qForm.question_type === 'mcq' && !qForm.correct_answer) {
+                alert('يجب اختيار الإجابة الصحيحة (اضغط على الحرف A/B/C/D)')
+                setLoading(false)
+                return
+            }
             const payload = { ...qForm }
             if (qForm.question_type === 'completion') {
                 delete payload.options
@@ -642,7 +648,7 @@ export default function QuizEngine() {
                         </div>
 
                         {/* Submit */}
-                        <button onClick={createQuestion} disabled={loading || !qForm.text}
+                        <button onClick={createQuestion} disabled={loading || !qForm.text || (qForm.question_type === 'mcq' && !qForm.correct_answer)}
                             className="btn-gold w-full flex items-center justify-center gap-2">
                             {loading ? <Clock className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                             إنشاء السؤال
