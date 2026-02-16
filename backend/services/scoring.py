@@ -87,8 +87,14 @@ def evaluate_answer(answer_text: str, correct_answer: str, question_type: str, t
         }
     """
     if question_type == "mcq":
-        # MCQ: exact letter match (case-insensitive)
-        is_correct = answer_text.strip().upper() == correct_answer.strip().upper()
+        # MCQ: extract first letter if it matches A-D (e.g. "A) answer" -> "A")
+        clean_answer = answer_text.strip().upper()
+        # Regex to capture starting letter (A, B, C, D) followed by optional punctuation/space
+        match = re.match(r"^([A-D])", clean_answer)
+        if match:
+            clean_answer = match.group(1)
+        
+        is_correct = clean_answer == correct_answer.strip().upper()
         return {
             "is_correct": is_correct,
             "similarity_score": 100.0 if is_correct else 0.0,
