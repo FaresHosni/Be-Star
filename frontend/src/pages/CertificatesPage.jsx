@@ -43,9 +43,18 @@ function CertificatesPage() {
     const fetchParticipants = async () => {
         try {
             const res = await fetch(`${API}/participants/?sort_by=${sortBy}`)
+            console.log('Certificates API status:', res.status)
             const data = await res.json()
-            if (data.success) setParticipants(data.participants)
-        } catch (e) { console.error(e) }
+            console.log('Certificates API data:', data)
+            if (data.participants && data.participants.length > 0) {
+                setParticipants(data.participants)
+            } else if (data.success && data.participants) {
+                setParticipants(data.participants)
+            }
+        } catch (e) {
+            console.error('Certificates fetch error:', e)
+        }
+        setLoading(false)
     }
 
     const fetchCertLogs = async () => {
@@ -214,8 +223,8 @@ function CertificatesPage() {
                 {tabs.map(t => (
                     <button key={t.key} onClick={() => setTab(t.key)}
                         className={`flex items-center gap-2.5 px-5 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${tab === t.key
-                                ? 'bg-gradient-to-r from-gold-500/20 to-gold-500/5 text-gold-400 border border-gold-500/30 shadow-lg shadow-gold-500/10'
-                                : 'text-white/40 hover:text-white/60 border border-transparent hover:border-white/10 hover:bg-white/5'
+                            ? 'bg-gradient-to-r from-gold-500/20 to-gold-500/5 text-gold-400 border border-gold-500/30 shadow-lg shadow-gold-500/10'
+                            : 'text-white/40 hover:text-white/60 border border-transparent hover:border-white/10 hover:bg-white/5'
                             }`}>
                         <span className="text-base">{t.emoji}</span>
                         <t.icon className="w-4 h-4" />
@@ -227,8 +236,8 @@ function CertificatesPage() {
             {/* Send Result Alert */}
             {sendResult && (
                 <div className={`flex items-center gap-3 p-4 rounded-xl border animate-fade-in ${sendResult.success
-                        ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                        : 'bg-red-500/10 border-red-500/20 text-red-400'
+                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                    : 'bg-red-500/10 border-red-500/20 text-red-400'
                     }`}>
                     {sendResult.success ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
                     <span className="font-medium">{sendResult.message}</span>
@@ -275,8 +284,8 @@ function CertificatesPage() {
                             ].map(s => (
                                 <button key={s.key} onClick={() => setSortBy(s.key)}
                                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${sortBy === s.key
-                                            ? 'bg-gold-500/20 text-gold-400'
-                                            : 'text-white/30 hover:text-white/50'
+                                        ? 'bg-gold-500/20 text-gold-400'
+                                        : 'text-white/30 hover:text-white/50'
                                         }`}>
                                     <s.icon className="w-3.5 h-3.5" />
                                     {s.label}
@@ -339,14 +348,14 @@ function CertificatesPage() {
                                     <tr key={p.ticket_id}
                                         onClick={() => toggleSelect(p.ticket_id)}
                                         className={`border-b border-white/5 cursor-pointer transition-all duration-200 ${selectedIds.includes(p.ticket_id)
-                                                ? 'bg-gold-500/10 hover:bg-gold-500/15'
-                                                : 'hover:bg-white/5'
+                                            ? 'bg-gold-500/10 hover:bg-gold-500/15'
+                                            : 'hover:bg-white/5'
                                             } ${p.rank <= 3 ? 'relative' : ''}`}
                                     >
                                         <td className="p-4">
                                             <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${selectedIds.includes(p.ticket_id)
-                                                    ? 'border-gold-400 bg-gold-500'
-                                                    : 'border-white/20 hover:border-white/40'
+                                                ? 'border-gold-400 bg-gold-500'
+                                                : 'border-white/20 hover:border-white/40'
                                                 }`}>
                                                 {selectedIds.includes(p.ticket_id) && (
                                                     <CheckCircle className="w-3.5 h-3.5 text-dark-500" />
@@ -357,9 +366,9 @@ function CertificatesPage() {
                                         <td className="p-4">
                                             <div className="flex items-center gap-3">
                                                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold ${p.rank === 1 ? 'bg-gradient-to-br from-yellow-400 to-amber-500 text-dark-500' :
-                                                        p.rank === 2 ? 'bg-gradient-to-br from-gray-300 to-gray-400 text-dark-500' :
-                                                            p.rank === 3 ? 'bg-gradient-to-br from-amber-600 to-amber-700 text-white' :
-                                                                'bg-dark-300 text-white/50'
+                                                    p.rank === 2 ? 'bg-gradient-to-br from-gray-300 to-gray-400 text-dark-500' :
+                                                        p.rank === 3 ? 'bg-gradient-to-br from-amber-600 to-amber-700 text-white' :
+                                                            'bg-dark-300 text-white/50'
                                                     }`}>
                                                     {(p.guest_name || '?')[0]}
                                                 </div>
@@ -369,8 +378,8 @@ function CertificatesPage() {
                                         <td className="p-4 text-white/40 text-sm font-mono">{p.phone}</td>
                                         <td className="p-4 text-center">
                                             <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm font-bold ${p.rank === 1 ? 'bg-yellow-500/15 text-yellow-400' :
-                                                    p.rank <= 3 ? 'bg-gold-500/15 text-gold-400' :
-                                                        'bg-white/5 text-white/70'
+                                                p.rank <= 3 ? 'bg-gold-500/15 text-gold-400' :
+                                                    'bg-white/5 text-white/70'
                                                 }`}>
                                                 <Star className="w-3.5 h-3.5" />
                                                 {p.total_points}
