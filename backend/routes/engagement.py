@@ -8,7 +8,7 @@ from typing import List, Optional
 import base64
 import logging
 
-from models import get_session, Ticket, TicketStatus, Customer
+from models import get_session, Ticket, TicketStatus, Customer, safe_value
 from sqlalchemy import func
 
 # WhatsApp Service
@@ -51,8 +51,8 @@ async def get_attendees():
         for t in tickets:
             try:
                 customer = t.customer
-                ticket_type = t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type)
-                status = t.status.value if hasattr(t.status, 'value') else str(t.status)
+                ticket_type = safe_value(t.ticket_type)
+                status = safe_value(t.status)
                 
                 results.append({
                     "id": t.id,
@@ -85,8 +85,8 @@ async def get_hidden_attendees():
         for t in tickets:
             try:
                 customer = t.customer
-                ticket_type = t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type)
-                status = t.status.value if hasattr(t.status, 'value') else str(t.status)
+                ticket_type = safe_value(t.ticket_type)
+                status = safe_value(t.status)
                 
                 results.append({
                     "id": t.id,

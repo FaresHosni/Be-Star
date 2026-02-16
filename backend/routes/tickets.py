@@ -8,7 +8,7 @@ from datetime import datetime
 import base64
 import os
 
-from models import get_session, Customer, Ticket, TicketType, TicketStatus, TicketDraft
+from models import get_session, Customer, Ticket, TicketType, TicketStatus, TicketDraft, safe_value
 from sqlalchemy import func
 
 router = APIRouter()
@@ -159,9 +159,9 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
                         "ticket_id": t.id,
                         "code": t.code,
                         "name": t.guest_name,
-                        "type": t.ticket_type.value,
+                        "type": safe_value(t.ticket_type),
                         "price": t.price,
-                        "status": t.status.value
+                        "status": safe_value(t.status)
                     } for t in created_tickets
                 ]
             }
@@ -206,11 +206,11 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
                              "success": True,
                              "message": "تم استلام إثبات الدفع لهذه التذكرة مسبقاً، وهي قيد المراجعة حالياً.",
                              "code": recent_submitted.code,
-                             "status": recent_submitted.status.value
+                             "status": safe_value(recent_submitted.status)
                          }
 
                      all_tickets = session.query(Ticket).filter(Ticket.customer_id == customer.id).all()
-                     tickets_status = [f"{t.code}:{t.status.value}" for t in all_tickets]
+                     tickets_status = [f"{t.code}:{safe_value(t.status)}" for t in all_tickets]
                      detail_msg = f"العميل موجود ({customer.phone})، لكن لا توجد تذاكر PENDING. التذاكر الموجودة: {tickets_status}"
                  else:
                      detail_msg = f"هذا الرقم غير مسجل لدينا ({booking.phone})"
@@ -263,8 +263,8 @@ async def whatsapp_booking(booking: WhatsAppBooking, background_tasks: Backgroun
             "success": True,
             "ticket_id": ticket.id,
             "code": ticket.code,
-            "status": ticket.status.value,
-            "message": f"تم حجز التذكرة ({ticket_type.value}) بنجاح {'(تم الدفع)' if payment_proof else '(في انتظار الدفع)'}"
+            "status": safe_value(ticket.status),
+            "message": f"تم حجز التذكرة ({safe_value(ticket_type)}) بنجاح {'(تم الدفع)' if payment_proof else '(في انتظار الدفع)'}"
         }
 
     except Exception as e:
@@ -314,7 +314,7 @@ async def create_ticket(ticket_data: TicketCreate, background_tasks: BackgroundT
         session.refresh(ticket)
 
         # Send Pending Message via WhatsApp
-        msg = f"مرحباً {ticket.guest_name or customer.name} 👋\nتم تسجيل طلب تذكرتك بنجاح!\nنوع التذكرة: {ticket.ticket_type.value}\nالسعر: {price} جنيه\n\nيرجى إتمام الدفع لتأكيد الحجز."
+        msg = f"مرحباً {ticket.guest_name or customer.name} 👋\nتم تسجيل طلب تذكرتك بنجاح!\nنوع التذكرة: {safe_value(ticket.ticket_type)}\nالسعر: {price} جنيه\n\nيرجى إتمام الدفع لتأكيد الحجز."
         background_tasks.add_task(whatsapp_service.send_message, customer.phone, msg)
         
         return {
@@ -322,7 +322,7 @@ async def create_ticket(ticket_data: TicketCreate, background_tasks: BackgroundT
             "ticket_id": ticket.id,
             "code": ticket.code,
             "price": ticket.price,
-            "message": f"تم استلام طلب تذكرة {ticket_data.ticket_type.value} بنجاح. يرجى إتمام الدفع."
+            "message": f"تم استلام طلب تذكرة {safe_value(ticket_data.ticket_type)} بنجاح. يرجى إتمام الدفع."
         }
     except Exception as e:
         session.rollback()
@@ -354,8 +354,8 @@ async def check_customer_tickets(phone: str):
                 {
                     "id": t.id,
                     "code": t.code,
-                    "type": t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type),
-                    "status": t.status.value if hasattr(t.status, 'value') else str(t.status),
+                    "type": safe_value(t.ticket_type),
+                    "status": safe_value(t.status),
                     "price": t.price,
                     "guest_name": t.guest_name or customer.name
                 } for t in tickets
@@ -381,8 +381,8 @@ async def get_all_tickets(status: Optional[str] = None):
         results = []
         for t in tickets:
             try:
-                ticket_type = t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type)
-                status = t.status.value if hasattr(t.status, 'value') else str(t.status)
+                ticket_type = safe_value(t.ticket_type)
+                status = safe_value(t.status)
                 
                 # Check for huge payment proof to prevent crash
                 proof = t.payment_proof
@@ -478,7 +478,7 @@ async def approve_ticket(ticket_id: int, approval: TicketApproval, background_ta
             # Generate PDF with guest name
             pdf_bytes = generate_ticket_pdf(
                 ticket_code=ticket.code,
-                ticket_type=ticket.ticket_type.value,
+                ticket_type=safe_value(ticket.ticket_type),
                 customer_name=ticket_name,
                 price=ticket.price
             )
@@ -500,7 +500,7 @@ async def approve_ticket(ticket_id: int, approval: TicketApproval, background_ta
                     to_email=ticket.customer.email,
                     customer_name=ticket_name,
                     ticket_code=ticket.code,
-                    ticket_type=ticket.ticket_type.value,
+                    ticket_type=safe_value(ticket.ticket_type),
                     pdf_bytes=pdf_bytes
                 )
             
@@ -517,7 +517,7 @@ async def approve_ticket(ticket_id: int, approval: TicketApproval, background_ta
         
         return {
             "success": True,
-            "status": ticket.status.value,
+            "status": safe_value(ticket.status),
             "message": message
         }
     except Exception as e:
@@ -564,7 +564,7 @@ async def activate_ticket(activation: TicketActivation):
         
         return {
             "success": True,
-            "ticket_type": ticket.ticket_type.value,
+            "ticket_type": safe_value(ticket.ticket_type),
             "message": "تم تفعيل التذكرة بنجاح! نراك في الإيفنت 🎉"
         }
     except Exception as e:
@@ -587,8 +587,8 @@ async def get_ticket(ticket_id: int):
         return {
             "id": ticket.id,
             "code": ticket.code,
-            "ticket_type": ticket.ticket_type.value if hasattr(ticket.ticket_type, 'value') else str(ticket.ticket_type),
-            "status": ticket.status.value if hasattr(ticket.status, 'value') else str(ticket.status),
+            "ticket_type": safe_value(ticket.ticket_type),
+            "status": safe_value(ticket.status),
             "price": ticket.price,
             "customer": {
                 "name": ticket.guest_name if ticket.guest_name else ticket.customer.name,
@@ -616,13 +616,13 @@ async def download_ticket_pdf(ticket_id: int):
             raise HTTPException(status_code=404, detail="التذكرة غير موجودة")
         
         # Only allow download for approved or activated tickets
-        current_status = ticket.status.value if hasattr(ticket.status, 'value') else str(ticket.status)
+        current_status = safe_value(ticket.status)
         if current_status.lower() not in ['approved', 'activated']:
             raise HTTPException(status_code=400, detail="التذكرة غير معتمدة بعد")
         
         pdf_bytes = generate_ticket_pdf(
             ticket_code=ticket.code,
-            ticket_type=ticket.ticket_type.value,
+            ticket_type=safe_value(ticket.ticket_type),
             customer_name=ticket.customer.name,
             price=ticket.price
         )

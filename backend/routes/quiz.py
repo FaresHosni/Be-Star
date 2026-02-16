@@ -12,7 +12,7 @@ import json
 import logging
 
 from models import (
-    get_session, Ticket, TicketType, TicketStatus, Customer,
+    get_session, Ticket, TicketType, TicketStatus, Customer, safe_value,
     QuizGroup, QuizGroupMember, Question, QuestionOption, Answer,
     QuestionType, QuestionStatus
 )
@@ -77,7 +77,7 @@ def list_groups():
                         "ticket_id": ticket.id,
                         "guest_name": ticket.guest_name,
                         "phone": ticket.customer.phone if ticket.customer else "—",
-                        "ticket_type": ticket.ticket_type.value,
+                        "ticket_type": safe_value(ticket.ticket_type),
                     })
             result.append({
                 "id": g.id,
@@ -549,7 +549,7 @@ def get_leaderboard(group: Optional[str] = None):
             # Apply group filter
             if group and group != "all":
                 if group in ("VIP", "Student"):
-                    if ticket.ticket_type.value != group:
+                    if safe_value(ticket.ticket_type) != group:
                         continue
                 elif group.startswith("group:"):
                     try:
@@ -567,7 +567,7 @@ def get_leaderboard(group: Optional[str] = None):
                 "ticket_id": ticket.id,
                 "guest_name": ticket.guest_name,
                 "phone": ticket.customer.phone if ticket.customer else "—",
-                "ticket_type": ticket.ticket_type.value,
+                "ticket_type": safe_value(ticket.ticket_type),
                 "total_points": int(row.total_points or 0),
                 "total_answers": int(row.total_answers or 0),
                 "correct_answers": int(row.correct_answers or 0),
@@ -662,7 +662,7 @@ def get_participant_results(ticket_id: int):
                 "ticket_id": ticket.id,
                 "guest_name": ticket.guest_name,
                 "phone": ticket.customer.phone if ticket.customer else "—",
-                "ticket_type": ticket.ticket_type.value,
+                "ticket_type": safe_value(ticket.ticket_type),
             },
             "total_points": total_points,
             "answers": result,

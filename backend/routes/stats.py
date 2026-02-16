@@ -4,7 +4,7 @@ Statistics API Routes
 from fastapi import APIRouter
 from sqlalchemy import func
 
-from models import get_session, Ticket, Customer, TicketType, TicketStatus
+from models import get_session, Ticket, Customer, TicketType, TicketStatus, safe_value
 
 router = APIRouter()
 
@@ -36,11 +36,11 @@ async def get_dashboard_stats():
         
         # By type
         vip_count = session.query(func.count(Ticket.id)).filter(
-            Ticket.ticket_type == TicketType.VIP
+            func.upper(Ticket.ticket_type) == 'VIP'
         ).scalar() or 0
         
         student_count = session.query(func.count(Ticket.id)).filter(
-            Ticket.ticket_type == TicketType.STUDENT
+            func.upper(Ticket.ticket_type) == 'STUDENT'
         ).scalar() or 0
         
         # Revenue
@@ -82,8 +82,8 @@ async def get_recent_tickets(limit: int = 10):
         results = []
         for t in tickets:
             try:
-                ticket_type = t.ticket_type.value if hasattr(t.ticket_type, 'value') else str(t.ticket_type)
-                status = t.status.value if hasattr(t.status, 'value') else str(t.status)
+                ticket_type = safe_value(t.ticket_type)
+                status = safe_value(t.status)
                 
                 results.append({
                     "id": t.id,

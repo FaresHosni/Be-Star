@@ -13,6 +13,11 @@ import json
 Base = declarative_base()
 
 
+def safe_value(v):
+    """Extract string value from Enum or return string as-is."""
+    return v.value if hasattr(v, 'value') else str(v)
+
+
 class TicketType(str, enum.Enum):
     VIP = "VIP"
     STUDENT = "Student"
@@ -43,8 +48,8 @@ class Ticket(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     code = Column(String(6), unique=True, nullable=False, index=True)
-    ticket_type = Column(SQLEnum(TicketType), nullable=False)
-    status = Column(SQLEnum(TicketStatus), default=TicketStatus.PENDING)
+    ticket_type = Column(String(20), nullable=False)
+    status = Column(String(30), default="pending")
     price = Column(Integer, nullable=False)
     
     customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
