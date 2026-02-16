@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import {
     Award, Send, Search, ChevronUp, ChevronDown, CheckCircle, XCircle,
     Users, Trophy, Clock, MessageCircle, FileText, Star, Sparkles,
-    Hash, AlertCircle
+    Hash, AlertCircle, Eye, Download
 } from 'lucide-react'
 
 const API = '/api/certificates'
@@ -95,6 +95,10 @@ function CertificatesPage() {
         if (!n || n <= 0) return
         const sorted = [...participants].sort((a, b) => b.total_points - a.total_points)
         setSelectedIds(sorted.slice(0, n).map(p => p.ticket_id))
+    }
+
+    const previewCertificate = (ticketId) => {
+        window.open(`${API}/preview/${ticketId}`, '_blank')
     }
 
     const getFilteredParticipants = () => {
@@ -332,6 +336,7 @@ function CertificatesPage() {
                                     <th className="text-center p-4 text-white/30 text-xs font-medium">النقاط</th>
                                     <th className="text-center p-4 text-white/30 text-xs font-medium">الإجابات</th>
                                     <th className="text-center p-4 text-white/30 text-xs font-medium">الصحيحة</th>
+                                    <th className="text-center p-4 text-white/30 text-xs font-medium w-20">الشهادة</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -391,6 +396,16 @@ function CertificatesPage() {
                                             <span className="text-white/20 text-xs mx-1">/</span>
                                             <span className="text-white/30 text-xs">{p.total_answers}</span>
                                         </td>
+                                        <td className="p-4 text-center">
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); previewCertificate(p.ticket_id) }}
+                                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gold-500/10 text-gold-400 hover:bg-gold-500/20 border border-gold-500/20 text-xs font-medium transition-colors"
+                                                title="عرض الشهادة"
+                                            >
+                                                <Eye className="w-3.5 h-3.5" />
+                                                عرض
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -414,6 +429,7 @@ function CertificatesPage() {
                                 <th className="text-right p-4 text-white/30 text-xs font-medium">الهاتف</th>
                                 <th className="text-center p-4 text-white/30 text-xs font-medium">النقاط</th>
                                 <th className="text-center p-4 text-white/30 text-xs font-medium">المركز</th>
+                                <th className="text-center p-4 text-white/30 text-xs font-medium w-20">الشهادة</th>
                                 <th className="text-center p-4 text-white/30 text-xs font-medium">الحالة</th>
                                 <th className="text-right p-4 text-white/30 text-xs font-medium">التاريخ</th>
                             </tr>
@@ -432,6 +448,16 @@ function CertificatesPage() {
                                         <span className="text-gold-400 font-bold">{log.total_points}</span>
                                     </td>
                                     <td className="p-4 text-center">{getRankBadge(log.rank)}</td>
+                                    <td className="p-4 text-center">
+                                        <button
+                                            onClick={() => previewCertificate(log.ticket_id)}
+                                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gold-500/10 text-gold-400 hover:bg-gold-500/20 border border-gold-500/20 text-xs font-medium transition-colors"
+                                            title="عرض الشهادة"
+                                        >
+                                            <Eye className="w-3.5 h-3.5" />
+                                            عرض
+                                        </button>
+                                    </td>
                                     <td className="p-4 text-center">{getStatusBadge(log.status)}</td>
                                     <td className="p-4 text-white/30 text-xs">{formatDate(log.sent_at)}</td>
                                 </tr>

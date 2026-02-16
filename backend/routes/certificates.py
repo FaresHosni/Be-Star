@@ -96,6 +96,42 @@ async def get_participants(sort_by: str = "points"):
         session.close()
 
 
+@router.get("/preview/{ticket_id}")
+async def preview_certificate(ticket_id: int):
+    """Generate and return a certificate PDF for preview/download"""
+    try:
+        # Get participant data
+        participants_resp = await get_participants(sort_by="points")
+        all_participants = participants_resp["participants"]
+        total_count = participants_resp["total_participants"]
+        
+        participant = next((p for p in all_participants if p["ticket_id"] == ticket_id), None)
+        if not participant:
+            raise HTTPException(status_code=404, detail="المشارك غير موجود")
+        
+        # Generate PDF
+        pdf_bytes = generate_certificate_pdf(
+            guest_name=participant["guest_name"],
+            total_points=participant["total_points"],
+            rank=participant["rank"],
+            total_participants=total_count
+        )
+        
+        from fastapi.responses import Response
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"inline; filename=BeStarCertificate_{ticket_id}.pdf"
+            }
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error previewing certificate: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.post("/send-certificates")
 async def send_certificates(req: SendCertificatesRequest):
     """Generate and send certificate PDFs via WhatsApp for selected participants"""
