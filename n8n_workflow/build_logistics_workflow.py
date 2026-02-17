@@ -468,25 +468,57 @@ connections["Has Complaint?"] = { "main": [[{"node": "Escalate to Manager", "typ
 # ربط الـ Router بالمسارين
 # ═══════════════════════════════════════════
 
-connections["Router"] = {
-    "main": [
-        [{"node": "Get Data for Manager", "type": "main", "index": 0}], # Route 1: Manager
-        [{"node": "Get Group Tasks", "type": "main", "index": 0}],      # Route 2: Group
-        [{"node": "Manual Client Handling", "type": "main", "index": 0}] # Route 3: Client (Future)
-    ]
-}
-
 # ═══════════════════════════════════════════
 # المسار 3: العملاء (Client Flow) (Output Index 2)
 # ═══════════════════════════════════════════
+
+# 3.1 فلتر: تجاهل الجروبات الأخرى (Ignore Other Groups)
+nodes.append({
+    "parameters": {
+        "conditions": {
+            "options": {"caseSensitive": True, "leftValue": "", "typeValidation": "strict", "version": 2},
+            "conditions": [{
+                "id": uid(),
+                "leftValue": "={{ $json.is_group }}",
+                "rightValue": False, # Pass only if NOT a group (i.e., individual client)
+                "operator": {"type": "boolean", "operation": "equals"}
+            }],
+            "combinator": "and"
+        },
+        "options": {}
+    },
+    "type": "n8n-nodes-base.if",
+    "typeVersion": 2.2,
+    "position": [1150, 1200],
+    "id": uid(),
+    "name": "Is Individual Client?"
+})
+
+# 3.2 معالجة العملاء (Manual Handling)
 nodes.append({
     "parameters": {},
     "type": "n8n-nodes-base.noOp",
     "typeVersion": 1,
-    "position": [1150, 1200],
+    "position": [1400, 1200],
     "id": uid(),
     "name": "Manual Client Handling"
 })
+
+connections["Is Individual Client?"] = {
+    "main": [[{"node": "Manual Client Handling", "type": "main", "index": 0}]]
+}
+
+# ═══════════════════════════════════════════
+# ربط الـ Router بالمسارات (تحديث)
+# ═══════════════════════════════════════════
+
+connections["Router"] = {
+    "main": [
+        [{"node": "Get Data for Manager", "type": "main", "index": 0}],      # Route 1: Manager
+        [{"node": "Get Group Tasks", "type": "main", "index": 0}],           # Route 2: Target Group
+        [{"node": "Is Individual Client?", "type": "main", "index": 0}]      # Route 3: Others (Filtered)
+    ]
+}
 
 # ═══════════════════════════════════════════
 # جزء التذكيرات (Agenda Reminders) - مستقل

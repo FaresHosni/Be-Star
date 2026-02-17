@@ -13,7 +13,7 @@
         0,
         600
       ],
-      "id": "9cd98322-3631-4b11-9f3d-054499ee964c",
+      "id": "f5639073-adda-480f-9d7c-420c7f5ed41a",
       "name": "Whatsapp",
       "webhookId": "d8fa5154-f391-43c2-ad0c-f5c7b3eb2737"
     },
@@ -29,7 +29,7 @@
         240,
         600
       ],
-      "id": "c9fe0be1-b36f-4620-a57f-4d863075c996",
+      "id": "5e8ec891-9e44-4253-8c51-393b97b28fc7",
       "name": "Extract Message Data"
     },
     {
@@ -43,7 +43,7 @@
           },
           "conditions": [
             {
-              "id": "37e979b3-0682-4e38-b87a-36aa0901c3f0",
+              "id": "6b94d821-efef-46e8-9aa1-8ac7bc58c9da",
               "leftValue": "={{ $json.message_text }}",
               "rightValue": "",
               "operator": {
@@ -62,7 +62,7 @@
         460,
         600
       ],
-      "id": "ba6d63ee-58dd-41f5-a674-de0005dcc179",
+      "id": "bef7ede2-901a-4d1b-bd8f-eebdcea92af1",
       "name": "Is Not Empty?"
     },
     {
@@ -78,7 +78,7 @@
         680,
         600
       ],
-      "id": "4fbdd9ad-1b88-487b-9880-644973a54e57",
+      "id": "c6e795d5-a395-4205-9ce9-3ced136bd99a",
       "name": "Get Routing Settings",
       "continueOnFail": true
     },
@@ -87,13 +87,13 @@
         "rules": {
           "values": [
             {
-              "id": "2a781d4c-92ae-4c11-bc3e-e2d5e30dbd33",
+              "id": "4572dcc7-0ce4-4a5d-951d-0e5ab71545d9",
               "v": "={{ $json.manager_phone + '@s.whatsapp.net' }}",
               "operator": "equal",
               "column": "={{ $('Extract Message Data').item.json.remoteJid }}"
             },
             {
-              "id": "1cf81fa4-2827-4ab6-800a-7d2ef80625e5",
+              "id": "0bea3995-0ca9-49d0-94f3-ed09b5d7f413",
               "v": "={{ $json.whatsapp_group_id }}",
               "operator": "equal",
               "column": "={{ $('Extract Message Data').item.json.remoteJid }}"
@@ -110,7 +110,7 @@
         900,
         600
       ],
-      "id": "1588c4c5-5902-4cb7-90a1-d1a4246f80ad",
+      "id": "432501bb-8669-47d4-9669-607d665e8365",
       "name": "Router"
     },
     {
@@ -126,7 +126,7 @@
         1150,
         400
       ],
-      "id": "aeadffea-6719-4c0b-a88d-1511a593186b",
+      "id": "0f5a626f-66ed-4408-9183-1a300790353f",
       "name": "Get Data for Manager",
       "continueOnFail": true
     },
@@ -143,7 +143,7 @@
         1350,
         400
       ],
-      "id": "294d1679-e223-44f0-9d29-86cbc45960b1",
+      "id": "2c2afa42-f564-49d6-abc4-ba24eb990176",
       "name": "Get Tasks for Manager",
       "continueOnFail": true
     },
@@ -161,7 +161,7 @@
         1550,
         400
       ],
-      "id": "e15d117d-b146-4c16-ae28-421fe63e8b3c",
+      "id": "7adce796-4031-41c0-b17f-a31fcc449d22",
       "name": "Manager AI Agent"
     },
     {
@@ -177,7 +177,7 @@
         1400,
         600
       ],
-      "id": "5f25f12a-7012-40e0-8fbc-e85b0d2e2d50",
+      "id": "161f0ac7-d617-43f5-9038-5ba156366090",
       "name": "Azure OpenAI (Manager)",
       "credentials": {
         "azureOpenAiApi": {
@@ -200,7 +200,7 @@
         1800,
         400
       ],
-      "id": "da2ca2a3-9f04-463a-899d-2be87568a7b6",
+      "id": "ea2ab432-fba5-45fc-a601-2c25371a62e4",
       "name": "Send Reply to Manager",
       "credentials": {
         "evolutionApi": {
@@ -222,7 +222,7 @@
         1150,
         800
       ],
-      "id": "a206483b-4bf8-48ba-908c-0177d35d5a2d",
+      "id": "531ea88e-d441-43a8-9132-77d59127786b",
       "name": "Get Group Tasks",
       "continueOnFail": true
     },
@@ -239,7 +239,7 @@
         1350,
         800
       ],
-      "id": "2f424afb-b2ae-4372-af02-ce38c7a3aecb",
+      "id": "c0dcae02-e860-4a2a-90bb-d86ec9b611d3",
       "name": "Get Group Complaints",
       "continueOnFail": true
     },
@@ -257,7 +257,7 @@
         1550,
         800
       ],
-      "id": "d705259e-5c89-4de1-be15-fdfc7e1dce5b",
+      "id": "8530f154-0b0e-42e7-8471-935d1cb89553",
       "name": "Group AI Agent"
     },
     {
@@ -273,7 +273,7 @@
         1400,
         1000
       ],
-      "id": "fabea958-47bc-46b6-a8b2-f948f2c3d464",
+      "id": "e8184426-10ea-4a0d-919c-87c1d8e82aa9",
       "name": "Azure OpenAI (Group)",
       "credentials": {
         "azureOpenAiApi": {
@@ -297,7 +297,7 @@
         1350,
         1200
       ],
-      "id": "cfcd9361-1e22-40c9-9652-b8241934948e",
+      "id": "6550ff9c-fff3-4e23-ae31-fbc9e23452b8",
       "name": "Search Task Tool"
     },
     {
@@ -316,7 +316,7 @@
         1550,
         1200
       ],
-      "id": "f7f280f9-81a0-48bc-8116-09fafae7fee9",
+      "id": "fd1b94f1-96d4-4142-b610-36a8e83ad91c",
       "name": "Complete Task Tool"
     },
     {
@@ -335,7 +335,7 @@
         1750,
         1200
       ],
-      "id": "9389fc3d-2445-4c11-9324-f95685239386",
+      "id": "06e09bd9-70ee-4c29-a5fa-5ba403d567a9",
       "name": "Register Complaint Tool"
     },
     {
@@ -352,7 +352,7 @@
         1800,
         800
       ],
-      "id": "6266f0ab-88ee-456c-922f-74ecf24ade93",
+      "id": "3e5c28ee-61c4-4f10-980f-bf65d3f52235",
       "name": "Send Reply to Group",
       "credentials": {
         "evolutionApi": {
@@ -372,7 +372,7 @@
           },
           "conditions": [
             {
-              "id": "d81c012e-6923-4447-98c7-4a45629d5c43",
+              "id": "04098d11-aa49-4456-829d-fd8d602a707e",
               "leftValue": "={{ $json.output }}",
               "rightValue": "شكوى",
               "operator": {
@@ -391,7 +391,7 @@
         2000,
         800
       ],
-      "id": "9a22a14f-0f61-408b-b850-0ce4ebf756bd",
+      "id": "52e6e8af-b3c0-441e-b46c-2b5962990b6c",
       "name": "Has Complaint?"
     },
     {
@@ -408,7 +408,7 @@
         2200,
         700
       ],
-      "id": "64262a73-8107-4812-8f4c-c7b888b12cf5",
+      "id": "8528ad92-d469-44c1-b781-10f3195cd059",
       "name": "Escalate to Manager",
       "credentials": {
         "evolutionApi": {
@@ -418,14 +418,47 @@
       }
     },
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "43508341-32ff-42c1-827f-088b5301bfd7",
+              "leftValue": "={{ $json.is_group }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
       "position": [
         1150,
         1200
       ],
-      "id": "1c6cf839-bf51-4fe3-840c-109305f6a9be",
+      "id": "7ee399ec-56fa-420b-83b5-d1e9baf21da3",
+      "name": "Is Individual Client?"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        1200
+      ],
+      "id": "0d481ad1-2f5a-413d-9180-d4ea2d400c6f",
       "name": "Manual Client Handling"
     },
     {
@@ -445,7 +478,7 @@
         0,
         1600
       ],
-      "id": "047e9c7d-570b-40bb-9d9e-c7dae107ac0f",
+      "id": "04c9bef9-a811-405d-82ab-39e27901ac07",
       "name": "Every Minute Trigger"
     },
     {
@@ -461,7 +494,7 @@
         200,
         1600
       ],
-      "id": "1219fcfa-eca5-44c5-b31e-da8486b300b3",
+      "id": "aa538711-d687-49b3-a150-615670cc4e73",
       "name": "Check Upcoming Events",
       "continueOnFail": true
     },
@@ -476,7 +509,7 @@
           },
           "conditions": [
             {
-              "id": "5f6e25dc-c5a7-41a0-8da4-b851631d1195",
+              "id": "72c2c471-0a63-4a56-97cf-4ea81861766f",
               "leftValue": "={{ $json.count }}",
               "rightValue": 0,
               "operator": {
@@ -495,7 +528,7 @@
         400,
         1600
       ],
-      "id": "2b6648bb-c75c-442b-bd74-377f6761ce53",
+      "id": "3a511c96-9f9b-4f36-89aa-d606117c291e",
       "name": "Has Upcoming Events?"
     },
     {
@@ -511,7 +544,7 @@
         600,
         1500
       ],
-      "id": "c335eaef-3a73-460e-92f9-01955704ffcf",
+      "id": "1a5bc7bf-8684-4a0f-b1ec-f9530818d366",
       "name": "Get Settings for Reminder",
       "continueOnFail": true
     },
@@ -526,7 +559,7 @@
         800,
         1500
       ],
-      "id": "2b48f54e-7082-4242-83b6-ec546daaacbf",
+      "id": "c7b79b06-2d51-4a29-b436-1643cc4e3741",
       "name": "Split Events"
     },
     {
@@ -543,7 +576,7 @@
         1000,
         1500
       ],
-      "id": "8ee92d13-c231-4841-836a-46d4372c3415",
+      "id": "8e61b057-2b09-4dbe-9eaf-429c6d4b7925",
       "name": "Send Reminder to Group",
       "credentials": {
         "evolutionApi": {
@@ -564,7 +597,7 @@
         1200,
         1500
       ],
-      "id": "d126dcb6-5f46-4b06-83dc-aace680631ba",
+      "id": "3151314d-16d7-43cf-b4e9-d8244d2baa0a",
       "name": "Mark Reminder Sent"
     }
   ],
@@ -758,6 +791,17 @@
         []
       ]
     },
+    "Is Individual Client?": {
+      "main": [
+        [
+          {
+            "node": "Manual Client Handling",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Router": {
       "main": [
         [
@@ -776,7 +820,7 @@
         ],
         [
           {
-            "node": "Manual Client Handling",
+            "node": "Is Individual Client?",
             "type": "main",
             "index": 0
           }
@@ -853,6 +897,6 @@
   },
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "92132a66-560f-4832-a65f-0e4fc1396cdf"
+    "instanceId": "ca0c90b4-edc5-4cb4-b785-83b71061a9fe"
   }
 }
