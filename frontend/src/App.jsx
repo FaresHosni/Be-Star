@@ -11,6 +11,9 @@ import Login from './pages/Login'
 import LiveEngagement from './pages/LiveEngagement'
 import QuizEngine from './pages/QuizEngine'
 import CertificatesPage from './pages/CertificatesPage'
+import ChecklistPage from './pages/ChecklistPage'
+import AgendaPage from './pages/AgendaPage'
+import ComplaintsPage from './pages/ComplaintsPage'
 import ChatWidget from './components/ChatWidget'
 
 function App() {
@@ -59,6 +62,9 @@ function App() {
                         <Route path="/engagement" element={<LiveEngagement />} />
                         <Route path="/quiz" element={<QuizEngine />} />
                         <Route path="/certificates" element={<CertificatesPage />} />
+                        <Route path="/checklist" element={<ChecklistPage />} />
+                        <Route path="/agenda" element={<AgendaPage />} />
+                        <Route path="/complaints" element={<ComplaintsPage />} />
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
                 </main>

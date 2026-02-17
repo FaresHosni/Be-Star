@@ -1,0 +1,927 @@
+{
+  "name": "AI Logistics Coordinator - موظف لوجستيات التشغيل",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "logistics-group-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "id": "efdb495e-35a7-4f93-b524-4842c4fc97c6",
+      "name": "WhatsApp Group Webhook",
+      "webhookId": "dcac6853-542c-4717-a950-5a9c157402cb"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"sender_phone\": \"{{ $json.body.data.key.participant || $json.body.data.key.remoteJid }}\",\n  \"sender_name\": \"{{ $json.body.data.pushName || 'مجهول' }}\",\n  \"message_text\": \"{{ $json.body.data.message.conversation || $json.body.data.message.extendedTextMessage?.text || '' }}\",\n  \"group_id\": \"{{ $json.body.data.key.remoteJid }}\",\n  \"instance\": \"{{ $json.body.instance }}\",\n  \"is_group\": {{ $json.body.data.key.remoteJid?.includes(\"@g.us\") || false }}\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        300
+      ],
+      "id": "cb19ec29-e989-4eab-bceb-81b0ddaaa4a6",
+      "name": "Extract Message Data"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ee01cd5d-88d6-421e-8ee9-e09303bf20ee",
+              "leftValue": "={{ $json.is_group }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "455e911a-5f81-42e0-9364-20f32245f4d6",
+              "leftValue": "={{ $json.message_text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "isNotEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        300
+      ],
+      "id": "92f595ef-fafc-41a0-9a31-1937d4776b2d",
+      "name": "Is Group Message?"
+    },
+    {
+      "parameters": {
+        "url": "http://38.242.139.159:3005/api/checklist/settings",
+        "options": {
+          "timeout": 8000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        720,
+        200
+      ],
+      "id": "f9585dba-9a1c-4cea-a4b3-6749b30b32af",
+      "name": "Get Logistics Settings",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "=http://38.242.139.159:3005/api/checklist/?date_filter={{ new Date().toISOString().split('T')[0] }}",
+        "options": {
+          "timeout": 8000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        960,
+        200
+      ],
+      "id": "e8ec26eb-a0d3-48ed-9aa2-c1cca7db06d0",
+      "name": "Get Today Tasks",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "http://38.242.139.159:3005/api/complaints/summary",
+        "options": {
+          "timeout": 8000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        960,
+        400
+      ],
+      "id": "9c74012a-ee36-4ce0-8634-15cd03d06aae",
+      "name": "Get Complaints Summary",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Extract Message Data').first().json.message_text }}",
+        "options": {
+          "systemMessage": "أنت موظف لوجستيات تشغيل ذكي (AI Logistics Coordinator) تعمل في جروب واتساب لإدارة الإيفنتات.\n\n# دورك:\n1. **متابعة إتمام المهام**: لما حد يقول إنه خلّص مهمة، تتحقق من اسمها في قائمة المهام وتسأله \"هل أنت متأكد إنك أنهيت مهمة [اسم المهمة]؟\" ولو أكد تعمل عليها علامة ✅\n2. **استقبال الشكاوى**: لو حد قدّم شكوى أو مشكلة، تسجلها فوراً وتصعدها للمدير\n3. **الرد على الاستفسارات**: لو حد سأل عن المهام أو الأحداث تجاوبه\n\n# المهام المتاحة اليوم:\n{{ $('Get Today Tasks').first().json | stringify }}\n\n# ملخص الشكاوى:\n{{ $('Get Complaints Summary').first().json | stringify }}\n\n# إعدادات:\n{{ $('Get Logistics Settings').first().json | stringify }}\n\n# قواعد مهمة:\n- كلامك يكون بالعربي المصري\n- لما حد يقول \"خلصت\" أو \"أنهيت\" أو \"تمت\" مع اسم مهمة → استخدم أداة البحث عن المهمة\n- لما تلاقي المهمة → اسأل \"هل أنت متأكد إنك أنهيت مهمة [الاسم]؟\"\n- لو أكد → استخدم أداة تعليم المهمة كمكتملة\n- لو فيه شكوى أو مشكلة → استخدم أداة تسجيل الشكوى\n- كن محترف ومختصر في ردودك\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1200,
+        300
+      ],
+      "id": "5e5a11fe-0085-4c01-bab2-382bdcf99fc3",
+      "name": "Logistics AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        520
+      ],
+      "id": "3d4c110c-14ca-4156-9b9b-a3fa1a61a0f6",
+      "name": "Azure OpenAI (Logistics)",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "dHqEdXN0XQ09LqJi",
+          "name": "Azure OpenAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "استخدم هذه الأداة للبحث عن مهمة بالاسم في قائمة مهام اليوم. أرسل task_name (اسم المهمة أو جزء منه).",
+        "method": "GET",
+        "url": "=http://38.242.139.159:3005/api/checklist/search?task_name={{ $fromAI('task_name', '') }}",
+        "options": {
+          "timeout": 8000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        1000,
+        680
+      ],
+      "id": "5a588683-3221-4662-9a21-448507cf6058",
+      "name": "Search Task Tool"
+    },
+    {
+      "parameters": {
+        "toolDescription": "استخدم هذه الأداة لتعليم مهمة كمكتملة بعد تأكيد العميل. أرسل task_id (رقم المهمة).",
+        "method": "PUT",
+        "url": "=http://38.242.139.159:3005/api/checklist/{{ $fromAI('task_id', '') }}/toggle",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"is_completed\": true,\n  \"completed_by_phone\": \"{{ $('Extract Message Data').first().json.sender_phone }}\",\n  \"completed_by_name\": \"{{ $('Extract Message Data').first().json.sender_name }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        1200,
+        680
+      ],
+      "id": "4e600b82-3401-4cd3-b1bd-c73a1fb630c1",
+      "name": "Complete Task Tool"
+    },
+    {
+      "parameters": {
+        "toolDescription": "استخدم هذه الأداة لتسجيل شكوى جديدة من عميل. أرسل complaint_text (نص الشكوى).",
+        "method": "POST",
+        "url": "http://38.242.139.159:3005/api/complaints/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"reporter_phone\": \"{{ $('Extract Message Data').first().json.sender_phone }}\",\n  \"reporter_name\": \"{{ $('Extract Message Data').first().json.sender_name }}\",\n  \"complaint_text\": \"{{ $fromAI('complaint_text', '') }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        1400,
+        680
+      ],
+      "id": "99bd9fa8-83c0-4371-b71b-e0da03de1b84",
+      "name": "Register Complaint Tool"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Extract Message Data').first().json.instance }}",
+        "remoteJid": "={{ $('Extract Message Data').first().json.group_id }}",
+        "messageText": "={{ $json.output }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        300
+      ],
+      "id": "dd1aa4be-fc84-4bab-86da-0c4b2b1d59b9",
+      "name": "Send AI Reply to Group",
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9eec80e8-3feb-42d7-9d4d-6775c0648d8e",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "شكوى",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1740,
+        300
+      ],
+      "id": "f54a8c72-ef35-4019-bc34-74de7a22fdbb",
+      "name": "Has Complaint?"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Extract Message Data').first().json.instance }}",
+        "remoteJid": "={{ $('Get Logistics Settings').first().json.manager_phone + '@s.whatsapp.net' }}",
+        "messageText": "=🔺 *شكوى جديدة!*\n\n👤 من: {{ $('Extract Message Data').first().json.sender_name }}\n📱 رقم: {{ $('Extract Message Data').first().json.sender_phone }}\n\n💬 {{ $('Extract Message Data').first().json.message_text }}\n\n⏰ {{ new Date().toLocaleString('ar-EG', {timeZone: 'Africa/Cairo'}) }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        200
+      ],
+      "id": "f78a6d17-ab65-41ec-ad7f-2c190d3e2ad5",
+      "name": "Escalate to Manager",
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        800
+      ],
+      "id": "d3d41220-39be-4037-bbcf-f12700fcc02c",
+      "name": "Every Minute Trigger"
+    },
+    {
+      "parameters": {
+        "url": "http://38.242.139.159:3005/api/agenda/upcoming?minutes=10",
+        "options": {
+          "timeout": 8000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        240,
+        800
+      ],
+      "id": "759e1f79-ff2b-49d2-a89c-bdad28b72031",
+      "name": "Check Upcoming Events",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "92e9f055-0ffd-4487-b128-34a60242cca9",
+              "leftValue": "={{ $json.count }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        800
+      ],
+      "id": "9109baf0-a448-4474-9de5-ac0d4f16c90a",
+      "name": "Has Upcoming Events?"
+    },
+    {
+      "parameters": {
+        "url": "http://38.242.139.159:3005/api/checklist/settings",
+        "options": {
+          "timeout": 8000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        720,
+        700
+      ],
+      "id": "88f6d862-0bdd-49b3-8e73-c70e7646436b",
+      "name": "Get Settings for Reminder",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "={{ $('Check Upcoming Events').first().json.upcoming }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        960,
+        700
+      ],
+      "id": "9a17fb3e-9a6a-4eae-bbcd-6a1d7aa67c81",
+      "name": "Split Events"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('WhatsApp Group Webhook').first().json.body?.instance || 'default' }}",
+        "remoteJid": "={{ $('Get Settings for Reminder').first().json.whatsapp_group_id }}",
+        "messageText": "=⏰ *تذكير!*\n\n📌 باقي 10 دقائق على:\n\n🎯 *{{ $json.title }}*\n📍 المكان: {{ $json.location || 'غير محدد' }}\n🕐 الوقت: {{ new Date($json.event_time).toLocaleTimeString('ar-EG', {hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Cairo'}) }}\n{{ $json.description ? '\\n📝 ' + $json.description : '' }}\n\nاستعدوا! 🚀",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        700
+      ],
+      "id": "83816a20-58e0-4875-9c6a-3ebf27044f9b",
+      "name": "Send Reminder to Group",
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=http://38.242.139.159:3005/api/agenda/{{ $json.id }}/reminder-sent",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1440,
+        700
+      ],
+      "id": "011b8e9d-2759-4289-b5c4-7d1e4a60c1a3",
+      "name": "Mark Reminder Sent"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "logistics-manager-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        1300
+      ],
+      "id": "315c238f-016c-4612-ba74-4c4e9b483216",
+      "name": "Manager WhatsApp Webhook",
+      "webhookId": "ebf571c3-028b-4280-ae5a-3ffae4862e24"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"manager_phone\": \"{{ $json.body.data.key.remoteJid }}\",\n  \"message_text\": \"{{ $json.body.data.message.conversation || $json.body.data.message.extendedTextMessage?.text || '' }}\",\n  \"instance\": \"{{ $json.body.instance }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        1300
+      ],
+      "id": "623c407e-270c-46e1-aebb-af55b3cf9175",
+      "name": "Extract Manager Message"
+    },
+    {
+      "parameters": {
+        "url": "http://38.242.139.159:3005/api/complaints/summary",
+        "options": {
+          "timeout": 8000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        480,
+        1300
+      ],
+      "id": "3cb15430-fff2-4f6a-9867-682840c821f9",
+      "name": "Get Data for Manager",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "=http://38.242.139.159:3005/api/checklist/?date_filter={{ new Date().toISOString().split('T')[0] }}",
+        "options": {
+          "timeout": 8000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        720,
+        1300
+      ],
+      "id": "22ac674c-a864-4b03-99ae-524eab80fac1",
+      "name": "Get Tasks for Manager",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Extract Manager Message').first().json.message_text }}",
+        "options": {
+          "systemMessage": "أنت مساعد ذكي للمدير. بتديله تقارير وملخصات عن شغل اليوم.\n\n# بيانات الشكاوى:\n{{ $('Get Data for Manager').first().json | stringify }}\n\n# مهام اليوم:\n{{ $('Get Tasks for Manager').first().json | stringify }}\n\n# قواعدك:\n- كلامك بالعربي المصري\n- لو المدير سأل \"إيه المشاكل؟\" أو \"فيه شكاوى؟\" → اعرض الشكاوى المفتوحة بالتفصيل\n- لو سأل \"إيه حالة المهام؟\" → اعرض ملخص المهام (مكتملة/معلقة)\n- لو سأل سؤال عام → جاوبه بناءً على البيانات المتاحة\n- كن مختصر ومحترف\n- استخدم الإيموجي بشكل معتدل\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        960,
+        1300
+      ],
+      "id": "f4bba49b-4ffb-4120-a39f-e9226ef234c3",
+      "name": "Manager AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        860,
+        1520
+      ],
+      "id": "0eb4cb3d-bf42-4a10-bc5b-abb172e8a328",
+      "name": "Azure OpenAI (Manager)",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "dHqEdXN0XQ09LqJi",
+          "name": "Azure OpenAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Extract Manager Message').first().json.instance }}",
+        "remoteJid": "={{ $('Extract Manager Message').first().json.manager_phone }}",
+        "messageText": "={{ $json.output }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api-english.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        1300
+      ],
+      "id": "f8b5f619-d3bb-4542-b51c-0c4006abf983",
+      "name": "Send Reply to Manager",
+      "credentials": {
+        "evolutionApi": {
+          "id": "IGwXyU5Jbou5S5V3",
+          "name": "Business Number"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# 📋 جروب واتساب - إتمام المهام والشكاوى\nيستقبل رسائل الجروب → يصنف النية → يتحقق من المهام → يسجل الشكاوى"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        100
+      ],
+      "id": "6331a23e-e637-4eae-ac8a-64897b2d8f35",
+      "name": "Sticky Note 1"
+    },
+    {
+      "parameters": {
+        "content": "# ⏰ التذكيرات التلقائية\nكل دقيقة يتحقق من الأحداث القادمة → يبعت تذكير قبل 10 دقائق"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        650
+      ],
+      "id": "6419dae9-5c36-4e5f-b12e-189500ce2b4a",
+      "name": "Sticky Note 2"
+    },
+    {
+      "parameters": {
+        "content": "# 👔 محادثة المدير الخاصة\nالمدير يقدر يسأل عن الشكاوى والمهام ويحصل على ملخصات"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        1150
+      ],
+      "id": "511a1158-6962-45c8-8afe-68d8a0466313",
+      "name": "Sticky Note 3"
+    }
+  ],
+  "connections": {
+    "WhatsApp Group Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Message Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Message Data": {
+      "main": [
+        [
+          {
+            "node": "Is Group Message?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Group Message?": {
+      "main": [
+        [
+          {
+            "node": "Get Logistics Settings",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Get Logistics Settings": {
+      "main": [
+        [
+          {
+            "node": "Get Today Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Today Tasks": {
+      "main": [
+        [
+          {
+            "node": "Get Complaints Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Complaints Summary": {
+      "main": [
+        [
+          {
+            "node": "Logistics AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI (Logistics)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Logistics AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Task Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Logistics AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Complete Task Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Logistics AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Register Complaint Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Logistics AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Logistics AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send AI Reply to Group",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send AI Reply to Group": {
+      "main": [
+        [
+          {
+            "node": "Has Complaint?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Complaint?": {
+      "main": [
+        [
+          {
+            "node": "Escalate to Manager",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Every Minute Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check Upcoming Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Upcoming Events": {
+      "main": [
+        [
+          {
+            "node": "Has Upcoming Events?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Upcoming Events?": {
+      "main": [
+        [
+          {
+            "node": "Get Settings for Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Get Settings for Reminder": {
+      "main": [
+        [
+          {
+            "node": "Split Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Events": {
+      "main": [
+        [
+          {
+            "node": "Send Reminder to Group",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Reminder to Group": {
+      "main": [
+        [
+          {
+            "node": "Mark Reminder Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manager WhatsApp Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Manager Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Manager Message": {
+      "main": [
+        [
+          {
+            "node": "Get Data for Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Data for Manager": {
+      "main": [
+        [
+          {
+            "node": "Get Tasks for Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Tasks for Manager": {
+      "main": [
+        [
+          {
+            "node": "Manager AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Azure OpenAI (Manager)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Manager AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manager AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Reply to Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "0fc6f83d-3b0b-4b99-a38c-4f3f4673a135",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8df4082ac81111d2321c538ef34013493a96dd3b14b3af10e13ce9c3849e34d3"
+  },
+  "tags": [
+    {
+      "name": "logistics"
+    },
+    {
+      "name": "be-star"
+    }
+  ]
+}

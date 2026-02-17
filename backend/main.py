@@ -19,6 +19,9 @@ from routes.stats import router as stats_router
 from routes.engagement import router as engagement_router
 from routes.quiz import router as quiz_router
 from routes.certificates import router as certificates_router
+from routes.checklist import router as checklist_router
+from routes.agenda import router as agenda_router
+from routes.complaints import router as complaints_router
 
 # Import models to create tables
 from models import init_db
@@ -51,6 +54,9 @@ app.include_router(stats_router, prefix="/api/stats", tags=["Statistics"])
 app.include_router(engagement_router, prefix="/api/engagement", tags=["Live Engagement"])
 app.include_router(quiz_router)  # Quiz router has its own /api/quiz prefix
 app.include_router(certificates_router, prefix="/api/certificates", tags=["Certificates"])
+app.include_router(checklist_router, prefix="/api/checklist", tags=["قائمة المهام"])
+app.include_router(agenda_router, prefix="/api/agenda", tags=["الأجندة"])
+app.include_router(complaints_router, prefix="/api/complaints", tags=["الشكاوى المباشرة"])
 
 
 @app.get("/")

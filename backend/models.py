@@ -288,6 +288,64 @@ class ThankYouLog(Base):
     sent_at = Column(DateTime, default=datetime.utcnow)
 
 
+# ═══════════════════════════════════════════
+# Logistics Coordinator Models (موظف لوجستيات التشغيل)
+# ═══════════════════════════════════════════
+
+class ChecklistItem(Base):
+    """مهمة يومية - يديرها الأدمن ويتابعها الـ AI في جروب واتساب"""
+    __tablename__ = "checklist_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=True)
+    is_completed = Column(Boolean, default=False)
+    completed_by_phone = Column(String(20), nullable=True)   # رقم اللي خلّص المهمة
+    completed_by_name = Column(String(100), nullable=True)   # اسم اللي خلّص المهمة
+    completed_at = Column(DateTime, nullable=True)
+    date = Column(String(10), nullable=False, index=True)     # YYYY-MM-DD
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class AgendaEvent(Base):
+    """حدث في الأجندة - مع تذكير قبل 10 دقائق"""
+    __tablename__ = "agenda_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=True)
+    event_time = Column(DateTime, nullable=False)             # وقت الحدث بالضبط
+    location = Column(String(200), nullable=True)
+    reminder_sent = Column(Boolean, default=False)            # هل اتبعت التذكير؟
+    date = Column(String(10), nullable=False, index=True)     # YYYY-MM-DD
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Complaint(Base):
+    """شكوى من عميل على جروب واتساب"""
+    __tablename__ = "complaints"
+
+    id = Column(Integer, primary_key=True, index=True)
+    reporter_phone = Column(String(20), nullable=True)
+    reporter_name = Column(String(100), nullable=True)
+    complaint_text = Column(Text, nullable=False)
+    status = Column(String(20), default="open")               # open / resolved / escalated
+    resolution_note = Column(Text, nullable=True)
+    escalated_to_manager = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    resolved_at = Column(DateTime, nullable=True)
+
+
+class LogisticsSettings(Base):
+    """إعدادات اللوجستيات - رقم المدير + Group ID (key-value)"""
+    __tablename__ = "logistics_settings"
+
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String(50), unique=True, nullable=False)     # manager_phone / whatsapp_group_id / manager_name
+    value = Column(Text, nullable=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
 def init_db():
     engine = create_db_engine()
     Base.metadata.create_all(bind=engine)

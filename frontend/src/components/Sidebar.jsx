@@ -9,7 +9,10 @@ import {
     Shield,
     Radio,
     Target,
-    Award
+    Award,
+    CheckSquare,
+    Calendar,
+    AlertTriangle
 } from 'lucide-react'
 
 function Sidebar({ admin, onLogout }) {
@@ -18,6 +21,9 @@ function Sidebar({ admin, onLogout }) {
     const menuItems = [
         { path: '/', icon: LayoutDashboard, label: 'لوحة التحكم' },
         { path: '/tickets', icon: Ticket, label: 'التذاكر' },
+        { path: '/checklist', icon: CheckSquare, label: 'قائمة المهام' },
+        { path: '/agenda', icon: Calendar, label: 'الأجندة' },
+        { path: '/complaints', icon: AlertTriangle, label: 'الشكاوى المباشرة' },
         { path: '/distributors', icon: Users, label: 'الموزعين' },
         { path: '/admins', icon: Shield, label: 'المسؤولين' },
         { path: '/engagement', icon: Radio, label: 'التفاعل المباشر' },
