@@ -130,11 +130,41 @@ nodes.append({
 connections["Is Group Message?"] = {
     "main": [
         [{"node": "Get Logistics Settings", "type": "main", "index": 0}],
-        [],  # false branch - do nothing
+        [],  # false branch
     ]
 }
 
-# ── 5. جلب مهام اليوم ─────────────────────────────────────────
+# ── 4.5. فلتر: هل هو الجروب الصحيح؟ ──────────────────────────
+nodes.append({
+    "parameters": {
+        "conditions": {
+            "options": {"caseSensitive": True, "leftValue": "", "typeValidation": "strict", "version": 2},
+            "conditions": [
+                {
+                    "id": uid(),
+                    "leftValue": "={{ $json.whatsapp_group_id }}",
+                    "rightValue": "={{ $('Extract Message Data').item.json.group_id }}",
+                    "operator": {"type": "string", "operation": "equals"}
+                }
+            ],
+            "combinator": "and"
+        },
+        "options": {}
+    },
+    "type": "n8n-nodes-base.if",
+    "typeVersion": 2.2,
+    "position": [960, 200],
+    "id": uid(),
+    "name": "Is Correct Group?"
+})
+
+connections["Get Logistics Settings"] = {
+    "main": [
+        [{"node": "Is Correct Group?", "type": "main", "index": 0}],
+        []
+    ]
+}
+
 nodes.append({
     "parameters": {
         "url": f"={BACKEND}/api/checklist/?date_filter={{{{ new Date().toISOString().split('T')[0] }}}}",
@@ -148,8 +178,11 @@ nodes.append({
     "continueOnFail": True,
 })
 
-connections["Get Logistics Settings"] = {
-    "main": [[{"node": "Get Today Tasks", "type": "main", "index": 0}]]
+connections["Is Correct Group?"] = {
+    "main": [
+        [{"node": "Get Today Tasks", "type": "main", "index": 0}],
+        []
+    ]
 }
 
 # ── 6. جلب ملخص الشكاوى (لو المدير بيسأل) ────────────────────
@@ -570,6 +603,54 @@ connections["Manager WhatsApp Webhook"] = {
     "main": [[{"node": "Extract Manager Message", "type": "main", "index": 0}]]
 }
 
+# ── 23.5. التحقق من هوية المدير ────────────────────────────────
+nodes.append({
+    "parameters": {
+        "url": f"{BACKEND}/api/checklist/settings",
+        "options": {"timeout": 8000}
+    },
+    "type": "n8n-nodes-base.httpRequest",
+    "typeVersion": 4.3,
+    "position": [480, 1300],
+    "id": uid(),
+    "name": "Get Manager Settings",
+    "continueOnFail": True,
+})
+
+connections["Extract Manager Message"] = {
+    "main": [[{"node": "Get Manager Settings", "type": "main", "index": 0}]]
+}
+
+nodes.append({
+    "parameters": {
+        "conditions": {
+            "options": {"caseSensitive": True, "leftValue": "", "typeValidation": "strict", "version": 2},
+            "conditions": [
+                {
+                    "id": uid(),
+                    "leftValue": "={{ $json.manager_phone + '@s.whatsapp.net' }}",
+                    "rightValue": "={{ $('Extract Manager Message').item.json.manager_phone }}",
+                    "operator": {"type": "string", "operation": "equals"}
+                }
+            ],
+            "combinator": "and"
+        },
+        "options": {}
+    },
+    "type": "n8n-nodes-base.if",
+    "typeVersion": 2.2,
+    "position": [720, 1300],
+    "id": uid(),
+    "name": "Is Manager?"
+})
+
+connections["Get Manager Settings"] = {
+    "main": [
+        [{"node": "Is Manager?", "type": "main", "index": 0}],
+        []
+    ]
+}
+
 # ── 24. جلب البيانات للمدير ────────────────────────────────────
 nodes.append({
     "parameters": {
@@ -578,15 +659,17 @@ nodes.append({
     },
     "type": "n8n-nodes-base.httpRequest",
     "typeVersion": 4.3,
-    "position": [480, 1300],
+    "position": [960, 1300],
     "id": uid(),
     "name": "Get Data for Manager",
     "continueOnFail": True,
 })
 
-connections["Extract Manager Message"] = {
+connections["Is Manager?"] = {
     "main": [[{"node": "Get Data for Manager", "type": "main", "index": 0}]]
 }
+
+
 
 # ── 25. جلب مهام اليوم للمدير ──────────────────────────────────
 nodes.append({
