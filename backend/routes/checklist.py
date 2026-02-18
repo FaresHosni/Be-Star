@@ -34,7 +34,7 @@ class SettingsUpdate(BaseModel):
     whatsapp_group_id: Optional[str] = None
 
 
-# ─── Checklist CRUD ───
+# ─── Checklist CRUD (list + create) ───
 
 @router.get("/")
 async def list_checklist(date_filter: Optional[str] = None):
@@ -91,68 +91,53 @@ async def create_checklist(data: ChecklistCreate):
         session.close()
 
 
-@router.put("/{item_id}")
-async def update_checklist(item_id: int, data: ChecklistUpdate):
-    """تعديل مهمة"""
+# ═══════════════════════════════════════════════════════════════
+# ⚠️ IMPORTANT: Static routes MUST come BEFORE /{item_id} routes
+#    FastAPI matches routes top-to-bottom. If /{item_id} is first,
+#    "settings", "progress", "week", "search" get parsed as int → 422 error
+# ═══════════════════════════════════════════════════════════════
+
+
+# ─── Logistics Settings (رقم المدير + Group ID) ───
+
+@router.get("/settings")
+async def get_settings():
+    """جلب إعدادات اللوجستيات"""
     session = get_session()
     try:
-        item = session.query(ChecklistItem).filter(ChecklistItem.id == item_id).first()
-        if not item:
-            raise HTTPException(status_code=404, detail="المهمة غير موجودة")
-
-        if data.title is not None:
-            item.title = data.title
-        if data.description is not None:
-            item.description = data.description
-
-        session.commit()
-        session.refresh(item)
-        return {"message": "تم التعديل", "id": item.id, "title": item.title}
+        settings = session.query(LogisticsSettings).all()
+        result = {}
+        for s in settings:
+            result[s.key] = s.value
+        return result
     finally:
         session.close()
 
 
-@router.put("/{item_id}/toggle")
-async def toggle_checklist(item_id: int, data: ChecklistToggle):
-    """تبديل حالة الإكمال (من واتساب أو من المنصة)"""
+@router.put("/settings")
+async def update_settings(data: SettingsUpdate):
+    """تحديث إعدادات اللوجستيات"""
     session = get_session()
     try:
-        item = session.query(ChecklistItem).filter(ChecklistItem.id == item_id).first()
-        if not item:
-            raise HTTPException(status_code=404, detail="المهمة غير موجودة")
+        updates = {}
+        if data.manager_phone is not None:
+            updates["manager_phone"] = data.manager_phone
+        if data.manager_name is not None:
+            updates["manager_name"] = data.manager_name
+        if data.whatsapp_group_id is not None:
+            updates["whatsapp_group_id"] = data.whatsapp_group_id
 
-        item.is_completed = data.is_completed
-        if data.is_completed:
-            item.completed_at = datetime.utcnow()
-            item.completed_by_phone = data.completed_by_phone
-            item.completed_by_name = data.completed_by_name
-        else:
-            item.completed_at = None
-            item.completed_by_phone = None
-            item.completed_by_name = None
+        for key, value in updates.items():
+            setting = session.query(LogisticsSettings).filter(LogisticsSettings.key == key).first()
+            if setting:
+                setting.value = value
+                setting.updated_at = datetime.utcnow()
+            else:
+                setting = LogisticsSettings(key=key, value=value)
+                session.add(setting)
 
         session.commit()
-        return {
-            "message": "تم التحديث",
-            "id": item.id,
-            "is_completed": item.is_completed,
-        }
-    finally:
-        session.close()
-
-
-@router.delete("/{item_id}")
-async def delete_checklist(item_id: int):
-    """حذف مهمة"""
-    session = get_session()
-    try:
-        item = session.query(ChecklistItem).filter(ChecklistItem.id == item_id).first()
-        if not item:
-            raise HTTPException(status_code=404, detail="المهمة غير موجودة")
-
-        session.delete(item)
-        session.commit()
-        return {"message": "تم الحذف"}
+        return {"message": "تم تحديث الإعدادات", "updated": list(updates.keys())}
     finally:
         session.close()
 
@@ -216,50 +201,6 @@ async def get_week_progress(start_date: Optional[str] = None):
         session.close()
 
 
-# ─── Logistics Settings (رقم المدير + Group ID) ───
-
-@router.get("/settings")
-async def get_settings():
-    """جلب إعدادات اللوجستيات"""
-    session = get_session()
-    try:
-        settings = session.query(LogisticsSettings).all()
-        result = {}
-        for s in settings:
-            result[s.key] = s.value
-        return result
-    finally:
-        session.close()
-
-
-@router.put("/settings")
-async def update_settings(data: SettingsUpdate):
-    """تحديث إعدادات اللوجستيات"""
-    session = get_session()
-    try:
-        updates = {}
-        if data.manager_phone is not None:
-            updates["manager_phone"] = data.manager_phone
-        if data.manager_name is not None:
-            updates["manager_name"] = data.manager_name
-        if data.whatsapp_group_id is not None:
-            updates["whatsapp_group_id"] = data.whatsapp_group_id
-
-        for key, value in updates.items():
-            setting = session.query(LogisticsSettings).filter(LogisticsSettings.key == key).first()
-            if setting:
-                setting.value = value
-                setting.updated_at = datetime.utcnow()
-            else:
-                setting = LogisticsSettings(key=key, value=value)
-                session.add(setting)
-
-        session.commit()
-        return {"message": "تم تحديث الإعدادات", "updated": list(updates.keys())}
-    finally:
-        session.close()
-
-
 # ─── API للـ Workflow (n8n) ───
 
 @router.get("/search")
@@ -282,5 +223,73 @@ async def search_task(task_name: str, date_filter: Optional[str] = None):
                 "date": item.date,
             })
         return {"found": len(results) > 0, "tasks": results}
+    finally:
+        session.close()
+
+
+# ─── Dynamic Routes (/{item_id}) — MUST come after static routes ───
+
+@router.put("/{item_id}")
+async def update_checklist(item_id: int, data: ChecklistUpdate):
+    """تعديل مهمة"""
+    session = get_session()
+    try:
+        item = session.query(ChecklistItem).filter(ChecklistItem.id == item_id).first()
+        if not item:
+            raise HTTPException(status_code=404, detail="المهمة غير موجودة")
+
+        if data.title is not None:
+            item.title = data.title
+        if data.description is not None:
+            item.description = data.description
+
+        session.commit()
+        session.refresh(item)
+        return {"message": "تم التعديل", "id": item.id, "title": item.title}
+    finally:
+        session.close()
+
+
+@router.put("/{item_id}/toggle")
+async def toggle_checklist(item_id: int, data: ChecklistToggle):
+    """تبديل حالة الإكمال (من واتساب أو من المنصة)"""
+    session = get_session()
+    try:
+        item = session.query(ChecklistItem).filter(ChecklistItem.id == item_id).first()
+        if not item:
+            raise HTTPException(status_code=404, detail="المهمة غير موجودة")
+
+        item.is_completed = data.is_completed
+        if data.is_completed:
+            item.completed_at = datetime.utcnow()
+            item.completed_by_phone = data.completed_by_phone
+            item.completed_by_name = data.completed_by_name
+        else:
+            item.completed_at = None
+            item.completed_by_phone = None
+            item.completed_by_name = None
+
+        session.commit()
+        return {
+            "message": "تم التحديث",
+            "id": item.id,
+            "is_completed": item.is_completed,
+        }
+    finally:
+        session.close()
+
+
+@router.delete("/{item_id}")
+async def delete_checklist(item_id: int):
+    """حذف مهمة"""
+    session = get_session()
+    try:
+        item = session.query(ChecklistItem).filter(ChecklistItem.id == item_id).first()
+        if not item:
+            raise HTTPException(status_code=404, detail="المهمة غير موجودة")
+
+        session.delete(item)
+        session.commit()
+        return {"message": "تم الحذف"}
     finally:
         session.close()

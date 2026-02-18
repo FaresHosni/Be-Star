@@ -78,30 +78,10 @@ async def create_complaint(data: ComplaintCreate):
         session.close()
 
 
-@router.put("/{complaint_id}")
-async def update_complaint(complaint_id: int, data: ComplaintUpdate):
-    """تحديث شكوى (حل / تصعيد)"""
-    session = get_session()
-    try:
-        complaint = session.query(Complaint).filter(Complaint.id == complaint_id).first()
-        if not complaint:
-            raise HTTPException(status_code=404, detail="الشكوى غير موجودة")
-
-        if data.status is not None:
-            complaint.status = data.status
-            if data.status == "resolved":
-                complaint.resolved_at = datetime.utcnow()
-        if data.resolution_note is not None:
-            complaint.resolution_note = data.resolution_note
-        if data.escalated_to_manager is not None:
-            complaint.escalated_to_manager = data.escalated_to_manager
-
-        session.commit()
-        session.refresh(complaint)
-        return {"message": "تم التحديث", "complaint": complaint_to_dict(complaint)}
-    finally:
-        session.close()
-
+# ═══════════════════════════════════════════════════════════════
+# ⚠️ IMPORTANT: Static routes MUST come BEFORE /{complaint_id} routes
+#    FastAPI matches routes top-to-bottom.
+# ═══════════════════════════════════════════════════════════════
 
 @router.get("/summary")
 async def complaints_summary():
@@ -143,5 +123,32 @@ async def complaints_stats():
             "escalated": escalated,
             "resolved": resolved,
         }
+    finally:
+        session.close()
+
+
+# ─── Dynamic Routes (/{complaint_id}) — MUST come after static routes ───
+
+@router.put("/{complaint_id}")
+async def update_complaint(complaint_id: int, data: ComplaintUpdate):
+    """تحديث شكوى (حل / تصعيد)"""
+    session = get_session()
+    try:
+        complaint = session.query(Complaint).filter(Complaint.id == complaint_id).first()
+        if not complaint:
+            raise HTTPException(status_code=404, detail="الشكوى غير موجودة")
+
+        if data.status is not None:
+            complaint.status = data.status
+            if data.status == "resolved":
+                complaint.resolved_at = datetime.utcnow()
+        if data.resolution_note is not None:
+            complaint.resolution_note = data.resolution_note
+        if data.escalated_to_manager is not None:
+            complaint.escalated_to_manager = data.escalated_to_manager
+
+        session.commit()
+        session.refresh(complaint)
+        return {"message": "تم التحديث", "complaint": complaint_to_dict(complaint)}
     finally:
         session.close()

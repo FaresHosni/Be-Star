@@ -43,7 +43,7 @@ def event_to_dict(event):
     }
 
 
-# ─── Agenda CRUD ───
+# ─── Agenda CRUD (list + create) ───
 
 @router.get("/")
 async def list_agenda(date_filter: Optional[str] = None):
@@ -85,47 +85,10 @@ async def create_agenda(data: AgendaCreate):
         session.close()
 
 
-@router.put("/{event_id}")
-async def update_agenda(event_id: int, data: AgendaUpdate):
-    """تعديل حدث"""
-    session = get_session()
-    try:
-        event = session.query(AgendaEvent).filter(AgendaEvent.id == event_id).first()
-        if not event:
-            raise HTTPException(status_code=404, detail="الحدث غير موجود")
-
-        if data.title is not None:
-            event.title = data.title
-        if data.description is not None:
-            event.description = data.description
-        if data.event_time is not None:
-            event.event_time = datetime.fromisoformat(data.event_time)
-            event.date = event.event_time.strftime("%Y-%m-%d")
-        if data.location is not None:
-            event.location = data.location
-
-        session.commit()
-        session.refresh(event)
-        return {"message": "تم التعديل", "event": event_to_dict(event)}
-    finally:
-        session.close()
-
-
-@router.delete("/{event_id}")
-async def delete_agenda(event_id: int):
-    """حذف حدث"""
-    session = get_session()
-    try:
-        event = session.query(AgendaEvent).filter(AgendaEvent.id == event_id).first()
-        if not event:
-            raise HTTPException(status_code=404, detail="الحدث غير موجود")
-
-        session.delete(event)
-        session.commit()
-        return {"message": "تم الحذف"}
-    finally:
-        session.close()
-
+# ═══════════════════════════════════════════════════════════════
+# ⚠️ IMPORTANT: Static routes MUST come BEFORE /{event_id} routes
+#    FastAPI matches routes top-to-bottom.
+# ═══════════════════════════════════════════════════════════════
 
 @router.get("/week")
 async def get_week_events(start_date: Optional[str] = None):
@@ -189,6 +152,34 @@ async def get_upcoming_events(minutes: int = 10):
         session.close()
 
 
+# ─── Dynamic Routes (/{event_id}) — MUST come after static routes ───
+
+@router.put("/{event_id}")
+async def update_agenda(event_id: int, data: AgendaUpdate):
+    """تعديل حدث"""
+    session = get_session()
+    try:
+        event = session.query(AgendaEvent).filter(AgendaEvent.id == event_id).first()
+        if not event:
+            raise HTTPException(status_code=404, detail="الحدث غير موجود")
+
+        if data.title is not None:
+            event.title = data.title
+        if data.description is not None:
+            event.description = data.description
+        if data.event_time is not None:
+            event.event_time = datetime.fromisoformat(data.event_time)
+            event.date = event.event_time.strftime("%Y-%m-%d")
+        if data.location is not None:
+            event.location = data.location
+
+        session.commit()
+        session.refresh(event)
+        return {"message": "تم التعديل", "event": event_to_dict(event)}
+    finally:
+        session.close()
+
+
 @router.put("/{event_id}/reminder-sent")
 async def mark_reminder_sent(event_id: int):
     """تعليم إن التذكير اتبعت (يستخدمها n8n بعد إرسال التذكير)"""
@@ -201,5 +192,21 @@ async def mark_reminder_sent(event_id: int):
         event.reminder_sent = True
         session.commit()
         return {"message": "تم التعليم", "id": event.id}
+    finally:
+        session.close()
+
+
+@router.delete("/{event_id}")
+async def delete_agenda(event_id: int):
+    """حذف حدث"""
+    session = get_session()
+    try:
+        event = session.query(AgendaEvent).filter(AgendaEvent.id == event_id).first()
+        if not event:
+            raise HTTPException(status_code=404, detail="الحدث غير موجود")
+
+        session.delete(event)
+        session.commit()
+        return {"message": "تم الحذف"}
     finally:
         session.close()
