@@ -34,6 +34,7 @@ function ChecklistPage() {
     const [showSettings, setShowSettings] = useState(false)
     const [settings, setSettings] = useState({ manager_phone: '', manager_name: '', whatsapp_group_id: '' })
     const [savingSettings, setSavingSettings] = useState(false)
+    const [settingsMsg, setSettingsMsg] = useState(null)
     const [weekProgress, setWeekProgress] = useState([])
 
     // ─── Fetch ───
@@ -125,14 +126,26 @@ function ChecklistPage() {
 
     const saveSettings = async () => {
         setSavingSettings(true)
+        setSettingsMsg(null)
         try {
-            await apiFetch(`${API}/settings`, {
+            const res = await apiFetch(`${API}/settings`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(settings)
             })
+            if (res.ok) {
+                setSettingsMsg({ type: 'success', text: 'تم الحفظ بنجاح ✅' })
+            } else {
+                setSettingsMsg({ type: 'error', text: 'فشل الحفظ ❌' })
+            }
             setSavingSettings(false)
-        } catch (e) { console.error(e); setSavingSettings(false) }
+            setTimeout(() => setSettingsMsg(null), 3000)
+        } catch (e) {
+            console.error(e)
+            setSettingsMsg({ type: 'error', text: 'خطأ في الاتصال ❌' })
+            setSavingSettings(false)
+            setTimeout(() => setSettingsMsg(null), 3000)
+        }
     }
 
     // ─── Date Navigation ───
@@ -203,7 +216,13 @@ function ChecklistPage() {
                             />
                         </div>
                     </div>
-                    <div className="mt-4 flex justify-end">
+                    <div className="mt-4 flex items-center justify-end gap-3">
+                        {settingsMsg && (
+                            <span className={`text-sm font-semibold animate-fadeIn ${settingsMsg.type === 'success' ? 'text-green-400' : 'text-red-400'
+                                }`}>
+                                {settingsMsg.text}
+                            </span>
+                        )}
                         <button onClick={saveSettings} className="btn-2026 text-sm" disabled={savingSettings}>
                             {savingSettings ? 'جاري الحفظ...' : '💾 حفظ الإعدادات'}
                         </button>
@@ -224,10 +243,10 @@ function ChecklistPage() {
                                     key={day.date}
                                     onClick={() => setSelectedDate(day.date)}
                                     className={`rounded-xl p-3 text-center transition-all border ${isSelected
-                                            ? 'border-gold-500 bg-gold-500/20'
-                                            : isToday
-                                                ? 'border-green-500/50 bg-green-500/10'
-                                                : 'border-white/10 bg-white/5 hover:bg-white/10'
+                                        ? 'border-gold-500 bg-gold-500/20'
+                                        : isToday
+                                            ? 'border-green-500/50 bg-green-500/10'
+                                            : 'border-white/10 bg-white/5 hover:bg-white/10'
                                         }`}
                                 >
                                     <div className="text-xs text-white/50 mb-1">{day.day_name}</div>
@@ -350,8 +369,8 @@ function ChecklistPage() {
                             <button
                                 onClick={() => toggleItem(item)}
                                 className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${item.is_completed
-                                        ? 'border-green-500 bg-green-500/20 text-green-400'
-                                        : 'border-white/20 hover:border-gold-500'
+                                    ? 'border-green-500 bg-green-500/20 text-green-400'
+                                    : 'border-white/20 hover:border-gold-500'
                                     }`}
                             >
                                 {item.is_completed && <CheckSquare className="w-5 h-5" />}
