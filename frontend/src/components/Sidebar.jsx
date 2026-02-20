@@ -12,7 +12,8 @@ import {
     Award,
     CheckSquare,
     Calendar,
-    AlertTriangle
+    AlertTriangle,
+    Crown
 } from 'lucide-react'
 
 function Sidebar({ admin, onLogout }) {
@@ -20,6 +21,7 @@ function Sidebar({ admin, onLogout }) {
 
     const menuItems = [
         { path: '/', icon: LayoutDashboard, label: 'لوحة التحكم' },
+        { path: '/vip', icon: Crown, label: 'كبار الزوار (VIP)' },
         { path: '/tickets', icon: Ticket, label: 'التذاكر' },
         { path: '/checklist', icon: CheckSquare, label: 'قائمة المهام' },
         { path: '/agenda', icon: Calendar, label: 'الأجندة' },

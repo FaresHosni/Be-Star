@@ -14,6 +14,7 @@ import CertificatesPage from './pages/CertificatesPage'
 import ChecklistPage from './pages/ChecklistPage'
 import AgendaPage from './pages/AgendaPage'
 import ComplaintsPage from './pages/ComplaintsPage'
+import VipGuests from './pages/VipGuests'
 import ChatWidget from './components/ChatWidget'
 
 function App() {
@@ -65,6 +66,7 @@ function App() {
                         <Route path="/checklist" element={<ChecklistPage />} />
                         <Route path="/agenda" element={<AgendaPage />} />
                         <Route path="/complaints" element={<ComplaintsPage />} />
+                        <Route path="/vip" element={<VipGuests />} />
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
                 </main>

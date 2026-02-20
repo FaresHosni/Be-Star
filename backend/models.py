@@ -336,6 +336,31 @@ class Complaint(Base):
     resolved_at = Column(DateTime, nullable=True)
 
 
+class VipGuest(Base):
+    """شخصية مهمة (VIP) — دعوة + تتبع حالة"""
+    __tablename__ = "vip_guests"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    phone = Column(String(20), unique=True, nullable=False, index=True)
+    status = Column(String(20), default="invited")  # invited / will_attend / not_attending / inquiring / reacted / no_response
+    previous_status = Column(String(20), nullable=True)
+    changed_mind = Column(Boolean, default=False)
+    last_interaction = Column(DateTime, nullable=True)
+    added_by = Column(String(100), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class VipSettings(Base):
+    """إعدادات رسائل كبار الزوار (key-value)"""
+    __tablename__ = "vip_settings"
+
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String(50), unique=True, nullable=False)   # invitation_text / invitation_image / invitation_link / reaction_reply / inquiry_reply
+    value = Column(Text, nullable=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
 class LogisticsSettings(Base):
     """إعدادات اللوجستيات - رقم المدير + Group ID (key-value)"""
     __tablename__ = "logistics_settings"

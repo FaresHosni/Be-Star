@@ -22,6 +22,7 @@ from routes.certificates import router as certificates_router
 from routes.checklist import router as checklist_router
 from routes.agenda import router as agenda_router
 from routes.complaints import router as complaints_router
+from routes.vip import router as vip_router
 
 # Import models to create tables
 from models import init_db
@@ -57,6 +58,7 @@ app.include_router(certificates_router, prefix="/api/certificates", tags=["Certi
 app.include_router(checklist_router, prefix="/api/checklist", tags=["قائمة المهام"])
 app.include_router(agenda_router, prefix="/api/agenda", tags=["الأجندة"])
 app.include_router(complaints_router, prefix="/api/complaints", tags=["الشكاوى المباشرة"])
+app.include_router(vip_router, prefix="/api/vip", tags=["كبار الزوار"])
 
 
 @app.get("/")
