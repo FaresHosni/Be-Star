@@ -34,6 +34,8 @@ class VipSettingsUpdate(BaseModel):
     invitation_link: Optional[str] = None
     reaction_reply: Optional[str] = None
     inquiry_reply: Optional[str] = None
+    accept_reply: Optional[str] = None
+    decline_reply: Optional[str] = None
 
 
 # ─── Helpers ───

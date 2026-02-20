@@ -388,33 +388,57 @@ function VipGuests() {
                         </div>
                     </div>
 
-                    {/* Auto Reply Settings */}
+                    {/* AI Agent Settings */}
                     <div className="glass-card p-6 space-y-4">
                         <h3 className="text-lg font-semibold gold-text flex items-center gap-2">
                             <RefreshCw className="w-5 h-5" />
-                            الردود التلقائية
+                            إعدادات الـ AI Agent
                         </h3>
 
                         <div>
-                            <label className="block text-white/60 text-sm mb-2">نص الرد على التفاعل (ريأكشن) 👍</label>
+                            <label className="block text-white/60 text-sm mb-2">📋 معلومات الإيفنت (الـ AI يرد منها على الاستفسارات)</label>
                             <textarea
-                                value={settings.reaction_reply}
-                                onChange={e => setSettings(s => ({ ...s, reaction_reply: e.target.value }))}
-                                rows={3}
+                                value={settings.inquiry_reply}
+                                onChange={e => setSettings(s => ({ ...s, inquiry_reply: e.target.value }))}
+                                rows={5}
                                 className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-white/30 focus:border-gold-500/50 focus:outline-none resize-none"
-                                placeholder="النص اللي هيتبعت تلقائياً لما حد يعمل ريأكشن..."
+                                placeholder="اكتب كل معلومات الإيفنت هنا — الاسم، التاريخ، المكان، الأسعار، الخ... الـ AI هيستخدم المعلومات دي للرد على أسئلة كبار الزوار"
                                 dir="rtl"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-white/60 text-sm mb-2">نص الرد على الاستفسار 🟡</label>
+                            <label className="block text-white/60 text-sm mb-2">👍 أسلوب الرد على الريأكشن (أنماط يستلهم منها الـ AI)</label>
                             <textarea
-                                value={settings.inquiry_reply}
-                                onChange={e => setSettings(s => ({ ...s, inquiry_reply: e.target.value }))}
+                                value={settings.reaction_reply}
+                                onChange={e => setSettings(s => ({ ...s, reaction_reply: e.target.value }))}
                                 rows={3}
                                 className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-white/30 focus:border-gold-500/50 focus:outline-none resize-none"
-                                placeholder="النص اللي هيتبعت تلقائياً لما حد يستفسر عن التفاصيل..."
+                                placeholder="مثال: شكراً لتفاعلك يا {name}! 🙏 بنتمنى نشوفك في الفعالية..."
+                                dir="rtl"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-white/60 text-sm mb-2">✅ رسالة قبول الحضور</label>
+                            <textarea
+                                value={settings.accept_reply}
+                                onChange={e => setSettings(s => ({ ...s, accept_reply: e.target.value }))}
+                                rows={3}
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-white/30 focus:border-gold-500/50 focus:outline-none resize-none"
+                                placeholder="مثال: تشرفنا يا {name}! ✅ بنتشرف بحضورك ومستنينك بفارغ الصبر..."
+                                dir="rtl"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-white/60 text-sm mb-2">😔 رسالة رفض الحضور</label>
+                            <textarea
+                                value={settings.decline_reply}
+                                onChange={e => setSettings(s => ({ ...s, decline_reply: e.target.value }))}
+                                rows={3}
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-white/30 focus:border-gold-500/50 focus:outline-none resize-none"
+                                placeholder="مثال: ربنا يعوض يا {name} 😔 إن شاء الله في فعاليات قادمة..."
                                 dir="rtl"
                             />
                         </div>
