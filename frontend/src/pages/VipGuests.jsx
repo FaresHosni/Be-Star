@@ -357,18 +357,22 @@ function VipGuests() {
                                                 const formData = new FormData()
                                                 formData.append('file', file)
                                                 try {
-                                                    const res = await apiFetch(`${API}/upload-image`, {
+                                                    const token = localStorage.getItem('token')
+                                                    const res = await fetch(`${API}/upload-image`, {
                                                         method: 'POST',
+                                                        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
                                                         body: formData,
                                                     })
                                                     if (res.ok) {
                                                         const data = await res.json()
                                                         setSettings(s => ({ ...s, invitation_image: data.filename }))
                                                     } else {
-                                                        alert('فشل رفع الصورة')
+                                                        const errText = await res.text()
+                                                        console.error('Upload failed:', res.status, errText)
+                                                        alert('فشل رفع الصورة: ' + (errText || res.status))
                                                     }
                                                 } catch (err) {
-                                                    console.error(err)
+                                                    console.error('Upload error:', err)
                                                     alert('حدث خطأ أثناء رفع الصورة')
                                                 }
                                             }}
