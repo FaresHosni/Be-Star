@@ -146,8 +146,8 @@ function VipGuests() {
                     <button
                         onClick={() => setActiveTab('guests')}
                         className={`px-4 py-2 rounded-lg text-sm transition-all ${activeTab === 'guests'
-                                ? 'bg-gold-500/20 text-gold-400 border border-gold-500/40'
-                                : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'
+                            ? 'bg-gold-500/20 text-gold-400 border border-gold-500/40'
+                            : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'
                             }`}
                     >
                         <Users className="w-4 h-4 inline-block ml-1" />
@@ -156,8 +156,8 @@ function VipGuests() {
                     <button
                         onClick={() => setActiveTab('settings')}
                         className={`px-4 py-2 rounded-lg text-sm transition-all ${activeTab === 'settings'
-                                ? 'bg-gold-500/20 text-gold-400 border border-gold-500/40'
-                                : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'
+                            ? 'bg-gold-500/20 text-gold-400 border border-gold-500/40'
+                            : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'
                             }`}
                     >
                         <Settings className="w-4 h-4 inline-block ml-1" />
@@ -332,16 +332,49 @@ function VipGuests() {
                             <div>
                                 <label className="block text-white/60 text-sm mb-2">
                                     <ImageIcon className="w-4 h-4 inline-block ml-1" />
-                                    رابط صورة الدعوة
+                                    صورة الدعوة
                                 </label>
-                                <input
-                                    type="url"
-                                    value={settings.invitation_image}
-                                    onChange={e => setSettings(s => ({ ...s, invitation_image: e.target.value }))}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-white/30 focus:border-gold-500/50 focus:outline-none"
-                                    placeholder="https://..."
-                                    dir="ltr"
-                                />
+                                <div className="space-y-2">
+                                    {settings.invitation_image && (
+                                        <div className="relative w-full h-32 rounded-xl overflow-hidden border border-white/10">
+                                            <img
+                                                src={`/api/vip/image/${settings.invitation_image}`}
+                                                alt="صورة الدعوة"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    )}
+                                    <label className="flex items-center justify-center gap-2 w-full bg-white/5 border border-white/10 border-dashed rounded-xl p-3 text-white/50 hover:bg-white/10 hover:border-gold-500/40 transition-all cursor-pointer">
+                                        <Upload className="w-4 h-4" />
+                                        {settings.invitation_image ? 'تغيير الصورة' : 'رفع صورة الدعوة'}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={async (e) => {
+                                                const file = e.target.files[0]
+                                                if (!file) return
+                                                const formData = new FormData()
+                                                formData.append('file', file)
+                                                try {
+                                                    const res = await apiFetch(`${API}/upload-image`, {
+                                                        method: 'POST',
+                                                        body: formData,
+                                                    })
+                                                    if (res.ok) {
+                                                        const data = await res.json()
+                                                        setSettings(s => ({ ...s, invitation_image: data.filename }))
+                                                    } else {
+                                                        alert('فشل رفع الصورة')
+                                                    }
+                                                } catch (err) {
+                                                    console.error(err)
+                                                    alert('حدث خطأ أثناء رفع الصورة')
+                                                }
+                                            }}
+                                        />
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>

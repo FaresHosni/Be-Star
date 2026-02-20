@@ -2,12 +2,15 @@
 كبار الزوار (VIP) — API Routes
 إدارة الشخصيات المهمة + تتبع الردود + إعدادات الرسائل
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 import httpx
 import os
+import uuid
+import shutil
 
 from models import get_session, VipGuest, VipSettings
 
@@ -62,7 +65,7 @@ def set_vip_setting(session, key: str, value: str):
         session.add(VipSettings(key=key, value=value))
 
 
-async def send_whatsapp_message(phone: str, text: str, image_url: str = None):
+async def send_whatsapp_message(phone: str, text: str, image_filename: str = None):
     """إرسال رسالة واتساب عبر Evolution API"""
     evo_url = os.getenv("EVOLUTION_API_URL", "http://38.242.139.159:8080")
     evo_key = os.getenv("EVOLUTION_API_KEY", "")
@@ -75,18 +78,33 @@ async def send_whatsapp_message(phone: str, text: str, image_url: str = None):
     jid = jid + "@s.whatsapp.net"
 
     async with httpx.AsyncClient(timeout=15) as client:
-        if image_url:
-            # إرسال صورة مع كابشن
-            await client.post(
-                f"{evo_url}/message/sendMedia/{instance}",
-                headers={"apikey": evo_key, "Content-Type": "application/json"},
-                json={
-                    "number": jid,
-                    "mediatype": "image",
-                    "media": image_url,
-                    "caption": text,
-                }
-            )
+        if image_filename:
+            # قراءة الصورة المرفوعة كـ base64
+            import base64
+            upload_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "vip_uploads")
+            filepath = os.path.join(upload_dir, image_filename)
+            if os.path.exists(filepath):
+                with open(filepath, "rb") as img_file:
+                    b64 = base64.b64encode(img_file.read()).decode("utf-8")
+                ext = image_filename.rsplit(".", 1)[-1].lower()
+                mime = f"image/{ext}" if ext != "jpg" else "image/jpeg"
+                await client.post(
+                    f"{evo_url}/message/sendMedia/{instance}",
+                    headers={"apikey": evo_key, "Content-Type": "application/json"},
+                    json={
+                        "number": jid,
+                        "mediatype": "image",
+                        "media": f"data:{mime};base64,{b64}",
+                        "caption": text,
+                    }
+                )
+            else:
+                # لو الصورة مش موجودة، ابعت نص فقط
+                await client.post(
+                    f"{evo_url}/message/sendText/{instance}",
+                    headers={"apikey": evo_key, "Content-Type": "application/json"},
+                    json={"number": jid, "text": text}
+                )
         else:
             # إرسال نص فقط
             await client.post(
@@ -97,6 +115,7 @@ async def send_whatsapp_message(phone: str, text: str, image_url: str = None):
                     "text": text,
                 }
             )
+
 
 
 # ─── VIP CRUD ───
@@ -149,7 +168,7 @@ async def add_vip_guest(data: VipGuestCreate):
                 await send_whatsapp_message(
                     data.phone,
                     full_text,
-                    image_url=invitation_image if invitation_image else None
+                    image_filename=invitation_image if invitation_image else None
                 )
             except Exception as e:
                 print(f"⚠️ VIP invitation send failed: {e}")
@@ -241,6 +260,47 @@ async def update_settings(data: VipSettingsUpdate):
         return {"message": "تم حفظ الإعدادات"}
     finally:
         session.close()
+
+
+@router.post("/upload-image")
+async def upload_invitation_image(file: UploadFile = File(...)):
+    """رفع صورة الدعوة"""
+    # تأكد إن الملف صورة
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="الملف لازم يكون صورة")
+
+    # إنشاء مجلد الرفع
+    upload_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "vip_uploads")
+    os.makedirs(upload_dir, exist_ok=True)
+
+    # اسم فريد للملف
+    ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    filename = f"vip_invite_{uuid.uuid4().hex[:8]}.{ext}"
+    filepath = os.path.join(upload_dir, filename)
+
+    # حفظ الملف
+    with open(filepath, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    # حفظ في الإعدادات
+    session = get_session()
+    try:
+        set_vip_setting(session, "invitation_image", filename)
+        session.commit()
+    finally:
+        session.close()
+
+    return {"message": "تم رفع الصورة بنجاح", "filename": filename}
+
+
+@router.get("/image/{filename}")
+async def serve_vip_image(filename: str):
+    """تقديم صورة الدعوة"""
+    upload_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "vip_uploads")
+    filepath = os.path.join(upload_dir, filename)
+    if not os.path.exists(filepath):
+        raise HTTPException(status_code=404, detail="الصورة غير موجودة")
+    return FileResponse(filepath)
 
 
 @router.get("/check/{phone}")
