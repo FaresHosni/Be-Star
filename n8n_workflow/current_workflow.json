@@ -12,7 +12,7 @@
                 -61424,
                 32448
             ],
-            "id": "24f7b363-5424-4c2d-a30b-bc70c153f69a",
+            "id": "9e07e384-a231-49b6-9ffb-9329556cfc40",
             "name": "Whatsapp",
             "webhookId": "d8fa5154-f391-43c2-ad0c-f5c7b3eb2737"
         },
@@ -36,7 +36,7 @@
                 -61232,
                 32448
             ],
-            "id": "11f491ea-5d06-4b7e-8d66-54d57f1750b9",
+            "id": "73071380-5867-45a4-a2b6-d0266178ad99",
             "name": "User Phone ID"
         },
         {
@@ -63,7 +63,7 @@
                 -61072,
                 32448
             ],
-            "id": "33a3b789-5479-49ef-8e17-ef034e4c71dc",
+            "id": "c8aa68a0-8ae2-4f7d-b476-7f6c323e3776",
             "name": "Access Control4"
         },
         {
@@ -96,13 +96,180 @@
                 -60912,
                 32448
             ],
-            "id": "1e1d05f6-cde0-4326-924c-79c9f3fdb266",
+            "id": "3d1cf79a-34b5-4ba0-a19c-e5fca0e0f34b",
             "name": "If8"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
+                            "name": "Text",
+                            "value": "={{ $('Whatsapp').first().json.body?.data?.message?.conversation ?? $('Whatsapp').first().json.body?.data?.message?.extendedTextMessage?.text ?? '' }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -59504,
+                32496
+            ],
+            "id": "03213dcd-2296-4b70-b91f-88ccf812ca3e",
+            "name": "Text4"
+        },
+        {
+            "parameters": {
+                "url": "http://38.242.139.159:3005/api/quiz/active-question",
+                "options": {
+                    "timeout": 8000
+                }
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                -59168,
+                32608
+            ],
+            "id": "30026fb4-c1ac-4449-b0a8-d4a89e6d11ad",
+            "name": "Check Active Quiz",
+            "continueOnFail": true
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "qc1",
+                            "leftValue": "={{ $json.has_active }}",
+                            "rightValue": true,
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                -59024,
+                32608
+            ],
+            "id": "d81660b8-7e54-4a0e-871a-64ebe3df18cf",
+            "name": "Has Active Quiz?"
+        },
+        {
+            "parameters": {
+                "url": "http://38.242.139.159:3005/api/checklist/settings",
+                "options": {
+                    "timeout": 8000
+                }
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                -58416,
+                32624
+            ],
+            "id": "6da1bb4e-0de2-467d-a833-35864b9e19ff",
+            "name": "Load Routing Settings",
+            "continueOnFail": true
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "emd-001",
+                            "name": "remoteJid",
+                            "value": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "emd-002",
+                            "name": "sender_phone",
+                            "value": "={{ (() => { const key = $('Whatsapp').first().json.body.data.key; if (key.participantAlt && key.participantAlt.includes('@s.whatsapp.net')) { return key.participantAlt.split('@')[0]; } if (key.participant && key.participant.includes('@s.whatsapp.net')) { return key.participant.split('@')[0]; } return key.remoteJid.split('@')[0]; })() }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "emd-003",
+                            "name": "sender_name",
+                            "value": "={{ $('Whatsapp').first().json.body.data.pushName || 'مجهول' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "emd-004",
+                            "name": "message_text",
+                            "value": "={{ $('Memory + Model PreEnter2').first().json.Input }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "emd-005",
+                            "name": "instance",
+                            "value": "={{ $('Whatsapp').first().json.body.instance }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "emd-006",
+                            "name": "is_group",
+                            "value": "={{ $('Whatsapp').first().json.body.data.key.remoteJid.includes('@g.us') }}",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -58592,
+                32624
+            ],
+            "id": "f5d851e3-725c-47ad-92d0-70b314c8dbd6",
+            "name": "Extract Message Data"
         },
         {
             "parameters": {
                 "rules": {
                     "values": [
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "vip-sw-react",
+                                        "leftValue": "={{ $('Whatsapp').first().json.body.data.messageType }}",
+                                        "rightValue": "reactionMessage",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "Reaction"
+                        },
                         {
                             "conditions": {
                                 "options": {
@@ -216,427 +383,12 @@
             "typeVersion": 3.2,
             "position": [
                 -60640,
-                32400
+                32384
             ],
-            "id": "bdb61224-174f-4927-925f-0baa7071ac32",
+            "id": "03046038-6a7a-454e-acbf-edfe83f8a624",
             "name": "Switch3",
             "alwaysOutputData": false,
             "executeOnce": false
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
-                            "name": "Text",
-                            "value": "={{ $('Whatsapp').first().json.body?.data?.message?.conversation ?? $('Whatsapp').first().json.body?.data?.message?.extendedTextMessage?.text ?? '' }}",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                -59520,
-                32384
-            ],
-            "id": "33b34ee9-53ae-4a6f-a512-901a1451b639",
-            "name": "Text4"
-        },
-        {
-            "parameters": {
-                "resource": "chat-api",
-                "operation": "get-media-base64",
-                "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
-                "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -60352,
-                32528
-            ],
-            "id": "3984b91f-05ea-4020-8702-79e230b1411b",
-            "name": "Get media in base1",
-            "retryOnFail": true,
-            "alwaysOutputData": true,
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "operation": "toBinary",
-                "sourceProperty": "data.base64",
-                "options": {}
-            },
-            "type": "n8n-nodes-base.convertToFile",
-            "typeVersion": 1.1,
-            "position": [
-                -60208,
-                32528
-            ],
-            "id": "6ba0ba76-513a-4017-9b5a-14c911d26689",
-            "name": "Convert to File",
-            "executeOnce": false,
-            "alwaysOutputData": false,
-            "retryOnFail": true
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "http://38.242.139.159:5555/convert",
-                "sendBody": true,
-                "contentType": "binaryData",
-                "inputDataFieldName": "data",
-                "options": {
-                    "response": {
-                        "response": {
-                            "responseFormat": "file"
-                        }
-                    }
-                }
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -60032,
-                32528
-            ],
-            "id": "f06df862-081a-4253-b795-11a60d0b0f76",
-            "name": "Convert Audio Type3"
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "https://mrai-openai.openai.azure.com/openai/deployments/gpt-4o-transcribe/audio/transcriptions?api-version=2025-03-01-preview",
-                "sendHeaders": true,
-                "headerParameters": {
-                    "parameters": [
-                        {
-                            "name": "api-key",
-                            "value": "5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF"
-                        }
-                    ]
-                },
-                "sendBody": true,
-                "contentType": "multipart-form-data",
-                "bodyParameters": {
-                    "parameters": [
-                        {
-                            "parameterType": "formBinaryData",
-                            "name": "file",
-                            "inputDataFieldName": "data"
-                        },
-                        {
-                            "name": "model",
-                            "value": "gpt-4o-transcribe"
-                        },
-                        {
-                            "name": "prompt",
-                            "value": "\"Transcribe accurately. Speaker uses Arabic with English words mixed in. Keep English terms in English.\""
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -59856,
-                32528
-            ],
-            "id": "97f8d830-c92b-405f-8807-b124cbd3d30e",
-            "name": "Transcribe a recording1"
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "https://access.mrailabs.com/api/log-usage",
-                "sendBody": true,
-                "bodyParameters": {
-                    "parameters": [
-                        {
-                            "name": "api_key",
-                            "value": "Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38"
-                        },
-                        {
-                            "name": "execution_id",
-                            "value": "={{ $execution.id }}"
-                        },
-                        {
-                            "name": "request_type",
-                            "value": "transcription"
-                        },
-                        {
-                            "name": "model",
-                            "value": "gpt-4o-transcribe"
-                        },
-                        {
-                            "name": "input_tokens",
-                            "value": "={{ $json.usage?.prompt_tokens ?? 0 }}"
-                        },
-                        {
-                            "name": "output_tokens",
-                            "value": "={{ $json.usage?.completion_tokens ?? 0 }}"
-                        },
-                        {
-                            "name": "platform_user_id",
-                            "value": "={{ $('User Phone ID').item.json.User_phone_ID }}"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -59664,
-                32528
-            ],
-            "id": "e02b21ab-66f8-4381-ae0a-cd4daa51cbb5",
-            "name": "Cost Calculator"
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
-                            "name": "Voice",
-                            "value": "={{ $('Transcribe a recording1').item.json.text }}",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                -59520,
-                32528
-            ],
-            "id": "f8de2f1e-dfe5-4aad-a617-ba8de5ee777f",
-            "name": "Voice"
-        },
-        {
-            "parameters": {
-                "resource": "chat-api",
-                "operation": "get-media-base64",
-                "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
-                "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -60352,
-                32704
-            ],
-            "id": "11182f65-2b2c-464f-bf95-bfde4105f76d",
-            "name": "Get Image Base64",
-            "retryOnFail": true,
-            "alwaysOutputData": true,
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "https://mrai-openai.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview",
-                "sendHeaders": true,
-                "headerParameters": {
-                    "parameters": [
-                        {
-                            "name": "api-key",
-                            "value": "5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF"
-                        },
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json"
-                        },
-                        {
-                            "name": "x-ms-model-mesh-model-name",
-                            "value": "mistral-medium-2505"
-                        }
-                    ]
-                },
-                "sendBody": true,
-                "specifyBody": "json",
-                "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"وصف الصورة دي بالعربي بشكل مختصر. لو فيها نص أو كلام، اكتبه. لو فيها منتج أو خدمة أو شعار، وصفه.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -59856,
-                32704
-            ],
-            "id": "35cc19c8-7dcd-4c45-afd2-3e4716bac422",
-            "name": "Analyze Image (Mistral)2"
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "https://access.mrailabs.com/api/log-usage",
-                "sendBody": true,
-                "bodyParameters": {
-                    "parameters": [
-                        {
-                            "name": "api_key",
-                            "value": "Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38"
-                        },
-                        {
-                            "name": "execution_id",
-                            "value": "=n8n-exec-{{$executionId}}"
-                        },
-                        {
-                            "name": "request_type",
-                            "value": "chat"
-                        },
-                        {
-                            "name": "model",
-                            "value": "mistral-medium-2505"
-                        },
-                        {
-                            "name": "input_tokens",
-                            "value": "={{ $json.usage.prompt_tokens }}"
-                        },
-                        {
-                            "name": "output_tokens",
-                            "value": "={{ $json.usage.completion_tokens }}"
-                        },
-                        {
-                            "name": "platform_user_id",
-                            "value": "={{ $('User Phone ID').item.json.User_phone_ID }}"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -59664,
-                32704
-            ],
-            "id": "c442c194-d169-4abd-a0d9-82b1846141a9",
-            "name": "Cost Calculator4"
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
-                            "name": "image",
-                            "value": "={{ $json.choices[0].message.content }}",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                -59520,
-                32704
-            ],
-            "id": "496d7d0d-e5fc-431b-b3c5-42f124ecc66e",
-            "name": "image"
-        },
-        {
-            "parameters": {
-                "resource": "chat-api",
-                "operation": "get-media-base64",
-                "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
-                "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -60352,
-                32912
-            ],
-            "id": "fcfdd2d2-7b68-42d1-9b69-b7ae11d4f27f",
-            "name": "Get Stickers Base",
-            "retryOnFail": true,
-            "alwaysOutputData": true,
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "https://mrai-openai.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview",
-                "sendHeaders": true,
-                "headerParameters": {
-                    "parameters": [
-                        {
-                            "name": "api-key",
-                            "value": "5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF"
-                        },
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json"
-                        },
-                        {
-                            "name": "x-ms-model-mesh-model-name",
-                            "value": "mistral-medium-2505"
-                        }
-                    ]
-                },
-                "sendBody": true,
-                "specifyBody": "json",
-                "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"وصف الصورة دي بالعربي بشكل مختصر. لو فيها نص أو كلام، اكتبه. لو فيها منتج أو خدمة أو شعار، وصفه.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -59856,
-                32912
-            ],
-            "id": "f94fcc5c-71b4-489e-a1cd-23af68da7bda",
-            "name": "Analyze Strickers (Mistral)3"
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
-                            "name": "Stickers",
-                            "value": "={{ $json.choices[0].message.content }}",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                -59520,
-                32912
-            ],
-            "id": "11f58715-ba60-4d74-857a-7c94b598db10",
-            "name": "Stickers"
         },
         {
             "parameters": {
@@ -651,7 +403,7 @@
                         {
                             "id": "a12d20c8-7931-470c-a7df-70473f0be258",
                             "name": "Input",
-                            "value": "={{ $if($('Text4').isExecuted, $('Text4').first().json.Text, \n   $if($('Voice').isExecuted, $('Voice').first().json.Voice, \n   $if($('image').isExecuted, 'العميل بعت صورة. وصف الصورة: ' + $('image').first().json.image, \n   'العميل بعت sticker: ' + $('Stickers').first().json.Stickers))) }}",
+                            "value": "={{ $if($('Text4').isExecuted, $('Text4').first().json.Text, \n   $if($('Voice').isExecuted, $('Voice').first().json.Voice, \n   $if($('image').isExecuted, 'العميل بعت صورة. وصف الصورة: ' + $('image').first().json.image, \n   $if($('Stickers').isExecuted, 'العميل بعت sticker: ' + $('Stickers').first().json.Stickers, \n   'الضيف بعت تفاعل/ريأكشن على الدعوة')))) }}",
                             "type": "string"
                         },
                         {
@@ -670,1255 +422,8 @@
                 -59328,
                 32608
             ],
-            "id": "9b23421a-c719-4f02-9577-85ca35bc83c3",
+            "id": "f61db1fa-645a-48d2-a8cf-cc4bf44bd943",
             "name": "Memory + Model PreEnter2"
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "ca1744cf-69e7-4a85-81d3-2fb2b936e496",
-                            "name": "workflow_id",
-                            "value": "={{ $workflow.id }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "205c7c4d-2dfa-471f-9306-33d30e16722a",
-                            "name": "execution_id",
-                            "value": "={{ $execution.id }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "3fa4932f-c3cc-41a8-90a4-d1b3a2d32cdd",
-                            "name": "client_id",
-                            "value": "Be-Star",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                -57696,
-                32624
-            ],
-            "id": "11b4f524-3b08-47c0-8369-beb453733124",
-            "name": "Set metadata3"
-        },
-        {
-            "parameters": {
-                "promptType": "define",
-                "text": "={{ $('Memory + Model PreEnter2').item.json.Input }}",
-                "options": {
-                    "systemMessage": "You are a deterministic router+query-reformer for Mr. AI RAG.\nInputs:\n- current_message (string)\n- previous_messages (array of {role,content})\n- last_namespace (string|null)\n- detected_language (\"ar\"|\"en\")\n\nTask A — classify:\nChoose EXACTLY one label: Who_Are_We_And_Related_Information | Terms_And_Conditions_Data_Privacy_Policy | Practical_Case_Studies_and_why_us.\nRules: if vague/ack (\"تمام\",\"more?\") → continue last_namespace; if multi-intent → pick the primary intent; if confidence <0.5 → Who_Are_We_And_Related_Information; greetings fall under Who_Are_We_And_Related_Information.\n\nTask B — reform:\nRewrite a concise semantic search query for the chosen label using context.\nKeep 5–20 tokens; preserve proper names, numbers, currency; add ≤2 helpful synonyms/domain terms; remove filler/pronouns; keep constraints (expert/service, date/time, locale, language).\nIf too vague, add a short HyDE (≤25 tokens) describing what a relevant doc would say.\n\nStrict output (one line, minified JSON only):\n{\"category\":\"<label>\",\"query\":\"<short query>\",\"alternates\":[\"...\"],\"negative_terms\":[\"...\"],\"hyde\":\"...\",\"language\":\"ar|en\"}\n\nHard limits: total output ≤ ~80 tokens; no text outside JSON; no line breaks; no explanations; temperature low for stable routing.\n"
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.agent",
-            "typeVersion": 3,
-            "position": [
-                -57552,
-                32624
-            ],
-            "id": "f50bcca6-e321-4d74-935e-f7b55911e862",
-            "name": "Reformer"
-        },
-        {
-            "parameters": {
-                "sessionIdType": "customKey",
-                "sessionKey": "={{ $('Memory + Model PreEnter2').item.json['Memory Key'] }}"
-            },
-            "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
-            "typeVersion": 1.3,
-            "position": [
-                -57392,
-                32848
-            ],
-            "id": "92dda0eb-bd83-4c8b-8ff1-53a489bfc621",
-            "name": "Simple Memory"
-        },
-        {
-            "parameters": {
-                "code": {
-                    "supplyData": {
-                        "code": "const { AzureChatOpenAI } = require(\"@langchain/openai\");\nconst azureOpenAIApiKey = \"5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF\";\nconst azureOpenAIApiInstanceName = \"mrai-openai\";\nconst azureOpenAIApiDeploymentName = \"gpt-4.1-mini\";\nconst azureOpenAIApiVersion = \"2024-08-01-preview\";\nconst input_token_cost = 0.40;\nconst output_token_cost = 1.60;\nconst tools = await this.getInputConnectionData('ai_tool', 0);\nconst googleSheetTool = tools[0];\nconst { workflow_id, execution_id, client_id } = $('Set metadata3').first().json;\nconst llm = new AzureChatOpenAI({\n  azureOpenAIApiKey, azureOpenAIApiInstanceName, azureOpenAIApiDeploymentName, azureOpenAIApiVersion,\n  temperature: 0.7,\n  callbacks: [{ handleLLMEnd: async function(output, runId, parentId) {\n    const generation = output.generations[0][0];\n    const message = generation.message;\n    const input_tokens = message.usage_metadata.input_tokens;\n    const output_tokens = message.usage_metadata.output_tokens;\n    const total_tokens = message.usage_metadata.total_tokens;\n    const input_cost_val = (input_tokens / 1_000_000) * input_token_cost;\n    const output_cost_val = (output_tokens / 1_000_000) * output_token_cost;\n    const total_cost = input_cost_val + output_cost_val;\n    const total_cost_in_egypt = total_cost * 50;\n    const row = { date: (new Date()).toGMTString(), workflow_id, execution_id, client_id, model: azureOpenAIApiDeploymentName, input_tokens, output_tokens, total_tokens, input_cost: input_cost_val, output_cost: output_cost_val, total_cost, total_cost_in_egypt };\n    if (googleSheetTool && googleSheetTool.func) { await googleSheetTool.func(row); }\n  } }]\n});\nreturn llm;"
-                    }
-                },
-                "inputs": {
-                    "input": [
-                        {
-                            "type": "ai_tool",
-                            "required": true
-                        }
-                    ]
-                },
-                "outputs": {
-                    "output": [
-                        {
-                            "type": "ai_languageModel"
-                        }
-                    ]
-                }
-            },
-            "id": "31fd873f-be2b-4949-abcc-2d7f4bddf487",
-            "name": "Azure OpenAI Chat Model5",
-            "type": "@n8n/n8n-nodes-langchain.code",
-            "position": [
-                -57632,
-                32800
-            ],
-            "typeVersion": 1
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "https://access.mrailabs.com/api/log-usage",
-                "sendHeaders": true,
-                "headerParameters": {
-                    "parameters": [
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json"
-                        }
-                    ]
-                },
-                "sendBody": true,
-                "bodyParameters": {
-                    "parameters": [
-                        {
-                            "name": "api_key",
-                            "value": "Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38"
-                        },
-                        {
-                            "name": "execution_id",
-                            "value": "={{ $execution.id }}"
-                        },
-                        {
-                            "name": "workflow_id",
-                            "value": "={{ $workflow.id }}"
-                        },
-                        {
-                            "name": "platform_user_id",
-                            "value": "={{ $('Memory + Model PreEnter2').item.json['Memory Key'] }}"
-                        },
-                        {
-                            "name": "request_type",
-                            "value": "respond"
-                        },
-                        {
-                            "name": "model",
-                            "value": "={{ $json.model || 'gpt-4o-mini' }}"
-                        },
-                        {
-                            "name": "input_tokens",
-                            "value": "={{ $fromAI('input_tokens', ``, 'string') }}"
-                        },
-                        {
-                            "name": "output_tokens",
-                            "value": "={{ $fromAI('output_tokens', ``, 'string') }}"
-                        },
-                        {
-                            "name": "input_cost",
-                            "value": "={{ $fromAI('input_cost', ``, 'string') }}"
-                        },
-                        {
-                            "name": "output_cost",
-                            "value": "={{ $fromAI('output_cost', ``, 'string') }}"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequestTool",
-            "typeVersion": 4.3,
-            "position": [
-                -57568,
-                32944
-            ],
-            "id": "b88351cb-753c-4ad2-ab55-8a6a94102ec6",
-            "name": "Log Reformer Rekaz"
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "ca1744cf-69e7-4a85-81d3-2fb2b936e496",
-                            "name": "workflow_id",
-                            "value": "={{ $workflow.id }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "205c7c4d-2dfa-471f-9306-33d30e16722a",
-                            "name": "execution_id",
-                            "value": "={{ $execution.id }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "3fa4932f-c3cc-41a8-90a4-d1b3a2d32cdd",
-                            "name": "client_id",
-                            "value": "Be-Star",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                -57280,
-                32624
-            ],
-            "id": "e020b115-4842-47d8-952f-9ee722272cc0",
-            "name": "Set metadata4"
-        },
-        {
-            "parameters": {
-                "text": "={{ $('Reformer').item.json.output }}",
-                "attributes": {
-                    "attributes": [
-                        {
-                            "name": "category",
-                            "description": "تصنيف السؤال من هذه القائمة فقط: Who_Are_We_And_Related_Information أو Practical_Case_Studies_and_why_us أو Terms_And_Conditions_Data_Privacy_Policy",
-                            "required": true
-                        },
-                        {
-                            "name": "reformer_data",
-                            "description": "كل البيانات الأخرى (query, alternates, negative_terms, hyde, language)",
-                            "required": true
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "@n8n/n8n-nodes-langchain.informationExtractor",
-            "typeVersion": 1.2,
-            "position": [
-                -57136,
-                32624
-            ],
-            "id": "fa6c495a-774b-4bb0-8827-b011e122dda9",
-            "name": "Information Extractor"
-        },
-        {
-            "parameters": {
-                "code": {
-                    "supplyData": {
-                        "code": "const { AzureChatOpenAI } = require(\"@langchain/openai\");\nconst azureOpenAIApiKey = \"5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF\";\nconst azureOpenAIApiInstanceName = \"mrai-openai\";\nconst azureOpenAIApiDeploymentName = \"gpt-4.1-mini\";\nconst azureOpenAIApiVersion = \"2024-08-01-preview\";\nconst input_token_cost = 0.40;\nconst output_token_cost = 1.60;\nconst tools = await this.getInputConnectionData('ai_tool', 0);\nconst googleSheetTool = tools[0];\nconst { workflow_id, execution_id, client_id } = $('Set metadata4').first().json;\nconst llm = new AzureChatOpenAI({\n  azureOpenAIApiKey, azureOpenAIApiInstanceName, azureOpenAIApiDeploymentName, azureOpenAIApiVersion,\n  temperature: 0.7,\n  callbacks: [{ handleLLMEnd: async function(output, runId, parentId) {\n    const generation = output.generations[0][0];\n    const message = generation.message;\n    const input_tokens = message.usage_metadata.input_tokens;\n    const output_tokens = message.usage_metadata.output_tokens;\n    const total_tokens = message.usage_metadata.total_tokens;\n    const input_cost_val = (input_tokens / 1_000_000) * input_token_cost;\n    const output_cost_val = (output_tokens / 1_000_000) * output_token_cost;\n    const total_cost = input_cost_val + output_cost_val;\n    const total_cost_in_egypt = total_cost * 50;\n    const row = { date: (new Date()).toGMTString(), workflow_id, execution_id, client_id, model: azureOpenAIApiDeploymentName, input_tokens, output_tokens, total_tokens, input_cost: input_cost_val, output_cost: output_cost_val, total_cost, total_cost_in_egypt };\n    if (googleSheetTool && googleSheetTool.func) { await googleSheetTool.func(row); }\n  } }]\n});\nreturn llm;"
-                    }
-                },
-                "inputs": {
-                    "input": [
-                        {
-                            "type": "ai_tool",
-                            "required": true
-                        }
-                    ]
-                },
-                "outputs": {
-                    "output": [
-                        {
-                            "type": "ai_languageModel"
-                        }
-                    ]
-                }
-            },
-            "id": "e605093c-1ef7-42c8-8dfa-72de99f09777",
-            "name": "Azure OpenAI Chat Model7",
-            "type": "@n8n/n8n-nodes-langchain.code",
-            "position": [
-                -57168,
-                32800
-            ],
-            "typeVersion": 1
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "https://access.mrailabs.com/api/log-usage",
-                "sendHeaders": true,
-                "headerParameters": {
-                    "parameters": [
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json"
-                        }
-                    ]
-                },
-                "sendBody": true,
-                "bodyParameters": {
-                    "parameters": [
-                        {
-                            "name": "api_key",
-                            "value": "Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38"
-                        },
-                        {
-                            "name": "execution_id",
-                            "value": "={{ $execution.id }}"
-                        },
-                        {
-                            "name": "workflow_id",
-                            "value": "={{ $workflow.id }}"
-                        },
-                        {
-                            "name": "platform_user_id",
-                            "value": "={{ $('Memory + Model PreEnter2').item.json['Memory Key'] }}"
-                        },
-                        {
-                            "name": "request_type",
-                            "value": "respond"
-                        },
-                        {
-                            "name": "model",
-                            "value": "={{ $json.model || 'gpt-4o-mini' }}"
-                        },
-                        {
-                            "name": "input_tokens",
-                            "value": "={{ $fromAI('input_tokens', ``, 'string') }}"
-                        },
-                        {
-                            "name": "output_tokens",
-                            "value": "={{ $fromAI('output_tokens', ``, 'string') }}"
-                        },
-                        {
-                            "name": "input_cost",
-                            "value": "={{ $fromAI('input_cost', ``, 'string') }}"
-                        },
-                        {
-                            "name": "output_cost",
-                            "value": "={{ $fromAI('output_cost', ``, 'string') }}"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequestTool",
-            "typeVersion": 4.3,
-            "position": [
-                -57104,
-                32928
-            ],
-            "id": "00221e0e-d79c-4a5a-a929-8f34c88df500",
-            "name": "Log Reformer Rekaz4"
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "dd42c43a-f949-46c7-bc0c-79dc4472b3d3",
-                            "name": "Pinecone_Namespace",
-                            "value": "={{ $json.output.category }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "24500874-b716-4abc-9376-cb8ccb0ca25b",
-                            "name": "Reformer",
-                            "value": "={{ $json.output }}",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                -56832,
-                32624
-            ],
-            "id": "997aefcf-7943-42f5-9c87-16c961016a96",
-            "name": "Edit Fields1"
-        },
-        {
-            "parameters": {
-                "mode": "load",
-                "pineconeIndex": {
-                    "__rl": true,
-                    "value": "mr-ai-website-chatbot-knowledge-base",
-                    "mode": "list",
-                    "cachedResultName": "mr-ai-website-chatbot-knowledge-base"
-                },
-                "prompt": "={{ $json.Reformer }}",
-                "topK": 12,
-                "options": {
-                    "pineconeNamespace": "={{ $json.Pinecone_Namespace }}"
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
-            "typeVersion": 1.3,
-            "position": [
-                -56704,
-                32624
-            ],
-            "id": "005b5b17-d6b5-405b-9d6a-92b61184d359",
-            "name": "Pinecone Vector Store1",
-            "credentials": {
-                "pineconeApi": {
-                    "id": "swltCt6gosR03VPd",
-                    "name": "GH_Sales"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "model": "text-embedding-3-large",
-                "options": {
-                    "dimensions": 3072
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.embeddingsAzureOpenAi",
-            "typeVersion": 1,
-            "position": [
-                -56704,
-                32784
-            ],
-            "id": "fe59f7f9-bf11-4d61-91ba-b2e799716c85",
-            "name": "Embeddings Azure OpenAI",
-            "credentials": {
-                "azureOpenAiApi": {
-                    "id": "L4HdmJ5bGz2Owawh",
-                    "name": "Azure Open AI account"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "fieldsToAggregate": {
-                    "fieldToAggregate": [
-                        {
-                            "fieldToAggregate": "document.pageContent"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.aggregate",
-            "typeVersion": 1,
-            "position": [
-                -56432,
-                32624
-            ],
-            "id": "8b415387-05f2-4409-a03f-9dddf636c48c",
-            "name": "Aggregate1"
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "2f35809b-3889-4ef7-a8d5-a4d934842631",
-                            "name": "Text from user",
-                            "value": "={{ $('Memory + Model PreEnter2').first().json.Input }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "8a4a05e2-9c61-48cc-a767-ddf3d426f69d",
-                            "name": "Text  from database",
-                            "value": "={{ $json.pageContent }}",
-                            "type": "array"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                -56304,
-                32624
-            ],
-            "id": "0379c53b-3610-4bf3-944e-4ca3c33c66b7",
-            "name": "Text3"
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "ca1744cf-69e7-4a85-81d3-2fb2b936e496",
-                            "name": "workflow_id",
-                            "value": "={{ $workflow.id }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "205c7c4d-2dfa-471f-9306-33d30e16722a",
-                            "name": "execution_id",
-                            "value": "={{ $execution.id }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "3fa4932f-c3cc-41a8-90a4-d1b3a2d32cdd",
-                            "name": "client_id",
-                            "value": "Be-Star",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                -56160,
-                32624
-            ],
-            "id": "3bc1e7dc-0bf1-4802-ba40-66a72cd5bab2",
-            "name": "Set metadata2"
-        },
-        {
-            "parameters": {
-                "promptType": "define",
-                "text": "={{ $('Text3').item.json['Text from user'] }}",
-                "options": {
-                    "systemMessage": "=أنت \"عمر\" مساعد ذكي لحجز تذاكر فعالية \"كن نجمًا - Be Star\" 🌟\n\n📋 معلومات الفعالية:\n🎉 الاسم: كن نجمًا - Be Star\n📅 الموعد: 11 فبراير 2026\n📍 المكان: سوهاج - الكوامل - قاعة قناة السويس\n💰 الأسعار: VIP: 500 جنيه | طلبة: 100 جنيه\n\n📌 رقم واتساب العميل الحالي هو: {{ $('User Phone ID').item.json.User_phone_ID }}\n(احفظ الرقم ده كويس — ده الرقم الحقيقي للعميل اللي بيكلمك دلوقتي)\n\n═══════════════════════════════════════\n🔴🔴🔴 القاعدة رقم 1 — رقم الواتساب (الأهم على الإطلاق): 🔴🔴🔴\n═══════════════════════════════════════\nلو العميل كتب في خانة رقم الواتساب أي حاجة مش رقم فعلي، مثلاً:\n\"رقمي الحالي\"، \"نفس الرقم\"، \"الرقم ده\"، \"اللي بكلمك منه\"، \"رقمي\"، \"الحالي\"، أو أي كلام مش أرقام\n→ استبدلها فوراً بالرقم الفعلي المكتوب فوق: {{ $('User Phone ID').item.json.User_phone_ID }}\n\nمثال عملي:\nالعميل كتب:\nأحمد علي\nahmed@gmail.com\nرقمي الحالي\nVIP\n1\n\n❌ الرد الغلط:\n- رقم الواتساب: رقمي الحالي\n\n✅ الرد الصح (استبدل كلام العميل بالرقم الحقيقي):\n- رقم الواتساب: {{ $('User Phone ID').item.json.User_phone_ID }}\n\nمثال عملي تاني:\nالعميل كتب:\nمحمد خالد\nmk@gmail.com\nنفس الرقم اللي بكلمك منه\nطلبة\n2\n\n✅ الرد الصح:\n- رقم الواتساب: {{ $('User Phone ID').item.json.User_phone_ID }}\n\n⚠️ القاعدة دي تنطبق كمان على booking_data — لازم تكتب الرقم الفعلي مش كلام العميل.\n═══════════════════════════════════════\n\n🔵 قواعد المحادثة:\n1. تكلم كإنسان: لطيف، بسيط، وغير متطلب.\n2. اقبل البيانات بأي شكل.\n3. لو طلب أكثر من تذكرة → اطلب أسماء كل شخص.\n4. التأكد من البيانات قبل طلب صورة إثبات الدفع.\n5. محرم تسأل العميل \"هل تأكدت من صحة البيانات؟\" بعد إرسال صورة إثبات الدفع.\n6. إرسال العميل صورة إثبات الدفع = تأكيد كل البيانات 100%.\n\n📝 سيناريو الحجز:\n1. اطلب من العميل: الاسم، الإيميل، رقم الواتساب، نوع التذكرة (VIP/طلبة)، عدد التذاكر\n2. اعرض ملخص كامل بالأرقام الفعلية واطلب التأكيد\n3. بعد التأكيد، اعرض رقم فودافون كاش (01557368364)\n4. استلم صورة إثبات الدفع\n5. بعد استلام الصورة → فعّل details فوراً بدون أي سؤال تأكيدي\n\n🔴🔴🔴 قاعدة خانة details (حاسمة): 🔴🔴🔴\n\nردك لازم يكون دائمًا بالشكل ده:\n{\"details\": false, \"message\": \"ردك هنا\"}\n\nلما تجمع كل البيانات + صورة إثبات الدفع:\n\nابعت:\n{\"details\": true, \"message\": \"\", \"booking_data\": {\"name\": \"الاسم\", \"email\": \"الإيميل\", \"phone\": \"الرقم الفعلي\", \"ticket_type\": \"VIP/Student\", \"ticket_count\": 1, \"tickets\": [{\"name\": \"اسم الشخص\", \"type\": \"VIP/Student\"}]}}\n\n⛔ ممنوع:\n- تبعت details: true بدون صورة إثبات الدفع\n- تكتب أي حاجة بره الـ JSON\n- سؤال عن تأكيد البيانات بعد استلام صورة إثبات الدفع\n- طلب بيانات من العميل عند التحية (السلام عليكم وغيرها)\n- كتابة كلام العميل بدل الرقم الفعلي في الملخص أو في booking_data\n\nمثال الترحيب الصح:\nالعميل: السلام عليكم\nالرد: وعليكم السلام ورحمة الله! أنا عمر، مساعدك الذكي لحجز تذاكر فعالية \"كن نجمًا - Be Star\". هل أقدر أساعد حضرتك بشيء؟",
-                    "returnIntermediateSteps": false
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.agent",
-            "typeVersion": 3,
-            "position": [
-                -55824,
-                32624
-            ],
-            "id": "7ef3de0a-ddac-4d2a-bdb0-15d0e2ac4e24",
-            "name": "Be Star Ticketing Agent"
-        },
-        {
-            "parameters": {
-                "code": {
-                    "supplyData": {
-                        "code": "const { AzureChatOpenAI } = require(\"@langchain/openai\");\nconst azureOpenAIApiKey = \"5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF\";\nconst azureOpenAIApiInstanceName = \"mrai-openai\";\nconst azureOpenAIApiDeploymentName = \"gpt-4.1-mini\";\nconst azureOpenAIApiVersion = \"2024-12-01-preview\";\nconst input_token_cost = 0.40;\nconst output_token_cost = 1.60;\nconst tools = await this.getInputConnectionData('ai_tool', 0);\nconst googleSheetTool = tools[0];\nconst { workflow_id, execution_id, client_id } = $('Set metadata3').first().json;\nconst llm = new AzureChatOpenAI({\n  azureOpenAIApiKey, azureOpenAIApiInstanceName, azureOpenAIApiDeploymentName, azureOpenAIApiVersion,\n  temperature: 1,\n  callbacks: [{ handleLLMEnd: async function(output, runId, parentId) {\n    const generation = output.generations[0][0];\n    const message = generation.message;\n    const input_tokens = message.usage_metadata.input_tokens;\n    const output_tokens = message.usage_metadata.output_tokens;\n    const total_tokens = message.usage_metadata.total_tokens;\n    const input_cost_val = (input_tokens / 1_000_000) * input_token_cost;\n    const output_cost_val = (output_tokens / 1_000_000) * output_token_cost;\n    const total_cost = input_cost_val + output_cost_val;\n    const total_cost_in_egypt = total_cost * 50;\n    const row = { date: (new Date()).toGMTString(), workflow_id, execution_id, client_id, model: azureOpenAIApiDeploymentName, input_tokens, output_tokens, total_tokens, input_cost: input_cost_val, output_cost: output_cost_val, total_cost, total_cost_in_egypt };\n    if (googleSheetTool && googleSheetTool.func) { await googleSheetTool.func(row); }\n  } }]\n});\nreturn llm;"
-                    }
-                },
-                "inputs": {
-                    "input": [
-                        {
-                            "type": "ai_tool",
-                            "required": true
-                        }
-                    ]
-                },
-                "outputs": {
-                    "output": [
-                        {
-                            "type": "ai_languageModel"
-                        }
-                    ]
-                }
-            },
-            "id": "9af87e81-36fd-4985-a70e-9cb160ae7c06",
-            "name": "Azure OpenAI Chat Model4",
-            "type": "@n8n/n8n-nodes-langchain.code",
-            "position": [
-                -55920,
-                32768
-            ],
-            "typeVersion": 1
-        },
-        {
-            "parameters": {
-                "sessionIdType": "customKey",
-                "sessionKey": "={{ $('Memory + Model PreEnter2').first().json['Memory Key'] }}",
-                "tableName": "bestar_chat_history_v7",
-                "contextWindowLength": 50
-            },
-            "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
-            "typeVersion": 1.3,
-            "position": [
-                -55728,
-                32912
-            ],
-            "id": "a1c5af08-15d7-44b7-954c-bb467f9af13a",
-            "name": "Postgres Chat Memory1",
-            "credentials": {
-                "postgres": {
-                    "id": "nZpi0ecZbdqHX8nL",
-                    "name": "Postgres account"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "https://access.mrailabs.com/api/log-usage",
-                "sendHeaders": true,
-                "headerParameters": {
-                    "parameters": [
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json"
-                        }
-                    ]
-                },
-                "sendBody": true,
-                "bodyParameters": {
-                    "parameters": [
-                        {
-                            "name": "api_key",
-                            "value": "Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38"
-                        },
-                        {
-                            "name": "execution_id",
-                            "value": "={{ $execution.id }}"
-                        },
-                        {
-                            "name": "workflow_id",
-                            "value": "={{ $workflow.id }}"
-                        },
-                        {
-                            "name": "platform_user_id",
-                            "value": "={{ $('Memory + Model PreEnter2').item.json['Memory Key'] }}"
-                        },
-                        {
-                            "name": "request_type",
-                            "value": "respond"
-                        },
-                        {
-                            "name": "model",
-                            "value": "={{ $json.model || 'gpt-4o-mini' }}"
-                        },
-                        {
-                            "name": "input_tokens",
-                            "value": "={{ $fromAI('input_tokens', ``, 'string') }}"
-                        },
-                        {
-                            "name": "output_tokens",
-                            "value": "={{ $fromAI('output_tokens', ``, 'string') }}"
-                        },
-                        {
-                            "name": "input_cost",
-                            "value": "={{ $fromAI('input_cost', ``, 'string') }}"
-                        },
-                        {
-                            "name": "output_cost",
-                            "value": "={{ $fromAI('output_cost', ``, 'string') }}"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequestTool",
-            "typeVersion": 4.3,
-            "position": [
-                -55872,
-                32912
-            ],
-            "id": "e3bdf564-f091-497e-abb2-99710573a37e",
-            "name": "Log Reformer Rekaz3"
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "https://access.mrailabs.com/api/log-message",
-                "sendHeaders": true,
-                "headerParameters": {
-                    "parameters": [
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json"
-                        }
-                    ]
-                },
-                "sendBody": true,
-                "specifyBody": "json",
-                "jsonBody": "={{ JSON.stringify({\"api_key\": \"Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38\", \"platform_user_id\": $('Memory + Model PreEnter2').item.json['Memory Key'], \"execution_id\": $execution.id, \"role\": \"user\", \"content\": $('Memory + Model PreEnter2').item.json['Input']}) }}",
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -55152,
-                32848
-            ],
-            "id": "a82f83d3-6224-48bf-86cd-cfdccc1835c6",
-            "name": "Log Usr Messages"
-        },
-        {
-            "parameters": {
-                "resource": "chat-api",
-                "operation": "send-presence",
-                "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
-                "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
-                "delay": 3000
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -54992,
-                32848
-            ],
-            "id": "1c4ccefc-882f-4b97-8967-04162c44b6e5",
-            "name": "Send presence1",
-            "retryOnFail": true,
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "jsCode": "const DELIMITER = '---';\nconst rawOutput = $('Set AI Message').first().json.output || '';\nif (!rawOutput || rawOutput.trim().length === 0) { return [{ json: { text: '' } }]; }\nconst hasDelimiter = rawOutput.includes(DELIMITER);\nlet messages = [];\nif (hasDelimiter) { messages = rawOutput.split(DELIMITER).map(msg => msg.trim()).filter(msg => msg.length > 0); }\nelse { messages = [rawOutput.trim()]; }\nmessages = messages.map(msg => msg.replace(/---/g, '').trim());\nmessages = messages.filter(msg => msg.length > 0);\nif (messages.length === 0) { const cleanedOriginal = rawOutput.replace(/---/g, '').trim(); return [{ json: { text: cleanedOriginal || '\\u0639\\u0630\\u0631\\u0627\\u064b\\u060c \\u062d\\u062f\\u062b \\u062e\\u0637\\u0623. \\u064a\\u0631\\u062c\\u0649 \\u0627\\u0644\\u0645\\u062d\\u0627\\u0648\\u0644\\u0629 \\u0645\\u0631\\u0629 \\u0623\\u062e\\u0631\\u0649.' } }]; }\nreturn messages.map(text => ({ json: { text } }));"
-            },
-            "type": "n8n-nodes-base.code",
-            "typeVersion": 2,
-            "position": [
-                -54832,
-                32768
-            ],
-            "id": "899eb031-bb9d-4e32-83e9-e07c5e5aaedd",
-            "name": "Splite the messages"
-        },
-        {
-            "parameters": {
-                "resource": "messages-api",
-                "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
-                "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
-                "messageText": "={{ $('Splite the messages').first().json.text }}",
-                "options_message": {
-                    "quoted": {
-                        "messageQuoted": {
-                            "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
-                        }
-                    }
-                }
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -54688,
-                32704
-            ],
-            "id": "1ad0f7dd-16f6-4b60-84d3-8ce2b0b54060",
-            "name": "Send text",
-            "retryOnFail": true,
-            "executeOnce": true,
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "https://access.mrailabs.com/api/log-message",
-                "sendHeaders": true,
-                "headerParameters": {
-                    "parameters": [
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json"
-                        }
-                    ]
-                },
-                "sendBody": true,
-                "specifyBody": "=json",
-                "bodyParameters": {
-                    "parameters": [
-                        {}
-                    ]
-                },
-                "jsonBody": "={{ JSON.stringify({\"api_key\": \"Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38\", \"platform_user_id\": $('Memory + Model PreEnter2').first().json['Memory Key'], \"execution_id\": $execution.id, \"role\": \"assistant\", \"content\": $('Splite the messages').first().json.text}) }}",
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -54544,
-                32704
-            ],
-            "id": "9dd66a1c-842c-4bef-aeb4-241ea874c852",
-            "name": "Log AI Messages1"
-        },
-        {
-            "parameters": {
-                "jsCode": "const allItems = $('Splite the messages').all();\nif (allItems.length <= 1) { return []; }\nreturn allItems.slice(1);"
-            },
-            "type": "n8n-nodes-base.code",
-            "typeVersion": 2,
-            "position": [
-                -54688,
-                32864
-            ],
-            "id": "8c826879-a3b8-4042-a45b-b6db60d36845",
-            "name": "Skip First One"
-        },
-        {
-            "parameters": {
-                "options": {}
-            },
-            "type": "n8n-nodes-base.splitInBatches",
-            "typeVersion": 3,
-            "position": [
-                -54512,
-                32864
-            ],
-            "id": "5b34db10-0205-4852-9724-c44b51c31497",
-            "name": "Loop Over Items"
-        },
-        {
-            "parameters": {},
-            "type": "n8n-nodes-base.noOp",
-            "typeVersion": 1,
-            "position": [
-                -54320,
-                32720
-            ],
-            "id": "c4f273cc-d85f-4bc4-9479-6d126a9c4321",
-            "name": "No Operation, do nothing"
-        },
-        {
-            "parameters": {
-                "resource": "messages-api",
-                "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
-                "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
-                "messageText": "={{ $('Loop Over Items').item.json.text }}",
-                "options_message": {}
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -54336,
-                32880
-            ],
-            "id": "4e0a2858-3744-4d74-aeb6-8456dd8d12a7",
-            "name": "Send text1",
-            "retryOnFail": true,
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "https://access.mrailabs.com/api/log-message",
-                "sendHeaders": true,
-                "headerParameters": {
-                    "parameters": [
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json"
-                        }
-                    ]
-                },
-                "sendBody": true,
-                "specifyBody": "json",
-                "jsonBody": "={{ JSON.stringify({\"api_key\": \"Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38\", \"platform_user_id\": $('Memory + Model PreEnter2').item.json['Memory Key'], \"execution_id\": $execution.id, \"role\": \"assistant\", \"content\": $('Loop Over Items').item.json.text}) }}",
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -54160,
-                32880
-            ],
-            "id": "78ebdaef-4d82-449c-9a8c-1fb9b1431e3b",
-            "name": "Log AI Messages"
-        },
-        {
-            "parameters": {
-                "content": "# Triggers + The Access\n",
-                "height": 320,
-                "width": 848,
-                "color": 6
-            },
-            "type": "n8n-nodes-base.stickyNote",
-            "position": [
-                -61536,
-                32336
-            ],
-            "typeVersion": 1,
-            "id": "7bfb1d3e-b80f-4cb2-b829-9cc64c838139",
-            "name": "Sticky Note18"
-        },
-        {
-            "parameters": {
-                "content": "# Inputs\n",
-                "height": 736,
-                "width": 1456
-            },
-            "type": "n8n-nodes-base.stickyNote",
-            "position": [
-                -60672,
-                32336
-            ],
-            "typeVersion": 1,
-            "id": "37566f98-3a9a-4262-a394-7988fd1a8e9c",
-            "name": "Sticky Note19"
-        },
-        {
-            "parameters": {
-                "content": "# Rag \n",
-                "height": 560,
-                "width": 1744
-            },
-            "type": "n8n-nodes-base.stickyNote",
-            "position": [
-                -57728,
-                32512
-            ],
-            "typeVersion": 1,
-            "id": "54059703-9cd3-4e57-a2a2-a950f774e8f4",
-            "name": "Sticky Note25",
-            "disabled": true
-        },
-        {
-            "parameters": {
-                "content": "# Orchestrator Agent\n\n",
-                "height": 560,
-                "width": 496,
-                "color": 5
-            },
-            "type": "n8n-nodes-base.stickyNote",
-            "position": [
-                -55968,
-                32512
-            ],
-            "typeVersion": 1,
-            "id": "bd28c6e3-d229-448c-86b0-aca8a8e5a4d9",
-            "name": "Sticky Note24"
-        },
-        {
-            "parameters": {
-                "content": "# Output\n",
-                "height": 784,
-                "width": 1456
-            },
-            "type": "n8n-nodes-base.stickyNote",
-            "position": [
-                -55456,
-                32288
-            ],
-            "typeVersion": 1,
-            "id": "ff9beb01-1c76-4220-8a53-d4e270405c08",
-            "name": "Sticky Note6"
-        },
-        {
-            "parameters": {
-                "url": "http://38.242.139.159:3005/api/quiz/active-question",
-                "options": {
-                    "timeout": 8000
-                }
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -59168,
-                32608
-            ],
-            "id": "91ee31a3-ce85-4a81-872b-ad35cc48324c",
-            "name": "Check Active Quiz",
-            "continueOnFail": true
-        },
-        {
-            "parameters": {
-                "conditions": {
-                    "options": {
-                        "caseSensitive": true,
-                        "leftValue": "",
-                        "typeValidation": "strict",
-                        "version": 2
-                    },
-                    "conditions": [
-                        {
-                            "id": "qc1",
-                            "leftValue": "={{ $json.has_active }}",
-                            "rightValue": true,
-                            "operator": {
-                                "type": "boolean",
-                                "operation": "equals"
-                            }
-                        }
-                    ],
-                    "combinator": "and"
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.if",
-            "typeVersion": 2.2,
-            "position": [
-                -59024,
-                32608
-            ],
-            "id": "09cf183e-327d-478a-9b65-117233142153",
-            "name": "Has Active Quiz?"
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "http://38.242.139.159:3005/api/quiz/answer",
-                "sendHeaders": true,
-                "headerParameters": {
-                    "parameters": [
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json"
-                        }
-                    ]
-                },
-                "sendBody": true,
-                "specifyBody": "json",
-                "jsonBody": "={\n  \"question_id\": {{ $('Has Active Quiz?').item.json.question_id }},\n\"phone\": \"{{ $('User Phone ID').item.json.User_phone_ID }}\",\n  \"answer_text\": \"{{ $('Text4').item.json.Text }}\",\n  \"sender_name\": \"{{ $('Whatsapp').item.json.body.data.pushName || 'Unknown' }}\"\n}",
-                "options": {
-                    "timeout": 15000
-                }
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -58848,
-                32432
-            ],
-            "id": "929052a1-849c-4df1-bf4f-63dd8b4d6f21",
-            "name": "Submit Quiz Answer"
-        },
-        {
-            "parameters": {
-                "resource": "messages-api",
-                "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
-                "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
-                "messageText": "✅ تم استلام إجابتك، يتم مراجعة الإجابات 📋",
-                "options_message": {
-                    "quoted": {
-                        "messageQuoted": {
-                            "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
-                        }
-                    }
-                }
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -58656,
-                32432
-            ],
-            "id": "7351714e-9eff-4016-b6f1-2c3ff6f79bdf",
-            "name": "Send Quiz Confirmation",
-            "retryOnFail": true,
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "jsCode": "const rawOutput = $('Be Star Ticketing Agent').first().json.output || '';\nlet parsed = { details: false, message: rawOutput, booking_data: null };\ntry {\n  // Try to parse as JSON\n  let cleaned = rawOutput.trim();\n  // Handle if AI wraps in code block\n  if (cleaned.startsWith('```')) {\n    cleaned = cleaned.replace(/```json?\\n?/g, '').replace(/```/g, '').trim();\n  }\n  const obj = JSON.parse(cleaned);\n  parsed.details = obj.details === true;\n  parsed.message = obj.message || '';\n  parsed.booking_data = obj.booking_data || null;\n} catch (e) {\n  // Not valid JSON = normal AI response\n  parsed.details = false;\n  parsed.message = rawOutput;\n}\nreturn [{ json: parsed }];"
-            },
-            "type": "n8n-nodes-base.code",
-            "typeVersion": 2,
-            "position": [
-                -55440,
-                32512
-            ],
-            "id": "fe13efd7-108b-4211-a4db-0bb754c477f4",
-            "name": "Parse AI Output"
-        },
-        {
-            "parameters": {
-                "rules": {
-                    "values": [
-                        {
-                            "conditions": {
-                                "options": {
-                                    "caseSensitive": true,
-                                    "leftValue": "",
-                                    "typeValidation": "strict",
-                                    "version": 2
-                                },
-                                "conditions": [
-                                    {
-                                        "id": "switch-details-true",
-                                        "leftValue": "={{ $json.details }}",
-                                        "rightValue": true,
-                                        "operator": {
-                                            "type": "boolean",
-                                            "operation": "equals"
-                                        }
-                                    }
-                                ],
-                                "combinator": "and"
-                            },
-                            "renameOutput": true,
-                            "outputKey": "Booking Complete"
-                        },
-                        {
-                            "conditions": {
-                                "options": {
-                                    "caseSensitive": true,
-                                    "leftValue": "",
-                                    "typeValidation": "strict",
-                                    "version": 2
-                                },
-                                "conditions": [
-                                    {
-                                        "id": "switch-details-false",
-                                        "leftValue": "={{ $json.details }}",
-                                        "rightValue": false,
-                                        "operator": {
-                                            "type": "boolean",
-                                            "operation": "equals"
-                                        }
-                                    }
-                                ],
-                                "combinator": "and"
-                            },
-                            "renameOutput": true,
-                            "outputKey": "Normal Chat"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.switch",
-            "typeVersion": 3.2,
-            "position": [
-                -55280,
-                32512
-            ],
-            "id": "8d49eb0c-521a-4461-8286-b6e6e0aa07f8",
-            "name": "Booking Switch"
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "http://38.242.139.159:3005/api/tickets/create-booking",
-                "sendHeaders": true,
-                "headerParameters": {
-                    "parameters": [
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json"
-                        }
-                    ]
-                },
-                "sendBody": true,
-                "specifyBody": "json",
-                "jsonBody": "={{ JSON.stringify({\n  user_phone: $('User Phone ID').first().json.User_phone_ID,\n  booking_data: $json.booking_data,\n  image_base64: $('Memory + Model PreEnter2').first().json.image_base64 || ''\n}) }}",
-                "options": {
-                    "timeout": 15000
-                }
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -55024,
-                32416
-            ],
-            "id": "b9892043-ee33-4b7f-99dc-e7130b7404ad",
-            "name": "Send Booking to Platform"
-        },
-        {
-            "parameters": {
-                "resource": "messages-api",
-                "instanceName": "={{ $('Whatsapp').first().json.body.instance }}",
-                "remoteJid": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
-                "messageText": "✅ تم حجز التذكرة بنجاح!|يرجى انتظار المراجعة البشرية ثم هنرسل لحضرتك رد خدمة العملاء وفى حالة مواجهة اي مشكلة اتصل بالرقم 01200000000",
-                "options_message": {
-                    "quoted": {
-                        "messageQuoted": {
-                            "messageId": "={{ $('Whatsapp').first().json.body.data.key.id }}"
-                        }
-                    }
-                }
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -54848,
-                32416
-            ],
-            "id": "be07422f-ea61-4c96-976d-3d229f4ee24a",
-            "name": "Fixed Booking Reply",
-            "retryOnFail": true,
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "set-msg-001",
-                            "name": "output",
-                            "value": "={{ $json.message }}",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                -55312,
-                32848
-            ],
-            "id": "97cbac80-b1c5-44a1-a8c9-1bd5743a6861",
-            "name": "Set AI Message"
-        },
-        {
-            "parameters": {
-                "content": "## Quiz Mode",
-                "height": 736,
-                "width": 736,
-                "color": 3
-            },
-            "type": "n8n-nodes-base.stickyNote",
-            "typeVersion": 1,
-            "position": [
-                -59200,
-                32336
-            ],
-            "id": "a7a71165-d6b4-4da1-aae7-7498b9d0420e",
-            "name": "Sticky Note1"
-        },
-        {
-            "parameters": {
-                "content": "## Fixed Reply",
-                "height": 240,
-                "width": 336,
-                "color": 3
-            },
-            "type": "n8n-nodes-base.stickyNote",
-            "typeVersion": 1,
-            "position": [
-                -55056,
-                32352
-            ],
-            "id": "dcf624a3-caf6-481b-9d63-883917a0278c",
-            "name": "Sticky Note2"
-        },
-        {
-            "parameters": {
-                "content": "## AI Reply",
-                "height": 400,
-                "width": 1456,
-                "color": 3
-            },
-            "type": "n8n-nodes-base.stickyNote",
-            "typeVersion": 1,
-            "position": [
-                -55456,
-                32672
-            ],
-            "id": "0dcf1838-b583-4d9a-bb60-81f21d060f02",
-            "name": "Sticky Note3"
         },
         {
             "parameters": {
@@ -1947,812 +452,24 @@
             "type": "n8n-nodes-base.if",
             "typeVersion": 2.3,
             "position": [
-                -58208,
+                -58240,
                 32624
             ],
-            "id": "e8d7a189-3e3b-42e2-8cfb-cf8f0f26ae6f",
+            "id": "65a5f3e5-b25d-427b-8a53-211cca2d8d77",
             "name": "Is Group Message?"
         },
         {
             "parameters": {
-                "url": "http://38.242.139.159:3005/api/checklist/settings",
-                "options": {
-                    "timeout": 8000
-                }
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -58416,
-                32624
-            ],
-            "id": "794cc356-08c5-4f5a-b499-78a5e0ee572f",
-            "name": "Load Routing Settings",
-            "continueOnFail": true
-        },
-        {
-            "parameters": {
-                "conditions": {
-                    "options": {
-                        "caseSensitive": true,
-                        "leftValue": "",
-                        "typeValidation": "strict",
-                        "version": 3
-                    },
-                    "conditions": [
-                        {
-                            "id": "ba0b4d39-3172-47f0-83a9-737ab9b99c66",
-                            "leftValue": "={{ $('Extract Message Data').item.json.remoteJid }}",
-                            "rightValue": "={{ $json.manager_phone + '@s.whatsapp.net' }}",
-                            "operator": {
-                                "type": "string",
-                                "operation": "notEquals"
-                            }
-                        }
-                    ],
-                    "combinator": "and"
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.if",
-            "typeVersion": 2.3,
-            "position": [
-                -57936,
-                32912
-            ],
-            "id": "87c0b253-27e1-44cd-9498-167e218eddbb",
-            "name": "Is Regular User?"
-        },
-        {
-            "parameters": {
-                "conditions": {
-                    "options": {
-                        "caseSensitive": true,
-                        "leftValue": "",
-                        "typeValidation": "strict",
-                        "version": 3
-                    },
-                    "conditions": [
-                        {
-                            "id": "96863583-b1f3-430a-b452-6dac1dc662b8",
-                            "leftValue": "={{ $('Extract Message Data').item.json.remoteJid }}",
-                            "rightValue": "={{ $json.whatsapp_group_id.includes('@') ? $json.whatsapp_group_id : $json.whatsapp_group_id + '@g.us' }}",
-                            "operator": {
-                                "type": "string",
-                                "operation": "equals"
-                            }
-                        }
-                    ],
-                    "combinator": "and"
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.if",
-            "typeVersion": 2.3,
-            "position": [
-                -57952,
-                32432
-            ],
-            "id": "4d4deffd-6201-4a41-b529-1df26570471c",
-            "name": "Is Authorized Group?"
-        },
-        {
-            "parameters": {
-                "url": "http://38.242.139.159:3005/api/complaints/summary",
-                "options": {
-                    "timeout": 8000
-                }
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -57696,
-                33232
-            ],
-            "id": "e822d8f7-5097-4de8-9f03-f16bbe532f8e",
-            "name": "Fetch Complaints for Manager",
-            "alwaysOutputData": true,
-            "continueOnFail": true
-        },
-        {
-            "parameters": {
-                "url": "=http://38.242.139.159:3005/api/checklist/?date_filter={{ new Date().toISOString().split('T')[0] }}",
-                "options": {
-                    "timeout": 8000
-                }
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -57504,
-                33232
-            ],
-            "id": "36cd0e2f-1111-4fb6-becd-c2c88c5d1cbc",
-            "name": "Fetch Tasks for Manager",
-            "alwaysOutputData": true,
-            "continueOnFail": true
-        },
-        {
-            "parameters": {
-                "promptType": "define",
-                "text": "={{ $('Merge Manager Data').first().json.message_text }}",
-                "options": {
-                    "systemMessage": "=أنت مساعد ذكي للمدير. بتديله تقارير وملخصات عن شغل اليوم وبتساعده يحل الشكاوى.\n\n═══════════════════════════════════════\n🔴 القواعد الإلزامية:\n═══════════════════════════════════════\n1. ممنوع تألف معلومات. استخدم البيانات المكتوبة تحت فقط.\n2. كلامك بالعربي المصري ومختصر.\n3. كلام المدير هو القرار النهائي — لا تحكم عليه ولا تعترض.\n═══════════════════════════════════════\n\n# الشكاوى المفتوحة:\n{{ $json.open_complaints_text }}\n\n# ملخص الشكاوى:\n{{ $json.complaints_text }}\n\n# مهام اليوم ({{ $json.task_count }} مهمة):\n{{ $json.tasks_text }}\n\n# سيناريوهات العمل:\n\n## 1. استعراض المهام والشكاوى:\n- لو سأل عن المهام → اذكرها بالظبط\n- لو سأل عن الشكاوى → اذكرها مع أرقامها\n\n## 2. حل شكوى (أهم سيناريو):\nلو المدير ذكر حل شكوى أو رد على شكوى بأي صيغة:\n- 'حل شكوى 3' أو 'رد على شكوى 3' أو 'بالنسبة لشكوى 3' أو أي صيغة فيها رقم شكوى + حل\n- الخطوات:\n  1. حدد رقم الشكوى من الرسالة\n  2. استخدم أداة Resolve Complaint Tool مع complaint_id + resolution_note (النص اللي قاله المدير بالظبط)\n  3. ⚠️ مهم جداً: انقل resolution_note بالنص اللي قاله المدير بالظبط من غير تعديل أو تقييم\n  4. بعد النجاح، رد بالظبط: 'تم حل الشكوى رقم [الرقم] ✅ — الحل: [نص الحل]'\n\n## 3. أي سؤال تاني:\n- جاوب من البيانات المتاحة أو قول 'مفيش بيانات عن ده'\n"
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.agent",
-            "typeVersion": 1.7,
-            "position": [
-                -57184,
-                33232
-            ],
-            "id": "438a7b14-7670-4dfe-a216-1d2dc6be17c2",
-            "name": "Manager AI Assistant"
-        },
-        {
-            "parameters": {
-                "model": "gpt-4.1-mini",
-                "options": {
-                    "temperature": 0.3
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
-            "typeVersion": 1,
-            "position": [
-                -57184,
-                33424
-            ],
-            "id": "3a23a86f-1cc7-478a-88f2-d84808618425",
-            "name": "Manager LLM (gpt-4.1-mini)",
-            "credentials": {
-                "azureOpenAiApi": {
-                    "id": "L4HdmJ5bGz2Owawh",
-                    "name": "Azure Open AI account"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "resource": "messages-api",
-                "instanceName": "={{ $('Merge Manager Data').first().json.instance }}",
-                "remoteJid": "={{ $('Merge Manager Data').first().json.remoteJid }}",
-                "messageText": "={{ $json.output }}",
-                "options_message": {}
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -56864,
-                33232
-            ],
-            "id": "f2027872-180a-4b29-aa4a-b61801213981",
-            "name": "Send Manager Reply",
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "content": "## Manager Mode",
-                "height": 464,
-                "width": 1440,
-                "color": 3
-            },
-            "type": "n8n-nodes-base.stickyNote",
-            "typeVersion": 1,
-            "position": [
-                -57728,
-                33104
-            ],
-            "id": "99c0df5f-4482-4a80-8d1f-a0d997a73b7f",
-            "name": "Sticky Note"
-        },
-        {
-            "parameters": {
-                "url": "=http://38.242.139.159:3005/api/checklist/?date_filter={{ new Date().toISOString().split('T')[0] }}",
-                "options": {
-                    "timeout": 8000
-                }
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -57680,
-                32080
-            ],
-            "id": "3fb0f4e0-9dd4-422b-bba1-b781ca2aadd9",
-            "name": "Fetch Group Tasks",
-            "alwaysOutputData": true,
-            "continueOnFail": true
-        },
-        {
-            "parameters": {
-                "url": "http://38.242.139.159:3005/api/complaints/summary",
-                "options": {
-                    "timeout": 8000
-                }
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -57328,
-                32080
-            ],
-            "id": "4a8637ce-76a2-45f9-bca8-312f2f6457b9",
-            "name": "Fetch Group Complaints",
-            "alwaysOutputData": true,
-            "continueOnFail": true
-        },
-        {
-            "parameters": {
-                "promptType": "define",
-                "text": "={{ $('Merge Group Tasks').first().json.message_text }}",
-                "options": {
-                    "systemMessage": "=أنت منسق لوجستيات (AI Logistics Coordinator) في جروب واتساب لإدارة المهام.\n\n═══════════════════════════════════════\n🔴🔴🔴 قواعد إلزامية 🔴🔴🔴\n═══════════════════════════════════════\n1. ممنوع منعاً باتاً تألف أي بيانات. استخدم فقط البيانات المكتوبة تحت.\n2. ردودك تكون مختصرة جداً. رد على قد السؤال فقط. لا تكثر الحديث.\n3. كلامك بالعربي المصري.\n═══════════════════════════════════════\n\n# مهام اليوم ({{ $('Merge Group Tasks').item.json.task_count }} مهمة):\n{{ $('Merge Group Tasks').item.json.tasks_text }}\n\n# اسم المرسل: {{ $('Merge Group Tasks').item.json.sender_name }}\n\n# سيناريوهات العمل:\n\n## 1. لو سأل عن المهام:\n- اعرض المهام بالظبط كما هي مكتوبة فوق (بدون الـ ID)\n- لو سأل عن مهام النهاردة → اعرض مهام النهاردة فقط\n- لو سأل عن مهام معينة (مكتملة/غير مكتملة) → فلتر البيانات اللي فوق\n- لو مفيش مهام → قول 'مفيش مهام مسجلة النهاردة'\n\n## 2. لو قال خلصت/أنهيت مهمة:\n- الخطوة 1: دوّر على المهمة في القائمة فوق بالاسم\n- الخطوة 2: اسأله: 'هل أنت متأكد إنك أنهيت مهمة [اسم المهمة بالظبط]؟'\n- الخطوة 3: لو أكد (قال أيوة/تمام/نعم) → استخدم أداة Complete Task Tool مع task_id بتاع المهمة\n- ⚠️ لازم تستنى التأكيد قبل ما تعلّم المهمة!\n\n## 3. لو فيه شكوى أو مشكلة:\n- استخدم أداة Register Complaint Tool فوراً\n- بعد التسجيل لازم تقول: 'تم تسجيل الشكوى رقم [الرقم اللي رجع من الأداة]' بالظبط في ردك. مثال: 'تم تسجيل الشكوى رقم 5'\n\n## 4. أي سؤال تاني:\n- جاوب بناءً على البيانات المتاحة فقط باختصار\n- لو مش عارف → قول 'مش عارف أجاوب على ده حالياً'\n"
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.agent",
-            "typeVersion": 1.7,
-            "position": [
-                -57184,
-                32080
-            ],
-            "id": "8668b198-8189-4a92-b743-ca946eae2710",
-            "name": "Group AI Assistant"
-        },
-        {
-            "parameters": {
-                "toolDescription": "استخدم هذه الأداة للبحث عن مهمة بالاسم. أرسل search_term (جزء من اسم المهمة). هترجعلك المهام المطابقة مع الـ ID بتاعها.",
-                "url": "=http://38.242.139.159:3005/api/checklist/search?task_name={{ $fromAI('task_name', '') }}",
-                "options": {
-                    "timeout": 8000
-                }
-            },
-            "type": "n8n-nodes-base.httpRequestTool",
-            "typeVersion": 4.4,
-            "position": [
-                -57184,
-                32384
-            ],
-            "id": "7763db6a-8938-474e-9af0-9abbb3ca7102",
-            "name": "Search Task Tool"
-        },
-        {
-            "parameters": {
-                "toolDescription": "استخدم هذه الأداة لتعليم مهمة كمكتملة بعد تأكيد العميل. أرسل task_id (الرقم اللي بين []). مثال: لو المهمة [ID:5] يبقى task_id هو 5.",
-                "method": "PUT",
-                "url": "=http://38.242.139.159:3005/api/checklist/{{ $fromAI('task_id', '') }}/toggle",
-                "sendBody": true,
-                "specifyBody": "json",
-                "jsonBody": "={\n  \"is_completed\": true,\n  \"completed_by_phone\": \"{{ $('Merge Group Tasks').first().json.sender_phone }}\",\n  \"completed_by_name\": \"{{ $('Merge Group Tasks').first().json.sender_name }}\"\n}\n",
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequestTool",
-            "typeVersion": 4.4,
-            "position": [
-                -57040,
-                32384
-            ],
-            "id": "f89210e6-62de-44d1-bea2-8a8edbc9e682",
-            "name": "Complete Task Tool"
-        },
-        {
-            "parameters": {
-                "toolDescription": "استخدم هذه الأداة لتسجيل شكوى. أرسل complaint_text.",
-                "method": "POST",
-                "url": "http://38.242.139.159:3005/api/complaints/",
-                "sendBody": true,
-                "specifyBody": "json",
-                "jsonBody": "={\n  \"reporter_phone\": \"{{ $('Merge Group Tasks').first().json.sender_phone }}\",\n  \"reporter_name\": \"{{ $('Merge Group Tasks').first().json.sender_name }}\",\n  \"complaint_text\": \"{{ $fromAI('complaint_text', '') }}\"\n}\n",
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequestTool",
-            "typeVersion": 4.4,
-            "position": [
-                -56880,
-                32384
-            ],
-            "id": "402eb2d3-3fef-485b-96cc-59410db3ce88",
-            "name": "Register Complaint Tool"
-        },
-        {
-            "parameters": {
-                "resource": "messages-api",
-                "instanceName": "={{ $('Merge Group Tasks').first().json.instance }}",
-                "remoteJid": "={{ $('Merge Group Tasks').first().json.remoteJid }}",
-                "messageText": "={{ $json.output }}",
-                "options_message": {}
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -56928,
-                32080
-            ],
-            "id": "2d9001ff-ab5f-40e9-8d61-864815fa3ab3",
-            "name": "Send Group Reply",
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "conditions": {
-                    "options": {
-                        "caseSensitive": true,
-                        "leftValue": "",
-                        "typeValidation": "strict",
-                        "version": 2
-                    },
-                    "conditions": [
-                        {
-                            "id": "0a4f4294-8d1a-4fc3-9ef2-e0b3f3f77a5f",
-                            "leftValue": "={{ $('Group AI Assistant').item.json.output }}",
-                            "rightValue": "تم تسجيل",
-                            "operator": {
-                                "type": "string",
-                                "operation": "contains"
-                            }
-                        }
-                    ],
-                    "combinator": "or"
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.if",
-            "typeVersion": 2.2,
-            "position": [
-                -56768,
-                32080
-            ],
-            "id": "5e69b3d3-be96-41cc-a416-7271eb2230d6",
-            "name": "Complaint Detected?"
-        },
-        {
-            "parameters": {
-                "resource": "messages-api",
-                "instanceName": "={{ $('Merge Group Tasks').first().json.instance }}",
-                "remoteJid": "={{ $('Load Routing Settings').first().json.manager_phone + '@s.whatsapp.net' }}",
-                "messageText": "=🔺 *شكوى جديدة!*\n\n👤 من: {{ $('Merge Group Tasks').item.json.sender_name }}\n📱 رقم: {{ $('Merge Group Tasks').item.json.sender_phone }}\n\n💬 {{ $('Merge Group Tasks').item.json.message_text }}\n\n📋 {{ $('Group AI Assistant').item.json.output }}\n\n⏰ {{ new Date().toLocaleString('ar-EG', {timeZone: 'Africa/Cairo'}) }}",
-                "options_message": {}
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -56560,
-                32064
-            ],
-            "id": "556cb9ed-2e29-40d3-bcb3-4697f620583a",
-            "name": "Alert Manager About Complaint",
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "content": "## Company Group Mode",
-                "height": 480,
-                "width": 1328
-            },
-            "type": "n8n-nodes-base.stickyNote",
-            "typeVersion": 1,
-            "position": [
-                -57728,
-                32000
-            ],
-            "id": "13582b2f-39d7-4ad6-bd97-4a5f16f8705e",
-            "name": "Sticky Note4"
-        },
-        {
-            "parameters": {
-                "content": "## Filter",
-                "height": 736,
-                "width": 688,
-                "color": 6
-            },
-            "type": "n8n-nodes-base.stickyNote",
-            "typeVersion": 1,
-            "position": [
-                -58448,
-                32336
-            ],
-            "id": "f7b4fe5d-fa2e-432a-b421-fc5f0c6bd84d",
-            "name": "Sticky Note5"
-        },
-        {
-            "parameters": {
-                "method": "PUT",
-                "url": "=http://38.242.139.159:3005/api/agenda/{{ $('Process Each Event').item.json.id }}/reminder-sent",
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -60880,
-                32880
-            ],
-            "id": "14b59b5a-e9d5-4726-81b2-78a656295a61",
-            "name": "Mark Reminder as Sent",
-            "continueOnFail": true
-        },
-        {
-            "parameters": {
-                "resource": "messages-api",
-                "instanceName": "Mahmoud Magdy",
-                "remoteJid": "={{ $('Load Settings for Reminder').first().json.whatsapp_group_id }}",
-                "messageText": "=⏰ *تذكير!*\n\n📌 باقي 10 دقائق على:\n\n🎯 *{{ $('Process Each Event').item.json.title }}*\n📍 المكان: {{ $('Process Each Event').item.json.location || 'غير محدد' }}\n🕐 الوقت: {{ (() => { const d = new Date($('Process Each Event').item.json.event_time); const h = d.getUTCHours(); const m = d.getUTCMinutes(); const period = h >= 12 ? 'م' : 'ص'; const h12 = h % 12 || 12; return h12 + ':' + String(m).padStart(2, '0') + ' ' + period; })() }}\n{{ $('Process Each Event').item.json.description ? '\\n📝 ' + $('Process Each Event').item.json.description : '' }}\n\nاستعدوا! 🚀",
-                "options_message": {}
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -61088,
-                32880
-            ],
-            "id": "ed7cad87-de3a-421a-bd99-af3903f818bc",
-            "name": "Send Event Reminder",
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "jsCode": "// Get upcoming events from Fetch Upcoming Events node\nconst events = $('Fetch Upcoming Events').first().json.upcoming || [];\nif (events.length === 0) return [];\nreturn events.map(event => ({ json: event }));"
-            },
-            "type": "n8n-nodes-base.code",
-            "typeVersion": 2,
-            "position": [
-                -61280,
-                32880
-            ],
-            "id": "95096afe-ce33-44c8-9510-d16d36c3631b",
-            "name": "Process Each Event"
-        },
-        {
-            "parameters": {
-                "url": "http://38.242.139.159:3005/api/checklist/settings",
-                "options": {
-                    "timeout": 8000
-                }
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -61488,
-                32880
-            ],
-            "id": "e9e2c40f-abc9-495b-9173-6296bd781f81",
-            "name": "Load Settings for Reminder",
-            "continueOnFail": true
-        },
-        {
-            "parameters": {
-                "conditions": {
-                    "options": {
-                        "caseSensitive": true,
-                        "leftValue": "",
-                        "typeValidation": "strict",
-                        "version": 2
-                    },
-                    "conditions": [
-                        {
-                            "id": "f75eb569-8101-4f50-be63-2dc6620b1f9b",
-                            "leftValue": "={{ $json.count }}",
-                            "rightValue": 0,
-                            "operator": {
-                                "type": "number",
-                                "operation": "gt"
-                            }
-                        }
-                    ],
-                    "combinator": "and"
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.if",
-            "typeVersion": 2.2,
-            "position": [
-                -61680,
-                32896
-            ],
-            "id": "6a55ed4d-b06d-4e14-a1d9-09ce2fb74e57",
-            "name": "Any Events Soon?"
-        },
-        {
-            "parameters": {
-                "url": "http://38.242.139.159:3005/api/agenda/upcoming?minutes=10",
-                "options": {
-                    "timeout": 8000
-                }
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -61888,
-                32896
-            ],
-            "id": "574dc41e-8def-43c2-98d9-1cb5c4eb77b0",
-            "name": "Fetch Upcoming Events",
-            "continueOnFail": true
-        },
-        {
-            "parameters": {
-                "rule": {
-                    "interval": [
-                        {
-                            "field": "minutes",
-                            "minutesInterval": 10
-                        }
-                    ]
-                }
-            },
-            "type": "n8n-nodes-base.scheduleTrigger",
-            "typeVersion": 1.2,
-            "position": [
-                -62080,
-                32896
-            ],
-            "id": "e6fba7fb-0656-4c43-8856-c3d1f762cdf0",
-            "name": "Reminder Check Trigger"
-        },
-        {
-            "parameters": {
-                "content": "# ⏰ التذكيرات التلقائية\nكل دقيقة يتحقق من الأحداث القادمة → يبعت تذكير قبل 10 دقائق",
-                "height": 320,
-                "width": 1472,
-                "color": 4
-            },
-            "type": "n8n-nodes-base.stickyNote",
-            "typeVersion": 1,
-            "position": [
-                -62160,
-                32752
-            ],
-            "id": "afca7966-b9d3-4014-8d67-67fdd61e7017",
-            "name": "Sticky Note 2"
-        },
-        {
-            "parameters": {
-                "assignments": {
-                    "assignments": [
-                        {
-                            "id": "emd-001",
-                            "name": "remoteJid",
-                            "value": "={{ $('Whatsapp').first().json.body.data.key.remoteJid }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "emd-002",
-                            "name": "sender_phone",
-                            "value": "={{ (() => { const key = $('Whatsapp').first().json.body.data.key; if (key.participantAlt && key.participantAlt.includes('@s.whatsapp.net')) { return key.participantAlt.split('@')[0]; } if (key.participant && key.participant.includes('@s.whatsapp.net')) { return key.participant.split('@')[0]; } return key.remoteJid.split('@')[0]; })() }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "emd-003",
-                            "name": "sender_name",
-                            "value": "={{ $('Whatsapp').first().json.body.data.pushName || 'مجهول' }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "emd-004",
-                            "name": "message_text",
-                            "value": "={{ $('Memory + Model PreEnter2').first().json.Input }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "emd-005",
-                            "name": "instance",
-                            "value": "={{ $('Whatsapp').first().json.body.instance }}",
-                            "type": "string"
-                        },
-                        {
-                            "id": "emd-006",
-                            "name": "is_group",
-                            "value": "={{ $('Whatsapp').first().json.body.data.key.remoteJid.includes('@g.us') }}",
-                            "type": "boolean"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.set",
-            "typeVersion": 3.4,
-            "position": [
-                -58592,
-                32624
-            ],
-            "id": "25eff50c-2ebd-49db-83a9-87e913390e3f",
-            "name": "Extract Message Data"
-        },
-        {
-            "parameters": {
-                "jsCode": "// Aggregate all data + format as readable text for the AI\nconst rawTasks = $('Fetch Tasks for Manager').all().map(item => item.json);\nconst complaints = $('Fetch Complaints for Manager').first().json;\nconst msgData = $('Extract Message Data').first().json;\n\n// Filter out empty items (from alwaysOutputData)\nconst allTasks = rawTasks.filter(t => t && t.title);\n\n// Format tasks as readable text\nlet tasksText = '';\nif (allTasks.length === 0) {\n  tasksText = 'لا توجد مهام مسجلة لهذا اليوم.';\n} else {\n  tasksText = allTasks.map((t, i) => {\n    const status = t.is_completed ? '✅ مكتملة' : '⏳ غير مكتملة';\n    const completedBy = t.completed_by_name ? ` (أنهاها: ${t.completed_by_name})` : '';\n    return `${i+1}. ${t.title} — ${status}${completedBy}`;\n  }).join('\\n');\n}\n\n// Format complaints as readable text\nlet complaintsText = '';\nlet openComplaintsText = '';\nif (!complaints || (Array.isArray(complaints) && complaints.length === 0)) {\n  complaintsText = 'لا توجد شكاوى حالياً.';\n  openComplaintsText = 'لا توجد شكاوى مفتوحة.';\n} else {\n  // Extract open complaints with IDs\n  const openList = complaints.open_complaints || [];\n  if (openList.length === 0) {\n    openComplaintsText = 'لا توجد شكاوى مفتوحة.';\n  } else {\n    openComplaintsText = openList.map((c, i) => {\n      return `[شكوى #${c.id}] من: ${c.reporter_name || 'غير معروف'} — ${c.complaint_text}`;\n    }).join('\\n');\n  }\n  complaintsText = `إجمالي: ${complaints.total || 0} | مفتوحة: ${complaints.open_count || 0} | محلولة: ${complaints.resolved_count || 0}`;\n}\n\nreturn [{\n  json: {\n    tasks_text: tasksText,\n    task_count: allTasks.length,\n    complaints_text: complaintsText,\n    open_complaints_text: openComplaintsText,\n    message_text: msgData.message_text,\n    sender_name: msgData.sender_name,\n    sender_phone: msgData.sender_phone,\n    remoteJid: msgData.remoteJid,\n    instance: msgData.instance\n  }\n}];"
-            },
-            "type": "n8n-nodes-base.code",
-            "typeVersion": 2,
-            "position": [
-                -57312,
-                33232
-            ],
-            "id": "2b16a789-a90f-4948-ba86-d1d1ffc22e33",
-            "name": "Merge Manager Data"
-        },
-        {
-            "parameters": {
-                "jsCode": "// Aggregate tasks + complaints + format as readable text\nconst rawTasks = $input.all().map(item => item.json);\nconst msgData = $('Extract Message Data').first().json;\n\n// Filter out empty items (from alwaysOutputData)\nconst allTasks = rawTasks.filter(t => t && t.title);\n\n// Format tasks WITH IDs so the AI can use Complete Task tool\nlet tasksText = '';\nif (allTasks.length === 0) {\n  tasksText = 'لا توجد مهام مسجلة لهذا اليوم.';\n} else {\n  tasksText = allTasks.map((t, i) => {\n    const status = t.is_completed ? '✅ مكتملة' : '⏳ غير مكتملة';\n    const completedBy = t.completed_by_name ? ` (أنهاها: ${t.completed_by_name})` : '';\n    return `${i+1}. [ID:${t.id}] ${t.title} — ${status}${completedBy}`;\n  }).join('\\n');\n}\n\nreturn [{\n  json: {\n    tasks_text: tasksText,\n    task_count: allTasks.length,\n    message_text: msgData.message_text,\n    sender_name: msgData.sender_name,\n    sender_phone: msgData.sender_phone,\n    remoteJid: msgData.remoteJid,\n    instance: msgData.instance\n  }\n}];"
-            },
-            "type": "n8n-nodes-base.code",
-            "typeVersion": 2,
-            "position": [
-                -57520,
-                32080
-            ],
-            "id": "906044df-1af3-45eb-a597-7488ef20c9be",
-            "name": "Merge Group Tasks"
-        },
-        {
-            "parameters": {
-                "model": "gpt-4.1-mini",
-                "options": {
-                    "temperature": 0.3
-                }
-            },
-            "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
-            "typeVersion": 1,
-            "position": [
-                -57184,
-                32272
-            ],
-            "id": "b8b212f3-9cab-4a67-a904-c6bd76d00bd7",
-            "name": "Group LLM",
-            "credentials": {
-                "azureOpenAiApi": {
-                    "id": "L4HdmJ5bGz2Owawh",
-                    "name": "Azure Open AI account"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "sessionIdType": "customKey",
-                "sessionKey": "={{ $('Merge Group Tasks').first().json.remoteJid }}",
-                "contextWindowLength": 6
-            },
-            "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
-            "typeVersion": 1.3,
-            "position": [
-                -57088,
-                32272
-            ],
-            "id": "20112366-f0bb-4f88-ad99-6612bc2eeeea",
-            "name": "Chat Memory"
-        },
-        {
-            "parameters": {
-                "toolDescription": "استخدم هذه الأداة لحل شكوى. أرسل complaint_id (رقم الشكوى) و resolution_note (نص الحل). مثال: complaint_id=3, resolution_note='تم توفير الأدوات'.",
-                "method": "PUT",
-                "url": "=http://38.242.139.159:3005/api/complaints/{{ $fromAI('complaint_id', '') }}",
-                "sendBody": true,
-                "specifyBody": "json",
-                "jsonBody": "={\n  \"status\": \"resolved\",\n  \"resolution_note\": \"{{ $fromAI('resolution_note', '') }}\"\n}\n",
-                "options": {
-                    "timeout": 8000
-                }
-            },
-            "type": "n8n-nodes-base.httpRequestTool",
-            "typeVersion": 4.4,
-            "position": [
-                -56864,
-                33424
-            ],
-            "id": "7e30b761-6b6b-4a58-86c3-d761ec37fc82",
-            "name": "Resolve Complaint Tool"
-        },
-        {
-            "parameters": {
-                "conditions": {
-                    "options": {
-                        "caseSensitive": false,
-                        "leftValue": "",
-                        "typeValidation": "loose",
-                        "version": 2
-                    },
-                    "conditions": [
-                        {
-                            "id": "70bad566-2a89-4558-afd5-6c49978a8de0",
-                            "leftValue": "={{ $('Manager AI Assistant').item.json.output }}",
-                            "rightValue": "تم حل الشكوى",
-                            "operator": {
-                                "type": "string",
-                                "operation": "contains"
-                            }
-                        },
-                        {
-                            "id": "2319663d-e05c-42e5-926d-dddeb40606a1",
-                            "leftValue": "={{ $('Manager AI Assistant').item.json.output }}",
-                            "rightValue": "تم حل شكوى",
-                            "operator": {
-                                "type": "string",
-                                "operation": "contains"
-                            }
-                        }
-                    ],
-                    "combinator": "or"
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.if",
-            "typeVersion": 2.2,
-            "position": [
-                -56688,
-                33232
-            ],
-            "id": "8024268d-c4bd-42c4-bf5d-5cde596b9b30",
-            "name": "Resolution Detected?"
-        },
-        {
-            "parameters": {
-                "resource": "messages-api",
-                "instanceName": "={{ $('Merge Manager Data').first().json.instance }}",
-                "remoteJid": "={{ $('Load Routing Settings').first().json.whatsapp_group_id.includes('@') ? $('Load Routing Settings').first().json.whatsapp_group_id : $('Load Routing Settings').first().json.whatsapp_group_id + '@g.us' }}",
-                "messageText": "=✅ *تم حل الشكوى بواسطة المدير*\n\n💬 {{ $('Manager AI Assistant').item.json.output }}\n\n⏰ {{ new Date().toLocaleString('ar-EG', {timeZone: 'Africa/Cairo'}) }}",
-                "options_message": {}
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -56448,
-                33216
-            ],
-            "id": "c26b962c-a889-4c6e-a820-4f690940ae94",
-            "name": "Send Resolution to Group",
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "sessionIdType": "customKey",
-                "sessionKey": "=manager_{{ $('Merge Manager Data').first().json.remoteJid }}",
-                "contextWindowLength": 6
-            },
-            "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
-            "typeVersion": 1.3,
-            "position": [
-                -57024,
-                33424
-            ],
-            "id": "e9776780-af63-4c7b-b024-d8c93452a865",
-            "name": "Manager Memory"
-        },
-        {
-            "parameters": {
-                "method": "GET",
                 "url": "=http://38.242.139.159:3005/api/vip/check/{{ $(\"User Phone ID\").item.json.User_phone_ID }}",
                 "options": {}
             },
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.3,
             "position": [
-                -60750,
-                33300
+                -58080,
+                32720
             ],
-            "id": "vip-check-001",
+            "id": "4bbf6230-9f98-4a69-b61a-0094a7a8fee2",
             "name": "Check Is VIP",
             "continueOnFail": true
         },
@@ -2783,213 +500,25 @@
             "type": "n8n-nodes-base.if",
             "typeVersion": 2.2,
             "position": [
-                -60550,
-                33300
+                -57920,
+                32720
             ],
-            "id": "vip-if-001",
+            "id": "c989c2b6-1233-4f9b-a13d-8da5b96f6956",
             "name": "Is VIP?"
         },
         {
             "parameters": {
-                "method": "GET",
                 "url": "http://38.242.139.159:3005/api/vip/settings",
                 "options": {}
             },
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.3,
             "position": [
-                -60350,
-                33200
+                -57552,
+                32096
             ],
-            "id": "vip-settings-001",
+            "id": "f8a8cfd1-92ae-4d3a-8ae1-4a5619c6c8f8",
             "name": "Get VIP Settings"
-        },
-        {
-            "parameters": {
-                "rules": {
-                    "values": [
-                        {
-                            "conditions": {
-                                "options": {
-                                    "caseSensitive": true,
-                                    "leftValue": "",
-                                    "typeValidation": "strict",
-                                    "version": 2
-                                },
-                                "conditions": [
-                                    {
-                                        "id": "vip-sw-react",
-                                        "leftValue": "={{ $(\"Whatsapp\").first().json.body.data.messageType }}",
-                                        "rightValue": "reactionMessage",
-                                        "operator": {
-                                            "type": "string",
-                                            "operation": "equals"
-                                        }
-                                    }
-                                ],
-                                "combinator": "and"
-                            },
-                            "renameOutput": true,
-                            "outputKey": "Reaction"
-                        },
-                        {
-                            "conditions": {
-                                "options": {
-                                    "caseSensitive": true,
-                                    "leftValue": "",
-                                    "typeValidation": "strict",
-                                    "version": 2
-                                },
-                                "conditions": [
-                                    {
-                                        "id": "vip-sw-text1",
-                                        "leftValue": "={{ $(\"Whatsapp\").first().json.body.data.messageType }}",
-                                        "rightValue": "conversation",
-                                        "operator": {
-                                            "type": "string",
-                                            "operation": "equals"
-                                        }
-                                    },
-                                    {
-                                        "id": "vip-sw-text2",
-                                        "leftValue": "={{ $(\"Whatsapp\").first().json.body.data.messageType }}",
-                                        "rightValue": "extendedTextMessage",
-                                        "operator": {
-                                            "type": "string",
-                                            "operation": "equals"
-                                        }
-                                    }
-                                ],
-                                "combinator": "or"
-                            },
-                            "renameOutput": true,
-                            "outputKey": "Text"
-                        },
-                        {
-                            "conditions": {
-                                "options": {
-                                    "caseSensitive": true,
-                                    "leftValue": "",
-                                    "typeValidation": "strict",
-                                    "version": 2
-                                },
-                                "conditions": [
-                                    {
-                                        "id": "vip-sw-audio",
-                                        "leftValue": "={{ $(\"Whatsapp\").first().json.body.data.messageType }}",
-                                        "rightValue": "audioMessage",
-                                        "operator": {
-                                            "type": "string",
-                                            "operation": "equals"
-                                        }
-                                    }
-                                ],
-                                "combinator": "and"
-                            },
-                            "renameOutput": true,
-                            "outputKey": "Audio"
-                        },
-                        {
-                            "conditions": {
-                                "options": {
-                                    "caseSensitive": true,
-                                    "leftValue": "",
-                                    "typeValidation": "strict",
-                                    "version": 2
-                                },
-                                "conditions": [
-                                    {
-                                        "id": "vip-sw-photos",
-                                        "leftValue": "={{ $(\"Whatsapp\").first().json.body.data.messageType }}",
-                                        "rightValue": "imageMessage",
-                                        "operator": {
-                                            "type": "string",
-                                            "operation": "equals"
-                                        }
-                                    }
-                                ],
-                                "combinator": "and"
-                            },
-                            "renameOutput": true,
-                            "outputKey": "Photos"
-                        },
-                        {
-                            "conditions": {
-                                "options": {
-                                    "caseSensitive": true,
-                                    "leftValue": "",
-                                    "typeValidation": "strict",
-                                    "version": 2
-                                },
-                                "conditions": [
-                                    {
-                                        "id": "vip-sw-stickers",
-                                        "leftValue": "={{ $(\"Whatsapp\").first().json.body.data.messageType }}",
-                                        "rightValue": "stickerMessage",
-                                        "operator": {
-                                            "type": "string",
-                                            "operation": "equals"
-                                        }
-                                    }
-                                ],
-                                "combinator": "and"
-                            },
-                            "renameOutput": true,
-                            "outputKey": "Stickers"
-                        }
-                    ]
-                },
-                "options": {}
-            },
-            "type": "n8n-nodes-base.switch",
-            "typeVersion": 3.2,
-            "position": [
-                -60150,
-                33200
-            ],
-            "id": "vip-switch-001",
-            "name": "VIP Message Type"
-        },
-        {
-            "parameters": {
-                "method": "POST",
-                "url": "=http://38.242.139.159:3005/api/vip/webhook/status?phone={{ $(\"User Phone ID\").item.json.User_phone_ID }}",
-                "sendBody": true,
-                "specifyBody": "json",
-                "jsonBody": "{\"status\": \"reacted\", \"source\": \"n8n\"}",
-                "options": {}
-            },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
-            "position": [
-                -59900,
-                33100
-            ],
-            "id": "vip-update-react-001",
-            "name": "Update VIP Reacted"
-        },
-        {
-            "parameters": {
-                "resource": "message-api",
-                "operation": "send-text",
-                "instanceName": "={{ $(\"Whatsapp\").first().json.body.instance }}",
-                "remoteJid": "={{ $(\"Whatsapp\").first().json.body.data.key.remoteJid }}",
-                "messageText": "={{ $json.choices[0].message.content }}"
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -59650,
-                33100
-            ],
-            "id": "vip-send-react-001",
-            "name": "Send VIP Reaction Reply",
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
         },
         {
             "parameters": {
@@ -3010,29 +539,29 @@
                 },
                 "sendBody": true,
                 "specifyBody": "json",
-                "jsonBody": "={\"model\":\"gpt-4.1-mini\",\"messages\":[{\"role\":\"system\",\"content\":\"أنت مساعد مهذب وراقي جداً لإدارة دعوات كبار الزوار لفعالية خاصة.\\n\\n📋 معلومات الإيفنت:\\n{{ $('Get VIP Settings').first().json.inquiry_reply }}\\n\\n👍 أسلوب الرد على الريأكشن:\\n{{ $('Get VIP Settings').first().json.reaction_reply }}\\n\\n✅ أسلوب رسالة القبول:\\n{{ $('Get VIP Settings').first().json.accept_reply }}\\n\\n😔 أسلوب رسالة الرفض:\\n{{ $('Get VIP Settings').first().json.decline_reply }}\\n\\n👤 اسم الضيف: {{ $('Check Is VIP').first().json.guest.name }}\\n\\nمهمتك:\\n1. صنف رد الضيف لواحد من 3 تصنيفات:\\n   - will_attend: لو قال هحضر أو إن شاء الله أو موافق أو بعت تفاعل إيجابي\\n   - not_attending: لو قال مش هقدر أو مشغول أو معلش\\n   - inquiring: لو سأل عن تفاصيل أو مكان أو وقت أو أي استفسار\\n2. اكتب رد مهذب ومحترف ومنسق يناسب الموقف\\n3. استخدم اسم الضيف في الرد\\n4. لو بيسأل → رد من معلومات الإيفنت (مش تأليف!)\\n5. لو موافق → رد بأسلوب رسالة القبول مع ✅ واسمه\\n6. لو معتذر → رد بأسلوب رسالة الرفض مع 😔 واسمه\\n7. ضيف إيموجي مناسبة في الرد\\n\\n⚠️ رد بـ JSON فقط بالشكل ده:\\n{\\\\\\\"intent\\\\\\\": \\\\\\\"will_attend\\\\\\\", \\\\\\\"reply\\\\\\\": \\\\\\\"الرد المنسق هنا\\\\\\\"}\\n\\nممنوع تكتب أي حاجة بره الـ JSON.\"},{\"role\":\"user\",\"content\":\"{{ $('Whatsapp').first().json.body.data.message.conversation ?? $('Whatsapp').first().json.body.data.message.extendedTextMessage.text ?? 'الضيف بعت تفاعل/ريأكشن/ستيكر/صورة على الدعوة' }}\"}],\"max_tokens\":300,\"temperature\":0.7}",
+                "jsonBody": "={\"model\":\"gpt-4.1-mini\",\"messages\":[{\"role\":\"system\",\"content\":\"\\u0623\\u0646\\u062a \\u0645\\u0633\\u0627\\u0639\\u062f \\u0645\\u0647\\u0630\\u0628 \\u0648\\u0631\\u0627\\u0642\\u064a \\u062c\\u062f\\u0627\\u064b \\u0644\\u0625\\u062f\\u0627\\u0631\\u0629 \\u062f\\u0639\\u0648\\u0627\\u062a \\u0643\\u0628\\u0627\\u0631 \\u0627\\u0644\\u0632\\u0648\\u0627\\u0631 \\u0644\\u0641\\u0639\\u0627\\u0644\\u064a\\u0629 \\u062e\\u0627\\u0635\\u0629.\\n\\n\\ud83d\\udccb \\u0645\\u0639\\u0644\\u0648\\u0645\\u0627\\u062a \\u0627\\u0644\\u0625\\u064a\\u0641\\u0646\\u062a:\\n{{ $('Get VIP Settings').first().json.inquiry_reply }}\\n\\n\\ud83d\\udc4d \\u0623\\u0633\\u0644\\u0648\\u0628 \\u0627\\u0644\\u0631\\u062f \\u0639\\u0644\\u0649 \\u0627\\u0644\\u0631\\u064a\\u0623\\u0643\\u0634\\u0646:\\n{{ $('Get VIP Settings').first().json.reaction_reply }}\\n\\n\\u2705 \\u0623\\u0633\\u0644\\u0648\\u0628 \\u0631\\u0633\\u0627\\u0644\\u0629 \\u0627\\u0644\\u0642\\u0628\\u0648\\u0644:\\n{{ $('Get VIP Settings').first().json.accept_reply }}\\n\\n\\ud83d\\ude14 \\u0623\\u0633\\u0644\\u0648\\u0628 \\u0631\\u0633\\u0627\\u0644\\u0629 \\u0627\\u0644\\u0631\\u0641\\u0636:\\n{{ $('Get VIP Settings').first().json.decline_reply }}\\n\\n\\ud83d\\udc64 \\u0627\\u0633\\u0645 \\u0627\\u0644\\u0636\\u064a\\u0641: {{ $('Check Is VIP').first().json.guest.name }}\\n\\n\\u0645\\u0647\\u0645\\u062a\\u0643:\\n1. \\u0635\\u0646\\u0641 \\u0631\\u062f \\u0627\\u0644\\u0636\\u064a\\u0641 \\u0644\\u0648\\u0627\\u062d\\u062f \\u0645\\u0646 3 \\u062a\\u0635\\u0646\\u064a\\u0641\\u0627\\u062a:\\n   - will_attend: \\u0644\\u0648 \\u0642\\u0627\\u0644 \\u0647\\u062d\\u0636\\u0631 \\u0623\\u0648 \\u0625\\u0646 \\u0634\\u0627\\u0621 \\u0627\\u0644\\u0644\\u0647 \\u0623\\u0648 \\u0645\\u0648\\u0627\\u0641\\u0642\\n   - not_attending: \\u0644\\u0648 \\u0642\\u0627\\u0644 \\u0645\\u0634 \\u0647\\u0642\\u062f\\u0631 \\u0623\\u0648 \\u0645\\u0634\\u063a\\u0648\\u0644 \\u0623\\u0648 \\u0645\\u0639\\u0644\\u0634\\n   - inquiring: \\u0644\\u0648 \\u0633\\u0623\\u0644 \\u0639\\u0646 \\u062a\\u0641\\u0627\\u0635\\u064a\\u0644 \\u0623\\u0648 \\u0645\\u0643\\u0627\\u0646 \\u0623\\u0648 \\u0648\\u0642\\u062a\\n2. \\u0627\\u0643\\u062a\\u0628 \\u0631\\u062f \\u0645\\u0647\\u0630\\u0628 \\u0648\\u0645\\u062d\\u062a\\u0631\\u0641 \\u064a\\u0646\\u0627\\u0633\\u0628 \\u0627\\u0644\\u0645\\u0648\\u0642\\u0641\\n3. \\u0627\\u0633\\u062a\\u062e\\u062f\\u0645 \\u0627\\u0633\\u0645 \\u0627\\u0644\\u0636\\u064a\\u0641\\n4. \\u0644\\u0648 \\u0628\\u064a\\u0633\\u0623\\u0644 \\u2192 \\u0631\\u062f \\u0645\\u0646 \\u0645\\u0639\\u0644\\u0648\\u0645\\u0627\\u062a \\u0627\\u0644\\u0625\\u064a\\u0641\\u0646\\u062a\\n5. \\u0644\\u0648 \\u0645\\u0648\\u0627\\u0641\\u0642 \\u2192 \\u0631\\u062f \\u0628\\u0623\\u0633\\u0644\\u0648\\u0628 \\u0631\\u0633\\u0627\\u0644\\u0629 \\u0627\\u0644\\u0642\\u0628\\u0648\\u0644\\n6. \\u0644\\u0648 \\u0645\\u0639\\u062a\\u0630\\u0631 \\u2192 \\u0631\\u062f \\u0628\\u0623\\u0633\\u0644\\u0648\\u0628 \\u0631\\u0633\\u0627\\u0644\\u0629 \\u0627\\u0644\\u0631\\u0641\\u0636\\n7. \\u0636\\u064a\\u0641 \\u0625\\u064a\\u0645\\u0648\\u062c\\u064a \\u0645\\u0646\\u0627\\u0633\\u0628\\u0629\\n\\n\\u26a0\\ufe0f \\u0631\\u062f \\u0628\\u0640 JSON \\u0641\\u0642\\u0637:\\n{\\\"intent\\\": \\\"will_attend\\\", \\\"reply\\\": \\\"\\u0627\\u0644\\u0631\\u062f \\u0627\\u0644\\u0645\\u0646\\u0633\\u0642 \\u0647\\u0646\\u0627\\\"}\\n\\n\\u0645\\u0645\\u0646\\u0648\\u0639 \\u062a\\u0643\\u062a\\u0628 \\u0623\\u064a \\u062d\\u0627\\u062c\\u0629 \\u0628\\u0631\\u0647 \\u0627\\u0644\\u0640 JSON.\"},{\"role\":\"user\",\"content\":\"{{ $('Whatsapp').first().json.body.data.message.conversation ?? $('Whatsapp').first().json.body.data.message.extendedTextMessage.text ?? '\\u0627\\u0644\\u0636\\u064a\\u0641 \\u0628\\u0639\\u062a \\u062a\\u0641\\u0627\\u0639\\u0644/\\u0631\\u064a\\u0623\\u0643\\u0634\\u0646/\\u0633\\u062a\\u064a\\u0643\\u0631/\\u0635\\u0648\\u0631\\u0629 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u062f\\u0639\\u0648\\u0629' }}\"}],\"max_tokens\":300,\"temperature\":0.7}",
                 "options": {}
             },
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.3,
             "position": [
-                -59900,
-                33300
+                -57216,
+                32192
             ],
-            "id": "vip-classify-001",
+            "id": "186bfee9-a5ba-4419-b624-38f93b33bda5",
             "name": "Classify VIP Intent"
         },
         {
             "parameters": {
-                "jsCode": "const raw = $input.first().json.choices[0].message.content;\nlet intent = \"inquiring\";\nlet reply = \"\";\ntry {\n  const parsed = JSON.parse(raw.trim());\n  intent = parsed.intent || \"inquiring\";\n  reply = parsed.reply || \"\";\n} catch(e) {\n  if (raw.includes(\"will_attend\")) intent = \"will_attend\";\n  else if (raw.includes(\"not_attending\")) intent = \"not_attending\";\n  else intent = \"inquiring\";\n  reply = raw.replace(/[{}\"\\\\/]/g, \"\").trim();\n}\nreturn [{ json: { intent, reply } }];"
+                "jsCode": "const raw = $input.first().json.choices[0].message.content;\nlet intent = \"inquiring\";\nlet reply = \"\";\ntry {\n  const parsed = JSON.parse(raw.trim());\n  intent = parsed.intent || \"inquiring\";\n  reply = parsed.reply || \"\";\n} catch(e) {\n  if (raw.includes(\"will_attend\")) intent = \"will_attend\";\n  else if (raw.includes(\"not_attending\")) intent = \"not_attending\";\n  else intent = \"inquiring\";\n  reply = raw.replace(/[{}\"\\\\]/g, \"\").trim();\n}\nreturn [{ json: { intent, reply } }];"
             },
             "type": "n8n-nodes-base.code",
             "typeVersion": 2,
             "position": [
-                -59650,
-                33300
+                -56976,
+                32192
             ],
-            "id": "vip-parse-001",
+            "id": "c10992be-843f-48da-ae7b-75fd04d4c21f",
             "name": "Parse VIP Intent"
         },
         {
@@ -3118,10 +647,10 @@
             "type": "n8n-nodes-base.switch",
             "typeVersion": 3.2,
             "position": [
-                -59450,
-                33300
+                -56736,
+                32192
             ],
-            "id": "vip-intent-switch-001",
+            "id": "1ca9ce50-f5af-4061-b45f-550c0ce5c435",
             "name": "VIP Intent Router"
         },
         {
@@ -3136,10 +665,10 @@
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.3,
             "position": [
-                -59200,
-                33150
+                -56496,
+                32032
             ],
-            "id": "vip-update-attend-001",
+            "id": "bf8edbc9-e048-494c-80bb-3ba38c517cfa",
             "name": "Update VIP Will Attend"
         },
         {
@@ -3154,10 +683,10 @@
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.3,
             "position": [
-                -59200,
-                33300
+                -56496,
+                32192
             ],
-            "id": "vip-update-not-001",
+            "id": "6cae5eaf-2b7d-471f-bb19-e24daa64c1e9",
             "name": "Update VIP Not Attending"
         },
         {
@@ -3172,50 +701,27 @@
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.3,
             "position": [
-                -59200,
-                33450
+                -56496,
+                32368
             ],
-            "id": "vip-update-inq-001",
+            "id": "becfc181-3c1d-48b7-a835-36fd9f1949e7",
             "name": "Update VIP Inquiring"
         },
         {
             "parameters": {
-                "resource": "message-api",
-                "operation": "send-text",
+                "resource": "messages-api",
                 "instanceName": "={{ $(\"Whatsapp\").first().json.body.instance }}",
                 "remoteJid": "={{ $(\"Whatsapp\").first().json.body.data.key.remoteJid }}",
-                "messageText": "={{ $(\"Get VIP Settings\").first().json.inquiry_reply }}"
+                "messageText": "={{ $('Parse VIP Intent').first().json.reply }}",
+                "options_message": {}
             },
             "type": "n8n-nodes-evolution-api-english.evolutionApi",
             "typeVersion": 1,
             "position": [
-                -58950,
-                33450
+                -56256,
+                32192
             ],
-            "id": "vip-send-inq-001",
-            "name": "Send VIP Inquiry Reply",
-            "credentials": {
-                "evolutionApi": {
-                    "id": "IGwXyU5Jbou5S5V3",
-                    "name": "Business Number"
-                }
-            }
-        },
-        {
-            "parameters": {
-                "resource": "message-api",
-                "operation": "send-text",
-                "instanceName": "={{ $(\"Whatsapp\").first().json.body.instance }}",
-                "remoteJid": "={{ $(\"Whatsapp\").first().json.body.data.key.remoteJid }}",
-                "messageText": "={{ $('Parse VIP Intent').first().json.reply }}"
-            },
-            "type": "n8n-nodes-evolution-api-english.evolutionApi",
-            "typeVersion": 1,
-            "position": [
-                -58950,
-                33300
-            ],
-            "id": "vip-send-ai-reply-001",
+            "id": "3410dfda-a03e-4223-8535-90f474f56ece",
             "name": "Send VIP AI Reply",
             "credentials": {
                 "evolutionApi": {
@@ -3226,34 +732,36 @@
         },
         {
             "parameters": {
-                "method": "POST",
-                "url": "https://mrai-openai.openai.azure.com/openai/deployments/gpt-4.1-mini/chat/completions?api-version=2024-08-01-preview",
-                "sendHeaders": true,
-                "headerParameters": {
-                    "parameters": [
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
                         {
-                            "name": "api-key",
-                            "value": "5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF"
-                        },
-                        {
-                            "name": "Content-Type",
-                            "value": "application/json"
+                            "id": "936728e9-288e-4479-aab6-ed9efc04f469",
+                            "leftValue": "={{ $('Whatsapp').first().json.body.data.messageType }}",
+                            "rightValue": "reactionMessage",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals"
+                            }
                         }
-                    ]
+                    ],
+                    "combinator": "and"
                 },
-                "sendBody": true,
-                "specifyBody": "json",
-                "jsonBody": "={\"model\":\"gpt-4.1-mini\",\"messages\":[{\"role\":\"system\",\"content\":\"أنت مساعد مهذب لكبار الزوار. الضيف بعت ريأكشن (تفاعل) على دعوته.\\n\\n👤 اسم الضيف: {{ $('Check Is VIP').first().json.guest.name }}\\n\\n👍 أسلوب الرد:\\n{{ $('Get VIP Settings').first().json.reaction_reply }}\\n\\nاكتب رد مهذب وقصير ومنسق مستلهم من أسلوب الرد. استخدم اسم الضيف. ضيف إيموجي مناسبة.\\nرد بالنص مباشرة بدون JSON.\"},{\"role\":\"user\",\"content\":\"الضيف عمل ريأكشن على الدعوة\"}],\"max_tokens\":200,\"temperature\":0.8}",
                 "options": {}
             },
-            "type": "n8n-nodes-base.httpRequest",
-            "typeVersion": 4.3,
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
             "position": [
-                -59650,
-                32950
+                -57392,
+                32096
             ],
-            "id": "vip-reaction-ai-001",
-            "name": "VIP Reaction AI"
+            "id": "64ec3e5d-ea3b-413e-bf61-27413d0a6878",
+            "name": "Is Reacted?"
         }
     ],
     "connections": {
@@ -3294,39 +802,7 @@
             "main": [
                 [
                     {
-                        "node": "Check Is VIP",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Switch3": {
-            "main": [
-                [
-                    {
-                        "node": "Text4",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
-                [
-                    {
-                        "node": "Get media in base1",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
-                [
-                    {
-                        "node": "Get Image Base64",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
-                [
-                    {
-                        "node": "Get Stickers Base",
+                        "node": "Switch3",
                         "type": "main",
                         "index": 0
                     }
@@ -3338,469 +814,6 @@
                 [
                     {
                         "node": "Memory + Model PreEnter2",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Get media in base1": {
-            "main": [
-                [
-                    {
-                        "node": "Convert to File",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Convert to File": {
-            "main": [
-                [
-                    {
-                        "node": "Convert Audio Type3",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Convert Audio Type3": {
-            "main": [
-                [
-                    {
-                        "node": "Transcribe a recording1",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Transcribe a recording1": {
-            "main": [
-                [
-                    {
-                        "node": "Cost Calculator",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Cost Calculator": {
-            "main": [
-                [
-                    {
-                        "node": "Voice",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Voice": {
-            "main": [
-                [
-                    {
-                        "node": "Memory + Model PreEnter2",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Get Image Base64": {
-            "main": [
-                [
-                    {
-                        "node": "Analyze Image (Mistral)2",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Analyze Image (Mistral)2": {
-            "main": [
-                [
-                    {
-                        "node": "Cost Calculator4",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Cost Calculator4": {
-            "main": [
-                [
-                    {
-                        "node": "image",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "image": {
-            "main": [
-                [
-                    {
-                        "node": "Memory + Model PreEnter2",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Get Stickers Base": {
-            "main": [
-                [
-                    {
-                        "node": "Analyze Strickers (Mistral)3",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Analyze Strickers (Mistral)3": {
-            "main": [
-                [
-                    {
-                        "node": "Stickers",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Stickers": {
-            "main": [
-                [
-                    {
-                        "node": "Memory + Model PreEnter2",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Memory + Model PreEnter2": {
-            "main": [
-                [
-                    {
-                        "node": "Check Active Quiz",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Set metadata3": {
-            "main": [
-                [
-                    {
-                        "node": "Reformer",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Reformer": {
-            "main": [
-                [
-                    {
-                        "node": "Set metadata4",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Simple Memory": {
-            "ai_memory": [
-                [
-                    {
-                        "node": "Reformer",
-                        "type": "ai_memory",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Azure OpenAI Chat Model5": {
-            "ai_languageModel": [
-                [
-                    {
-                        "node": "Reformer",
-                        "type": "ai_languageModel",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Log Reformer Rekaz": {
-            "ai_tool": [
-                [
-                    {
-                        "node": "Azure OpenAI Chat Model5",
-                        "type": "ai_tool",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Set metadata4": {
-            "main": [
-                [
-                    {
-                        "node": "Information Extractor",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Information Extractor": {
-            "main": [
-                [
-                    {
-                        "node": "Edit Fields1",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Azure OpenAI Chat Model7": {
-            "ai_languageModel": [
-                [
-                    {
-                        "node": "Information Extractor",
-                        "type": "ai_languageModel",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Log Reformer Rekaz4": {
-            "ai_tool": [
-                [
-                    {
-                        "node": "Azure OpenAI Chat Model7",
-                        "type": "ai_tool",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Edit Fields1": {
-            "main": [
-                [
-                    {
-                        "node": "Pinecone Vector Store1",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Pinecone Vector Store1": {
-            "main": [
-                [
-                    {
-                        "node": "Aggregate1",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Embeddings Azure OpenAI": {
-            "ai_embedding": [
-                [
-                    {
-                        "node": "Pinecone Vector Store1",
-                        "type": "ai_embedding",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Aggregate1": {
-            "main": [
-                [
-                    {
-                        "node": "Text3",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Text3": {
-            "main": [
-                [
-                    {
-                        "node": "Set metadata2",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Set metadata2": {
-            "main": [
-                [
-                    {
-                        "node": "Be Star Ticketing Agent",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Be Star Ticketing Agent": {
-            "main": [
-                [
-                    {
-                        "node": "Parse AI Output",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Azure OpenAI Chat Model4": {
-            "ai_languageModel": [
-                [
-                    {
-                        "node": "Be Star Ticketing Agent",
-                        "type": "ai_languageModel",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Postgres Chat Memory1": {
-            "ai_memory": [
-                [
-                    {
-                        "node": "Be Star Ticketing Agent",
-                        "type": "ai_memory",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Log Reformer Rekaz3": {
-            "ai_tool": [
-                [
-                    {
-                        "node": "Azure OpenAI Chat Model4",
-                        "type": "ai_tool",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Log Usr Messages": {
-            "main": [
-                [
-                    {
-                        "node": "Send presence1",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Send presence1": {
-            "main": [
-                [
-                    {
-                        "node": "Splite the messages",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Splite the messages": {
-            "main": [
-                [
-                    {
-                        "node": "Skip First One",
-                        "type": "main",
-                        "index": 0
-                    },
-                    {
-                        "node": "Send text",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Send text": {
-            "main": [
-                [
-                    {
-                        "node": "Log AI Messages1",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Skip First One": {
-            "main": [
-                [
-                    {
-                        "node": "Loop Over Items",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Loop Over Items": {
-            "main": [
-                [
-                    {
-                        "node": "No Operation, do nothing",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
-                [
-                    {
-                        "node": "Send text1",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Send text1": {
-            "main": [
-                [
-                    {
-                        "node": "Log AI Messages",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Log AI Messages": {
-            "main": [
-                [
-                    {
-                        "node": "Loop Over Items",
                         "type": "main",
                         "index": 0
                     }
@@ -3820,96 +833,10 @@
         },
         "Has Active Quiz?": {
             "main": [
-                [
-                    {
-                        "node": "Submit Quiz Answer",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
+                [],
                 [
                     {
                         "node": "Extract Message Data",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Submit Quiz Answer": {
-            "main": [
-                [
-                    {
-                        "node": "Send Quiz Confirmation",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Parse AI Output": {
-            "main": [
-                [
-                    {
-                        "node": "Booking Switch",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Booking Switch": {
-            "main": [
-                [
-                    {
-                        "node": "Send Booking to Platform",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
-                [
-                    {
-                        "node": "Set AI Message",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Send Booking to Platform": {
-            "main": [
-                [
-                    {
-                        "node": "Fixed Booking Reply",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Set AI Message": {
-            "main": [
-                [
-                    {
-                        "node": "Log Usr Messages",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Is Group Message?": {
-            "main": [
-                [
-                    {
-                        "node": "Is Authorized Group?",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
-                [
-                    {
-                        "node": "Is Regular User?",
                         "type": "main",
                         "index": 0
                     }
@@ -3927,244 +854,6 @@
                 ]
             ]
         },
-        "Is Regular User?": {
-            "main": [
-                [
-                    {
-                        "node": "Set metadata3",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
-                [
-                    {
-                        "node": "Fetch Complaints for Manager",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Is Authorized Group?": {
-            "main": [
-                [
-                    {
-                        "node": "Fetch Group Tasks",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Fetch Complaints for Manager": {
-            "main": [
-                [
-                    {
-                        "node": "Fetch Tasks for Manager",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Fetch Tasks for Manager": {
-            "main": [
-                [
-                    {
-                        "node": "Merge Manager Data",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Manager AI Assistant": {
-            "main": [
-                [
-                    {
-                        "node": "Send Manager Reply",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Manager LLM (gpt-4.1-mini)": {
-            "ai_languageModel": [
-                [
-                    {
-                        "node": "Manager AI Assistant",
-                        "type": "ai_languageModel",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Send Manager Reply": {
-            "main": [
-                [
-                    {
-                        "node": "Resolution Detected?",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Fetch Group Tasks": {
-            "main": [
-                [
-                    {
-                        "node": "Merge Group Tasks",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Fetch Group Complaints": {
-            "main": [
-                [
-                    {
-                        "node": "Group AI Assistant",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Group AI Assistant": {
-            "main": [
-                [
-                    {
-                        "node": "Send Group Reply",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Search Task Tool": {
-            "ai_tool": [
-                [
-                    {
-                        "node": "Group AI Assistant",
-                        "type": "ai_tool",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Complete Task Tool": {
-            "ai_tool": [
-                [
-                    {
-                        "node": "Group AI Assistant",
-                        "type": "ai_tool",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Register Complaint Tool": {
-            "ai_tool": [
-                [
-                    {
-                        "node": "Group AI Assistant",
-                        "type": "ai_tool",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Send Group Reply": {
-            "main": [
-                [
-                    {
-                        "node": "Complaint Detected?",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Complaint Detected?": {
-            "main": [
-                [
-                    {
-                        "node": "Alert Manager About Complaint",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Send Event Reminder": {
-            "main": [
-                [
-                    {
-                        "node": "Mark Reminder as Sent",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Process Each Event": {
-            "main": [
-                [
-                    {
-                        "node": "Send Event Reminder",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Load Settings for Reminder": {
-            "main": [
-                [
-                    {
-                        "node": "Process Each Event",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Any Events Soon?": {
-            "main": [
-                [
-                    {
-                        "node": "Load Settings for Reminder",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Fetch Upcoming Events": {
-            "main": [
-                [
-                    {
-                        "node": "Any Events Soon?",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Reminder Check Trigger": {
-            "main": [
-                [
-                    {
-                        "node": "Fetch Upcoming Events",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
         "Extract Message Data": {
             "main": [
                 [
@@ -4176,78 +865,39 @@
                 ]
             ]
         },
-        "Merge Manager Data": {
+        "Switch3": {
+            "main": [
+                [],
+                [
+                    {
+                        "node": "Text4",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [],
+                [],
+                []
+            ]
+        },
+        "Memory + Model PreEnter2": {
             "main": [
                 [
                     {
-                        "node": "Manager AI Assistant",
+                        "node": "Check Active Quiz",
                         "type": "main",
                         "index": 0
                     }
                 ]
             ]
         },
-        "Merge Group Tasks": {
+        "Is Group Message?": {
             "main": [
+                [],
                 [
                     {
-                        "node": "Fetch Group Complaints",
+                        "node": "Check Is VIP",
                         "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Group LLM": {
-            "ai_languageModel": [
-                [
-                    {
-                        "node": "Group AI Assistant",
-                        "type": "ai_languageModel",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Chat Memory": {
-            "ai_memory": [
-                [
-                    {
-                        "node": "Group AI Assistant",
-                        "type": "ai_memory",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Resolve Complaint Tool": {
-            "ai_tool": [
-                [
-                    {
-                        "node": "Manager AI Assistant",
-                        "type": "ai_tool",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Resolution Detected?": {
-            "main": [
-                [
-                    {
-                        "node": "Send Resolution to Group",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Manager Memory": {
-            "ai_memory": [
-                [
-                    {
-                        "node": "Manager AI Assistant",
-                        "type": "ai_memory",
                         "index": 0
                     }
                 ]
@@ -4273,70 +923,14 @@
                         "index": 0
                     }
                 ],
-                [
-                    {
-                        "node": "Switch3",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
+                []
             ]
         },
         "Get VIP Settings": {
             "main": [
                 [
                     {
-                        "node": "VIP Message Type",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "VIP Message Type": {
-            "main": [
-                [
-                    {
-                        "node": "Update VIP Reacted",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
-                [
-                    {
-                        "node": "Classify VIP Intent",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
-                [
-                    {
-                        "node": "Classify VIP Intent",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
-                [
-                    {
-                        "node": "Classify VIP Intent",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
-                [
-                    {
-                        "node": "Classify VIP Intent",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Update VIP Reacted": {
-            "main": [
-                [
-                    {
-                        "node": "VIP Reaction AI",
+                        "node": "Is Reacted?",
                         "type": "main",
                         "index": 0
                     }
@@ -4390,17 +984,6 @@
                 ]
             ]
         },
-        "Update VIP Inquiring": {
-            "main": [
-                [
-                    {
-                        "node": "Send VIP AI Reply",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
         "Update VIP Will Attend": {
             "main": [
                 [
@@ -4423,11 +1006,23 @@
                 ]
             ]
         },
-        "VIP Reaction AI": {
+        "Update VIP Inquiring": {
             "main": [
                 [
                     {
-                        "node": "Send VIP Reaction Reply",
+                        "node": "Send VIP AI Reply",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Is Reacted?": {
+            "main": [
+                [],
+                [
+                    {
+                        "node": "Classify VIP Intent",
                         "type": "main",
                         "index": 0
                     }
@@ -4441,15 +1036,15 @@
                 "headers": {
                     "host": "n8n.growhubeg.com",
                     "user-agent": "axios/1.13.2",
-                    "content-length": "1031",
+                    "content-length": "1486",
                     "accept": "application/json, text/plain, */*",
                     "accept-encoding": "gzip, br",
                     "cdn-loop": "cloudflare; loops=1",
                     "cf-connecting-ip": "38.242.139.159",
                     "cf-ipcountry": "FR",
-                    "cf-ray": "9cfeec26b9417e3e-FRA",
+                    "cf-ray": "9d10bc9b1c7dd269-FRA",
                     "cf-visitor": "{\"scheme\":\"https\"}",
-                    "cf-warp-tag-id": "3b797c7b-4fc1-45b2-9d22-cc5d69044a09",
+                    "cf-warp-tag-id": "0dc5c4f9-8f5e-4f73-9c01-57b1ac5e4d79",
                     "connection": "keep-alive",
                     "content-type": "application/json",
                     "x-forwarded-for": "38.242.139.159",
@@ -4462,62 +1057,101 @@
                     "instance": "Mahmoud Magdy",
                     "data": {
                         "key": {
-                            "remoteJid": "120363406273930430@g.us",
+                            "remoteJid": "201278453450@s.whatsapp.net",
+                            "remoteJidAlt": "201278453450@s.whatsapp.net",
                             "fromMe": false,
-                            "id": "AC0C1EEEC881FF15D55BE6C42A08DF3E",
-                            "participant": "26517228761333@lid",
-                            "participantAlt": "201278453450@s.whatsapp.net",
+                            "id": "ACFBF64EE77F7AB3583A0050298CE062",
+                            "participant": "",
                             "addressingMode": "lid"
                         },
                         "pushName": "Fares Hosni",
                         "status": "DELIVERY_ACK",
                         "message": {
-                            "conversation": "نعم",
+                            "conversation": "ممكن توضحلى شوية تفاصيل عن الحدث",
                             "messageContextInfo": {
                                 "threadId": [],
+                                "deviceListMetadata": {
+                                    "senderKeyIndexes": [],
+                                    "recipientKeyIndexes": [],
+                                    "senderKeyHash": {
+                                        "0": 66,
+                                        "1": 207,
+                                        "2": 9,
+                                        "3": 48,
+                                        "4": 150,
+                                        "5": 89,
+                                        "6": 248,
+                                        "7": 151,
+                                        "8": 65,
+                                        "9": 44
+                                    },
+                                    "senderTimestamp": {
+                                        "low": 1771595807,
+                                        "high": 0,
+                                        "unsigned": true
+                                    },
+                                    "recipientKeyHash": {
+                                        "0": 245,
+                                        "1": 88,
+                                        "2": 67,
+                                        "3": 210,
+                                        "4": 45,
+                                        "5": 245,
+                                        "6": 224,
+                                        "7": 246,
+                                        "8": 19,
+                                        "9": 227
+                                    },
+                                    "recipientTimestamp": {
+                                        "low": 1771324948,
+                                        "high": 0,
+                                        "unsigned": true
+                                    }
+                                },
+                                "deviceListMetadataVersion": 2,
                                 "messageSecret": {
-                                    "0": 236,
-                                    "1": 138,
-                                    "2": 131,
-                                    "3": 4,
-                                    "4": 148,
-                                    "5": 133,
-                                    "6": 248,
-                                    "7": 176,
-                                    "8": 72,
-                                    "9": 234,
-                                    "10": 230,
-                                    "11": 174,
-                                    "12": 224,
-                                    "13": 184,
-                                    "14": 124,
-                                    "15": 9,
-                                    "16": 161,
-                                    "17": 178,
-                                    "18": 38,
-                                    "19": 31,
-                                    "20": 249,
-                                    "21": 37,
-                                    "22": 238,
-                                    "23": 55,
-                                    "24": 85,
-                                    "25": 185,
-                                    "26": 23,
-                                    "27": 234,
-                                    "28": 96,
-                                    "29": 37,
-                                    "30": 181,
-                                    "31": 99
+                                    "0": 46,
+                                    "1": 243,
+                                    "2": 212,
+                                    "3": 124,
+                                    "4": 127,
+                                    "5": 214,
+                                    "6": 40,
+                                    "7": 99,
+                                    "8": 69,
+                                    "9": 149,
+                                    "10": 113,
+                                    "11": 149,
+                                    "12": 104,
+                                    "13": 189,
+                                    "14": 77,
+                                    "15": 217,
+                                    "16": 73,
+                                    "17": 232,
+                                    "18": 75,
+                                    "19": 79,
+                                    "20": 193,
+                                    "21": 77,
+                                    "22": 107,
+                                    "23": 164,
+                                    "24": 177,
+                                    "25": 31,
+                                    "26": 137,
+                                    "27": 210,
+                                    "28": 201,
+                                    "29": 14,
+                                    "30": 198,
+                                    "31": 209
                                 }
                             }
                         },
                         "messageType": "conversation",
-                        "messageTimestamp": 1771432366,
+                        "messageTimestamp": 1771619163,
                         "instanceId": "f9908d1b-29f5-441b-a843-dd5021dc0370",
                         "source": "android"
                     },
                     "destination": "https://n8n.growhubeg.com/webhook/bestar-whatsapp",
-                    "date_time": "2026-02-18T13:32:47.108Z",
+                    "date_time": "2026-02-20T17:26:03.343Z",
                     "sender": "201557368364@s.whatsapp.net",
                     "server_url": "http://localhost:8080",
                     "apikey": "B1CEB4BA7A4D-4316-AC23-B1E79C49F557"

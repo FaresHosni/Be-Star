@@ -280,6 +280,8 @@ async def update_settings(data: VipSettingsUpdate):
             "invitation_link": data.invitation_link,
             "reaction_reply": data.reaction_reply,
             "inquiry_reply": data.inquiry_reply,
+            "accept_reply": data.accept_reply,
+            "decline_reply": data.decline_reply,
         }
         for key, value in fields.items():
             if value is not None:
