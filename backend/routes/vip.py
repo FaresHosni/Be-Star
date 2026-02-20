@@ -75,46 +75,56 @@ async def send_whatsapp_message(phone: str, text: str, image_filename: str = Non
     jid = phone.lstrip("0+")
     if not jid.startswith("20"):
         jid = "20" + jid
-    jid = jid + "@s.whatsapp.net"
 
-    async with httpx.AsyncClient(timeout=15) as client:
+    headers = {"apikey": evo_key, "Content-Type": "application/json"}
+
+    async with httpx.AsyncClient(timeout=60) as client:
         if image_filename:
             # قراءة الصورة المرفوعة كـ base64
             import base64
-            upload_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "vip_uploads")
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            upload_dir = os.path.join(base_dir, "data", "vip_uploads")
             filepath = os.path.join(upload_dir, image_filename)
             if os.path.exists(filepath):
                 with open(filepath, "rb") as img_file:
                     b64 = base64.b64encode(img_file.read()).decode("utf-8")
                 ext = image_filename.rsplit(".", 1)[-1].lower()
-                mime = f"image/{ext}" if ext != "jpg" else "image/jpeg"
-                await client.post(
+                if ext in ("jpg", "jpeg"):
+                    mime = "image/jpeg"
+                elif ext == "png":
+                    mime = "image/png"
+                else:
+                    mime = f"image/{ext}"
+
+                resp = await client.post(
                     f"{evo_url}/message/sendMedia/{instance}",
-                    headers={"apikey": evo_key, "Content-Type": "application/json"},
+                    headers=headers,
                     json={
                         "number": jid,
                         "mediatype": "image",
-                        "media": f"data:{mime};base64,{b64}",
+                        "mimetype": mime,
                         "caption": text,
+                        "media": b64,
+                        "fileName": f"invitation.{ext}",
                     }
                 )
+                print(f"📤 sendMedia response: {resp.status_code} - {resp.text[:200]}")
             else:
-                # لو الصورة مش موجودة، ابعت نص فقط
-                await client.post(
+                print(f"⚠️ Image file not found: {filepath}")
+                resp = await client.post(
                     f"{evo_url}/message/sendText/{instance}",
-                    headers={"apikey": evo_key, "Content-Type": "application/json"},
+                    headers=headers,
                     json={"number": jid, "text": text}
                 )
+                print(f"📤 sendText response: {resp.status_code}")
         else:
             # إرسال نص فقط
-            await client.post(
+            resp = await client.post(
                 f"{evo_url}/message/sendText/{instance}",
-                headers={"apikey": evo_key, "Content-Type": "application/json"},
-                json={
-                    "number": jid,
-                    "text": text,
-                }
+                headers=headers,
+                json={"number": jid, "text": text}
             )
+            print(f"📤 sendText response: {resp.status_code}")
 
 
 
