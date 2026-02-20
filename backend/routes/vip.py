@@ -138,6 +138,8 @@ async def list_vip_guests(status: Optional[str] = None):
 @router.post("/")
 async def add_vip_guest(data: VipGuestCreate):
     """إضافة شخصية مهمة + إرسال الدعوة تلقائياً"""
+    import traceback
+    print(f"📥 Adding VIP: name={data.name}, phone={data.phone}")
     session = get_session()
     try:
         # تحقق من عدم التكرار
@@ -154,26 +156,41 @@ async def add_vip_guest(data: VipGuestCreate):
         session.add(guest)
         session.commit()
         session.refresh(guest)
+        print(f"✅ VIP guest saved: id={guest.id}")
 
         # إرسال الدعوة تلقائياً
-        invitation_text = get_vip_setting(session, "invitation_text") or ""
-        invitation_link = get_vip_setting(session, "invitation_link") or ""
-        invitation_image = get_vip_setting(session, "invitation_image") or ""
+        try:
+            invitation_text = get_vip_setting(session, "invitation_text") or ""
+            invitation_link = get_vip_setting(session, "invitation_link") or ""
+            invitation_image = get_vip_setting(session, "invitation_image") or ""
+            print(f"📋 Settings: text='{invitation_text[:30]}...', link='{invitation_link}', image='{invitation_image}'")
 
-        if invitation_text:
-            full_text = invitation_text
-            if invitation_link:
-                full_text += f"\n\n🔗 {invitation_link}"
-            try:
-                await send_whatsapp_message(
-                    data.phone,
-                    full_text,
-                    image_filename=invitation_image if invitation_image else None
-                )
-            except Exception as e:
-                print(f"⚠️ VIP invitation send failed: {e}")
+            if invitation_text:
+                full_text = invitation_text
+                if invitation_link:
+                    full_text += f"\n\n🔗 {invitation_link}"
+                try:
+                    await send_whatsapp_message(
+                        data.phone,
+                        full_text,
+                        image_filename=invitation_image if invitation_image else None
+                    )
+                    print(f"✅ WhatsApp invitation sent to {data.phone}")
+                except Exception as e:
+                    print(f"⚠️ VIP invitation send failed: {e}")
+            else:
+                print("⚠️ No invitation text configured, skipping WhatsApp send")
+        except Exception as e:
+            print(f"⚠️ Settings/send error (non-fatal): {e}")
+            traceback.print_exc()
 
         return {"message": "تمت الإضافة بنجاح", "guest": vip_to_dict(guest)}
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"❌ add_vip_guest error: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"خطأ في إضافة الشخصية: {str(e)}")
     finally:
         session.close()
 

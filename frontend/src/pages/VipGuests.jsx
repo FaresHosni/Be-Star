@@ -75,10 +75,15 @@ function VipGuests() {
                 fetchGuests()
                 fetchStats()
             } else {
-                const err = await res.json()
-                alert(err.detail || 'حدث خطأ')
+                const errText = await res.text()
+                let errMsg = 'حدث خطأ'
+                try { errMsg = JSON.parse(errText).detail || errMsg } catch (_) { errMsg = errText || errMsg }
+                alert(errMsg)
             }
-        } catch (e) { console.error(e) }
+        } catch (e) {
+            console.error('addGuest error:', e)
+            alert('حدث خطأ في الاتصال بالسيرفر: ' + e.message)
+        }
         setAddLoading(false)
     }
 
