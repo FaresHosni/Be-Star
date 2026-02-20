@@ -405,6 +405,18 @@ def init_db():
                 conn.execute(text("ALTER TABLE tickets ADD COLUMN guest_phone TEXT"))
             conn.commit()
 
+    # Fix vip_settings table — recreate if key column is missing
+    if 'vip_settings' in inspector.get_table_names():
+        columns = [col['name'] for col in inspector.get_columns('vip_settings')]
+        if 'key' not in columns:
+            print("⚠️ vip_settings table has wrong schema, recreating...")
+            with engine.connect() as conn:
+                conn.execute(text("DROP TABLE vip_settings"))
+                conn.commit()
+            # Recreate with correct schema
+            VipSettings.__table__.create(engine)
+            print("✅ vip_settings table recreated with correct schema")
+
     return engine
 
 
