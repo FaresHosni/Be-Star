@@ -265,32 +265,44 @@ async def update_settings(data: VipSettingsUpdate):
 @router.post("/upload-image")
 async def upload_invitation_image(file: UploadFile = File(...)):
     """رفع صورة الدعوة"""
-    # تأكد إن الملف صورة
-    if not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="الملف لازم يكون صورة")
-
-    # إنشاء مجلد الرفع
-    upload_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "vip_uploads")
-    os.makedirs(upload_dir, exist_ok=True)
-
-    # اسم فريد للملف
-    ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
-    filename = f"vip_invite_{uuid.uuid4().hex[:8]}.{ext}"
-    filepath = os.path.join(upload_dir, filename)
-
-    # حفظ الملف
-    with open(filepath, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    # حفظ في الإعدادات
-    session = get_session()
+    import traceback
     try:
-        set_vip_setting(session, "invitation_image", filename)
-        session.commit()
-    finally:
-        session.close()
+        # تأكد إن الملف صورة
+        if not file.content_type or not file.content_type.startswith("image/"):
+            raise HTTPException(status_code=400, detail="الملف لازم يكون صورة")
 
-    return {"message": "تم رفع الصورة بنجاح", "filename": filename}
+        # إنشاء مجلد الرفع — مسار ثابت يشتغل داخل Docker وبره
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        upload_dir = os.path.join(base_dir, "data", "vip_uploads")
+        os.makedirs(upload_dir, exist_ok=True)
+        print(f"📁 Upload dir: {upload_dir}, exists: {os.path.exists(upload_dir)}")
+
+        # اسم فريد للملف
+        ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+        filename = f"vip_invite_{uuid.uuid4().hex[:8]}.{ext}"
+        filepath = os.path.join(upload_dir, filename)
+
+        # حفظ الملف
+        contents = await file.read()
+        with open(filepath, "wb") as buffer:
+            buffer.write(contents)
+        print(f"✅ File saved: {filepath}, size: {len(contents)} bytes")
+
+        # حفظ في الإعدادات
+        session = get_session()
+        try:
+            set_vip_setting(session, "invitation_image", filename)
+            session.commit()
+        finally:
+            session.close()
+
+        return {"message": "تم رفع الصورة بنجاح", "filename": filename}
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"❌ Upload error: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"خطأ في رفع الصورة: {str(e)}")
 
 
 @router.get("/image/{filename}")
