@@ -405,6 +405,24 @@ def init_db():
                 conn.execute(text("ALTER TABLE tickets ADD COLUMN guest_phone TEXT"))
             conn.commit()
 
+    # Fix vip_guests table — add missing columns
+    if 'vip_guests' in inspector.get_table_names():
+        columns = [col['name'] for col in inspector.get_columns('vip_guests')]
+        with engine.connect() as conn:
+            if 'previous_status' not in columns:
+                print("⚠️ Adding missing column: vip_guests.previous_status")
+                conn.execute(text("ALTER TABLE vip_guests ADD COLUMN previous_status TEXT"))
+            if 'changed_mind' not in columns:
+                print("⚠️ Adding missing column: vip_guests.changed_mind")
+                conn.execute(text("ALTER TABLE vip_guests ADD COLUMN changed_mind BOOLEAN DEFAULT 0"))
+            if 'last_interaction' not in columns:
+                print("⚠️ Adding missing column: vip_guests.last_interaction")
+                conn.execute(text("ALTER TABLE vip_guests ADD COLUMN last_interaction DATETIME"))
+            if 'added_by' not in columns:
+                print("⚠️ Adding missing column: vip_guests.added_by")
+                conn.execute(text("ALTER TABLE vip_guests ADD COLUMN added_by TEXT"))
+            conn.commit()
+
     # Fix vip_settings table — recreate if key column is missing
     if 'vip_settings' in inspector.get_table_names():
         columns = [col['name'] for col in inspector.get_columns('vip_settings')]
