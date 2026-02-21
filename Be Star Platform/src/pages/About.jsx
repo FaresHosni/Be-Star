@@ -53,6 +53,33 @@ export default function About() {
                 </div>
             </section>
 
+            {/* الفئة المستهدفة */}
+            <section className="section">
+                <div className="container" style={{ maxWidth: '900px' }}>
+                    <h2 className="section-title">الفئة المستهدفة</h2>
+                    <p className="section-subtitle">هذا الحدث مصمم خصيصاً لكل طموح يسعى للنجاح في عالم الإعلام والمحتوى</p>
+
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                        gap: '20px'
+                    }}>
+                        {[
+                            { title: 'صُناع المحتوى', icon: '📱', desc: 'على منصات TikTok, YouTube, Facebook, Instagram' },
+                            { title: 'المؤثرون والبلوجرز', icon: '🌟', desc: 'كل من لديه رسالة ويريد توسيع تأثيره' },
+                            { title: 'طلاب الإعلام', icon: '🎓', desc: 'والمهتمون بمجال الصحافة والتقديم التلفزيوني' },
+                            { title: 'أصحاب الأعمال', icon: '💼', desc: 'الراغبون في تعلم تسويق المحتوى لتنمية مشاريعهم' },
+                        ].map((target, i) => (
+                            <div key={i} className="card" style={{ textAlign: 'center', padding: '24px' }}>
+                                <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>{target.icon}</div>
+                                <h4 style={{ color: 'var(--primary-dark)', marginBottom: '8px' }}>{target.title}</h4>
+                                <p style={{ color: 'var(--gray-500)', fontSize: '0.9rem' }}>{target.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             {/* User Journey */}
             <section className="section">
                 <div className="container" style={{ maxWidth: '700px' }}>
