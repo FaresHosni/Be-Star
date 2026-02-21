@@ -8,7 +8,9 @@ export default function Tickets() {
         phone: '',
         email: '',
         ticket_type: 'Student',
+        payment_method: 'Vodafone Cash',
     });
+    const [paymentProof, setPaymentProof] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
@@ -19,6 +21,7 @@ export default function Tickets() {
         setError('');
 
         try {
+            // First: Create Ticket
             const response = await fetch('/api/tickets/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -27,12 +30,31 @@ export default function Tickets() {
                     phone: formData.phone,
                     email: formData.email || null,
                     ticket_type: formData.ticket_type,
+                    payment_method: formData.payment_method,
                 }),
             });
 
             if (!response.ok) {
                 const data = await response.json();
                 throw new Error(data.detail || 'حدث خطأ أثناء الحجز');
+            }
+
+            const ticketData = await response.json();
+
+            // Second: Upload Payment Proof if provided
+            if (paymentProof && ticketData.ticket_id) {
+                const proofFormData = new FormData();
+                proofFormData.append('file', paymentProof);
+
+                const uploadRes = await fetch(`/api/tickets/${ticketData.ticket_id}/payment-proof`, {
+                    method: 'POST',
+                    body: proofFormData,
+                });
+
+                if (!uploadRes.ok) {
+                    const uploadData = await uploadRes.json();
+                    throw new Error(uploadData.detail || 'تم الحجز ولكن حدث خطأ أثناء رفع إثبات الدفع. يرجى التواصل مع الدعم.');
+                }
             }
 
             setSuccess(true);
@@ -85,7 +107,7 @@ export default function Tickets() {
                             </p>
                             <button
                                 className="btn btn-primary"
-                                onClick={() => { setSuccess(false); setFormData({ name: '', phone: '', email: '', ticket_type: 'Student' }); }}
+                                onClick={() => { setSuccess(false); setPaymentProof(null); setFormData({ name: '', phone: '', email: '', ticket_type: 'Student', payment_method: 'Vodafone Cash' }); }}
                             >
                                 حجز تذكرة أخرى
                             </button>
@@ -142,9 +164,38 @@ export default function Tickets() {
                                     value={formData.ticket_type}
                                     onChange={(e) => setFormData({ ...formData, ticket_type: e.target.value })}
                                 >
-                                    <option value="Student">Student — طالب</option>
-                                    <option value="VIP">VIP — كبار الزوار</option>
+                                    <option value="Student">Student — طالب (100 جنيه)</option>
+                                    <option value="VIP">VIP — كبار الزوار (500 جنيه)</option>
                                 </select>
+                            </div>
+
+                            <div style={{
+                                background: 'rgba(255, 193, 7, 0.1)', border: '1px solid rgba(255, 193, 7, 0.3)', borderRadius: '12px',
+                                padding: '16px', marginBottom: '20px', color: 'var(--primary-dark)', fontSize: '0.95rem', lineHeight: 1.6
+                            }}>
+                                <strong style={{ color: 'var(--primary-gold-dark)', display: 'block', marginBottom: '8px' }}>📌 معلومات الدفع:</strong>
+                                يرجى تحويل مبلغ التذكرة على الرقم التالي: <strong style={{ fontSize: '1.1rem', userSelect: 'all' }}>01278453450</strong>
+                                <br />ثم إرفاق صورة إيصال التحويل (سكرين شوت) بالأسفل ليتم مراجعتها وتأكيد حجزك خلال ساعات قليلة.
+                            </div>
+
+                            <div className="form-group">
+                                <label>طريقة الدفع *</label>
+                                <select
+                                    value={formData.payment_method}
+                                    onChange={(e) => setFormData({ ...formData, payment_method: e.target.value })}
+                                >
+                                    <option value="Vodafone Cash">Vodafone Cash - فودافون كاش</option>
+                                    <option value="InstaPay">InstaPay - انستا باي</option>
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label>صورة إثبات الدفع (إيصال التحويل) *</label>
+                                <input
+                                    type="file" required accept="image/*"
+                                    onChange={(e) => setPaymentProof(e.target.files[0])}
+                                    style={{ padding: '8px', border: '2px dashed #e9ecef' }}
+                                />
                             </div>
 
                             <button
