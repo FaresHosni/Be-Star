@@ -18,3 +18,12 @@ services:
       - "3005:80"
     depends_on:
       - admin-backend
+
+  platform-frontend:
+    build: "./Be Star Platform"
+    container_name: bestar_platform_frontend
+    restart: always
+    ports:
+      - "3006:80"
+    depends_on:
+      - admin-backend
