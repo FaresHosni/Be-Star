@@ -1,20 +1,20 @@
 services:
-  backend:
-    build: ./backend
-    container_name: bestar_backend
+  admin-backend:
+    build: ./admin-backend
+    container_name: bestar_admin_backend
     restart: always
     env_file:
-      - ./backend/.env
+      - ./admin-backend/.env
     volumes:
-      - ./backend/data:/app/data
+      - ./admin-backend/data:/app/data
     expose:
       - "8000"
 
-  frontend:
-    build: ./frontend
-    container_name: bestar_frontend
+  admin-frontend:
+    build: ./admin-frontend
+    container_name: bestar_admin_frontend
     restart: always
     ports:
       - "3005:80"
     depends_on:
-      - backend
+      - admin-backend
