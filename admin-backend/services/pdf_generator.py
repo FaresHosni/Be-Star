@@ -15,8 +15,16 @@ try:
     import arabic_reshaper
     from bidi.algorithm import get_display
     ARABIC_SUPPORT = True
-except ImportError:
+    print("Ticket PDF: Arabic support successfully initialized.")
+    # Configure reshaper to handle ligatures properly
+    configuration = {
+        'delete_harakat': False,
+        'support_ligatures': True,
+    }
+    reshaper = arabic_reshaper.ArabicReshaper(configuration=configuration)
+except ImportError as e:
     ARABIC_SUPPORT = False
+    print(f"CRITICAL Ticket PDF: Failed to import ARABIC text support libraries. Text will be disconnected. Error: {e}")
 
 
 # Colors
@@ -48,10 +56,10 @@ def reshape_arabic(text: str) -> str:
     if not ARABIC_SUPPORT:
         return text
     try:
-        reshaped = arabic_reshaper.reshape(text)
+        reshaped = reshaper.reshape(text)
         return get_display(reshaped)
     except Exception as e:
-        print(f"Error reshaping Arabic text: {e}")
+        print(f"Ticket PDF: Error reshaping Arabic text: {e}")
         return text
 
 

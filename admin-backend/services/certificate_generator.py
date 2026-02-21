@@ -16,8 +16,16 @@ try:
     import arabic_reshaper
     from bidi.algorithm import get_display
     ARABIC_SUPPORT = True
-except ImportError:
+    print("Arabic support successfully initialized.")
+    # Configure reshaper to handle ligatures and harakat properly
+    configuration = {
+        'delete_harakat': False,
+        'support_ligatures': True,
+    }
+    reshaper = arabic_reshaper.ArabicReshaper(configuration=configuration)
+except ImportError as e:
     ARABIC_SUPPORT = False
+    print(f"CRITICAL: Failed to import ARABIC text support libraries. Text will be disconnected. Error: {e}")
 
 # Colors
 GOLD = HexColor("#D4AF37")
@@ -47,9 +55,10 @@ def reshape_arabic(text: str) -> str:
     if not ARABIC_SUPPORT:
         return text
     try:
-        reshaped = arabic_reshaper.reshape(text)
+        reshaped = reshaper.reshape(text)
         return get_display(reshaped)
-    except Exception:
+    except Exception as e:
+        print(f"Certificate: Error reshaping Arabic text: {e}")
         return text
 
 
