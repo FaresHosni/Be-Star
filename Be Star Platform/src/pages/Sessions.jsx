@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { GraduationCap, Wrench, MessageSquare, Trophy, Pin, Mic, BookOpen } from 'lucide-react';
 import eventData from '../config/eventData.json';
 
 export default function Sessions() {
@@ -9,10 +10,10 @@ export default function Sessions() {
     const filtered = filter === 'الكل' ? sessions : sessions.filter((s) => s.type === filter);
 
     const typeIcons = {
-        'محاضرة': '🎓',
-        'ورشة عمل': '🛠️',
-        'جلسة حوارية': '💬',
-        'مسابقة': '🏆',
+        'محاضرة': <GraduationCap size={24} />,
+        'ورشة عمل': <Wrench size={24} />,
+        'جلسة حوارية': <MessageSquare size={24} />,
+        'مسابقة': <Trophy size={24} />,
     };
 
     return (
@@ -39,7 +40,7 @@ export default function Sessions() {
                     {filtered.map((session) => (
                         <div className="session-card" key={session.id}>
                             <div className="session-icon">
-                                {typeIcons[session.type] || '📌'}
+                                {typeIcons[session.type] || <Pin size={24} />}
                             </div>
                             <div className="session-info">
                                 <h3>{session.title}</h3>
@@ -47,12 +48,12 @@ export default function Sessions() {
                                     {session.description}
                                 </p>
                                 <div className="session-meta">
-                                    <span>🎤 {session.speaker}</span>
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Mic size={14} /> {session.speaker}</span>
                                     <span className="badge badge-blue">{session.type}</span>
                                     <span className="badge badge-gold">{session.level}</span>
                                 </div>
-                                <p style={{ fontSize: '0.85rem', color: 'var(--gray-400)', marginTop: '8px' }}>
-                                    📚 ما ستتعلمه: {session.learnings}
+                                <p style={{ fontSize: '0.85rem', color: 'var(--gray-400)', marginTop: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <BookOpen size={14} /> ما ستتعلمه: {session.learnings}
                                 </p>
                             </div>
                         </div>

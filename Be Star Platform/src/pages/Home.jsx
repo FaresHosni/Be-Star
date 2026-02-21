@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Star, Ticket, Mic, MessageCircle, Target, FileText, ClipboardList } from 'lucide-react';
+
+const aiIcons = {
+    MessageCircle: <MessageCircle size={32} />,
+    Ticket: <Ticket size={32} />,
+    Target: <Target size={32} />,
+    FileText: <FileText size={32} />,
+    ClipboardList: <ClipboardList size={32} />
+};
 import eventData from '../config/eventData.json';
 
 function CountdownTimer({ targetDate }) {
@@ -91,7 +100,7 @@ export default function Home() {
                 </div>
                 <div className="hero-content">
                     <div className="hero-badge">
-                        ⭐ {event.tagline}
+                        <Star fill="currentColor" size={16} style={{ display: 'inline', verticalAlign: 'text-bottom', marginEnd: '6px' }} /> {event.tagline}
                     </div>
                     <h1>
                         نحو النجومية
@@ -101,7 +110,7 @@ export default function Home() {
 
                     <div className="hero-buttons">
                         <Link to="/tickets" className="btn btn-primary btn-lg">
-                            🎫 احجز مكانك الآن
+                            <Ticket size={20} /> احجز مكانك الآن
                         </Link>
                         <Link to="/about" className="btn btn-secondary btn-lg">
                             اكتشف المزيد
@@ -145,7 +154,7 @@ export default function Home() {
                                 <h3>{speaker.name}</h3>
                                 <div className="field">{speaker.field}</div>
                                 <p className="bio">{speaker.bio}</p>
-                                <div className="session-badge">🎤 {speaker.session}</div>
+                                <div className="session-badge"><Mic size={16} style={{ display: 'inline', verticalAlign: 'text-bottom', marginEnd: '6px' }} /> {speaker.session}</div>
                             </div>
                         ))}
                     </div>
@@ -167,7 +176,7 @@ export default function Home() {
                     <div className="ai-features-grid">
                         {eventData.aiFeatures.slice(0, 3).map((feature, i) => (
                             <div className="ai-feature-card" key={i}>
-                                <div className="ai-feature-icon">{feature.icon}</div>
+                                <div className="ai-feature-icon">{aiIcons[feature.icon]}</div>
                                 <h3>{feature.titleAr}</h3>
                                 <div className="title-en">{feature.title}</div>
                                 <p>{feature.description}</p>
@@ -220,13 +229,13 @@ export default function Home() {
             }}>
                 <div className="container">
                     <h2 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '16px' }}>
-                        مستعد تكون نجم؟ ⭐
+                        مستعد تكون نجم؟ <Star fill="currentColor" size={28} style={{ display: 'inline', verticalAlign: 'text-bottom', marginStart: '8px' }} />
                     </h2>
                     <p style={{ fontSize: '1.1rem', opacity: 0.7, marginBottom: '32px', maxWidth: '500px', margin: '0 auto 32px' }}>
                         لا تفوّت فرصة بناء مستقبلك في صناعة المحتوى. احجز مكانك الآن!
                     </p>
                     <Link to="/tickets" className="btn btn-primary btn-lg">
-                        🎫 احجز مكانك الآن
+                        <Ticket size={20} /> احجز مكانك الآن
                     </Link>
                 </div>
             </section>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Ticket, Menu, X } from 'lucide-react';
 
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
@@ -47,7 +48,7 @@ export default function Navbar() {
 
                 <div className="navbar-cta">
                     <Link to="/tickets" className="btn btn-primary">
-                        🎫 احجز الآن
+                        <Ticket size={18} /> احجز الآن
                     </Link>
                 </div>
 
@@ -55,7 +56,7 @@ export default function Navbar() {
                     className="navbar-mobile-toggle"
                     onClick={() => setMobileOpen(!mobileOpen)}
                 >
-                    {mobileOpen ? '✕' : '☰'}
+                    {mobileOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
         </nav>

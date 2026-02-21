@@ -1,12 +1,13 @@
 import eventData from '../config/eventData.json';
+import { Trophy, Medal, Radio, Laptop, Tv, Palette, Rocket, Mail } from 'lucide-react';
 
 export default function Sponsors() {
     const { sponsors } = eventData;
 
     const tiers = {
-        platinum: { label: '🏆 الرعاة البلاتينيون', items: sponsors.filter((s) => s.tier === 'platinum') },
-        gold: { label: '🥇 الرعاة الذهبيون', items: sponsors.filter((s) => s.tier === 'gold') },
-        media: { label: '📡 الشركاء الإعلاميون', items: sponsors.filter((s) => s.tier === 'media') },
+        platinum: { label: <><Trophy size={20} style={{ display: 'inline', verticalAlign: 'text-bottom', marginEnd: '6px', color: '#ffc107' }} /> الرعاة البلاتينيون</>, items: sponsors.filter((s) => s.tier === 'platinum') },
+        gold: { label: <><Medal size={20} style={{ display: 'inline', verticalAlign: 'text-bottom', marginEnd: '6px', color: '#ffd700' }} /> الرعاة الذهبيون</>, items: sponsors.filter((s) => s.tier === 'gold') },
+        media: { label: <><Radio size={20} style={{ display: 'inline', verticalAlign: 'text-bottom', marginEnd: '6px', color: 'var(--primary-blue)' }} /> الشركاء الإعلاميون</>, items: sponsors.filter((s) => s.tier === 'media') },
     };
 
     return (
@@ -55,8 +56,8 @@ export default function Sponsors() {
                     }}>
                         {['منطقة التقنية', 'منطقة الإعلام', 'منطقة التصميم', 'منطقة ريادة الأعمال'].map((zone, i) => (
                             <div key={i} className="card" style={{ textAlign: 'center', padding: '24px' }}>
-                                <div style={{ fontSize: '2rem', marginBottom: '8px' }}>
-                                    {['💻', '📺', '🎨', '🚀'][i]}
+                                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px', color: 'var(--primary-dark)' }}>
+                                    {[<Laptop size={32} />, <Tv size={32} />, <Palette size={32} />, <Rocket size={32} />][i]}
                                 </div>
                                 <h4 style={{ color: 'var(--primary-dark)' }}>{zone}</h4>
                             </div>
@@ -79,7 +80,7 @@ export default function Sponsors() {
                     انضم لشركائنا وادعم مستقبل صناع المحتوى
                 </p>
                 <a href="mailto:info@bestar.com" className="btn btn-primary btn-lg">
-                    📧 تواصل معنا للرعاية
+                    <Mail size={18} style={{ display: 'inline', verticalAlign: 'text-bottom', marginEnd: '6px' }} /> تواصل معنا للرعاية
                 </a>
             </section>
         </>

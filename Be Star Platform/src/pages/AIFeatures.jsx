@@ -1,4 +1,13 @@
 import eventData from '../config/eventData.json';
+import { Bot, Zap, User, Settings, MessageCircle, Ticket, Target, ClipboardList, FileText } from 'lucide-react';
+
+const aiIcons = {
+    MessageCircle: <MessageCircle size={32} />,
+    Ticket: <Ticket size={32} />,
+    Target: <Target size={32} />,
+    FileText: <FileText size={32} />,
+    ClipboardList: <ClipboardList size={32} />
+};
 
 export default function AIFeatures() {
     const { aiFeatures } = eventData;
@@ -6,7 +15,7 @@ export default function AIFeatures() {
     return (
         <>
             <div className="page-header">
-                <h1>🤖 مميزات الذكاء الاصطناعي</h1>
+                <h1 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}><Bot size={36} /> مميزات الذكاء الاصطناعي</h1>
                 <p>هذا الحدث مدعوم بتقنيات الذكاء الاصطناعي من شركة Mr. AI</p>
             </div>
 
@@ -18,7 +27,7 @@ export default function AIFeatures() {
                         background: 'linear-gradient(135deg, rgba(10,22,40,0.03), rgba(255,193,7,0.05))',
                         border: '1px solid rgba(255,193,7,0.15)',
                     }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '16px' }}>⚡</div>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', color: 'var(--primary-gold-dark)' }}><Zap size={48} /></div>
                         <h2 style={{ color: 'var(--primary-dark)', marginBottom: '12px', fontSize: '1.5rem' }}>
                             ليس مجرد موقع إيفنت عادي
                         </h2>
@@ -41,13 +50,13 @@ export default function AIFeatures() {
                     <div className="ai-features-grid">
                         {aiFeatures.map((feature, i) => (
                             <div className="ai-feature-card" key={i}>
-                                <div className="ai-feature-icon">{feature.icon}</div>
+                                <div className="ai-feature-icon">{aiIcons[feature.icon]}</div>
                                 <h3>{feature.titleAr}</h3>
                                 <div className="title-en">{feature.title}</div>
                                 <p>{feature.description}</p>
                                 <div style={{ marginTop: '16px' }}>
-                                    <span className={`badge ${feature.userFacing ? 'badge-gold' : 'badge-blue'}`}>
-                                        {feature.userFacing ? '👤 متاح للمستخدم' : '⚙️ خلف الكواليس'}
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }} className={`badge ${feature.userFacing ? 'badge-gold' : 'badge-blue'}`}>
+                                        {feature.userFacing ? <><User size={14} /> متاح للمستخدم</> : <><Settings size={14} /> خلف الكواليس</>}
                                     </span>
                                 </div>
                             </div>
@@ -63,11 +72,11 @@ export default function AIFeatures() {
                     <p className="section-subtitle">رحلة المشارك مدعومة بالذكاء الاصطناعي في كل خطوة</p>
 
                     {[
-                        { step: '1', title: 'قبل الحدث', desc: 'مساعد التوعية يجيب على جميع الأسئلة ويساعد في الحجز', icon: '💬' },
-                        { step: '2', title: 'التسجيل', desc: 'موظف التذاكر يسجل المشاركين ويدير عمليات الدفع تلقائياً', icon: '🎫' },
-                        { step: '3', title: 'أثناء الحدث', desc: 'موظف التفاعل يدير المسابقات والأسئلة التفاعلية', icon: '🎯' },
-                        { step: '4', title: 'التنظيم', desc: 'منسق اللوجستيات يتابع الجدول الزمني ويدير الموارد', icon: '📋' },
-                        { step: '5', title: 'بعد الحدث', desc: 'موظف الشهادات يرسل الشهادات ويتابع المشاركين', icon: '📜' },
+                        { step: '1', title: 'قبل الحدث', desc: 'مساعد التوعية يجيب على جميع الأسئلة ويساعد في الحجز', icon: <MessageCircle size={24} color="#fff" /> },
+                        { step: '2', title: 'التسجيل', desc: 'موظف التذاكر يسجل المشاركين ويدير عمليات الدفع تلقائياً', icon: <Ticket size={24} color="#fff" /> },
+                        { step: '3', title: 'أثناء الحدث', desc: 'موظف التفاعل يدير المسابقات والأسئلة التفاعلية', icon: <Target size={24} color="#fff" /> },
+                        { step: '4', title: 'التنظيم', desc: 'منسق اللوجستيات يتابع الجدول الزمني ويدير الموارد', icon: <ClipboardList size={24} color="#fff" /> },
+                        { step: '5', title: 'بعد الحدث', desc: 'موظف الشهادات يرسل الشهادات ويتابع المشاركين', icon: <FileText size={24} color="#fff" /> },
                     ].map((item, i) => (
                         <div key={i} style={{
                             display: 'flex',
@@ -109,7 +118,7 @@ export default function AIFeatures() {
                 textAlign: 'center',
                 color: '#fff',
             }}>
-                <div style={{ fontSize: '2.5rem', marginBottom: '16px' }}>⚡</div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', color: 'var(--primary-gold)' }}><Zap size={48} /></div>
                 <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '12px' }}>
                     مدعوم بالذكاء الاصطناعي من Mr. AI
                 </h2>

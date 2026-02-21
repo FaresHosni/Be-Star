@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { MessageCircle, Bot, X, Hand, Send } from 'lucide-react';
 
 export default function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
@@ -6,7 +7,7 @@ export default function ChatWidget() {
     return (
         <>
             <div className="chat-bubble" onClick={() => setIsOpen(!isOpen)}>
-                💬
+                <MessageCircle size={28} style={{ color: '#fff' }} />
                 <div className="chat-tooltip">اسأل الموظف الذكي</div>
             </div>
 
@@ -38,7 +39,7 @@ export default function ChatWidget() {
                     }}>
                         <div>
                             <div style={{ fontWeight: 700, fontSize: '1rem' }}>
-                                🤖 مساعد Be Star الذكي
+                                <Bot size={20} style={{ display: 'inline', verticalAlign: 'text-bottom', marginEnd: '6px' }} /> مساعد Be Star الذكي
                             </div>
                             <div style={{ fontSize: '0.8rem', opacity: 0.7, marginTop: '2px' }}>
                                 مدعوم من Mr. AI
@@ -57,7 +58,7 @@ export default function ChatWidget() {
                                 fontSize: '1rem',
                             }}
                         >
-                            ✕
+                            <X size={20} />
                         </button>
                     </div>
 
@@ -78,7 +79,7 @@ export default function ChatWidget() {
                             lineHeight: 1.6,
                             fontSize: '0.95rem',
                         }}>
-                            أهلاً بيك! 👋 أنا مساعد إيفنت كن نجماً الذكي.
+                            أهلاً بيك! <Hand size={18} style={{ display: 'inline', verticalAlign: 'text-bottom', margin: '0 4px', color: '#f59e0b' }} /> أنا مساعد إيفنت كن نجماً الذكي.
                             <br />
                             اسألني أي سؤال عن الحدث، الجلسات، المتحدثين، أو التذاكر وهجاوبك فوراً!
                         </div>
@@ -113,7 +114,7 @@ export default function ChatWidget() {
                             cursor: 'pointer',
                             fontSize: '1.2rem',
                         }}>
-                            ➤
+                            <Send size={20} style={{ transform: 'rotate(180deg)' }} />
                         </button>
                     </div>
                 </div>
