@@ -347,19 +347,13 @@ async def send_question(question_id: int, background_tasks: BackgroundTasks):
         q.expires_at = datetime.utcnow() + timedelta(seconds=q.time_limit_seconds)
         session.commit()
         
-        # Send to all targeted phones
-        sent = 0
-        for phone in phones:
-            try:
-                background_tasks.add_task(whatsapp_service.send_message, phone, msg)
-                sent += 1
-            except Exception as e:
-                logger.error(f"Failed to send question to {phone}: {e}")
+        # Send to all targeted phones with batch delays
+        background_tasks.add_task(_send_quiz_bulk, phones, msg)
         
         return {
             "success": True,
-            "message": f"تم إرسال السؤال لـ {sent} مشارك",
-            "sent_count": sent,
+            "message": f"تم بدء إرسال السؤال لـ {len(phones)} مشارك (مع تأخير لحماية الرقم)",
+            "sent_count": len(phones),
             "expires_at": q.expires_at.isoformat(),
         }
     except HTTPException:
@@ -369,6 +363,35 @@ async def send_question(question_id: int, background_tasks: BackgroundTasks):
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         session.close()
+
+
+async def _send_quiz_bulk(phones: list, msg: str):
+    """Send quiz question to all phones with anti-ban delays."""
+    import asyncio
+    import random
+    BATCH_SIZE = 25
+    DELAY_MIN, DELAY_MAX = 3.0, 8.0
+    BATCH_PAUSE_MIN, BATCH_PAUSE_MAX = 60.0, 90.0
+
+    total = len(phones)
+    for i, phone in enumerate(phones):
+        try:
+            await whatsapp_service.send_message(phone, msg)
+            logger.info(f"✅ Quiz sent {i+1}/{total} to {phone}")
+        except Exception as e:
+            logger.error(f"❌ Quiz failed {i+1}/{total} to {phone}: {e}")
+
+        if i < total - 1:
+            if (i + 1) % BATCH_SIZE == 0:
+                pause = random.uniform(BATCH_PAUSE_MIN, BATCH_PAUSE_MAX)
+                logger.info(f"⏸️ Quiz batch {(i+1)//BATCH_SIZE} done. Pausing {pause:.0f}s...")
+                await asyncio.sleep(pause)
+            else:
+                delay = random.uniform(DELAY_MIN, DELAY_MAX)
+                logger.info(f"⏳ Waiting {delay:.1f}s...")
+                await asyncio.sleep(delay)
+
+    logger.info(f"📊 Quiz send finished: {total} phones processed")
 
 
 @router.post("/questions/{question_id}/expire")

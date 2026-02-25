@@ -7,6 +7,8 @@ from typing import Optional, List
 from datetime import datetime
 import base64
 import logging
+import asyncio
+import random
 
 from models import get_session, CertificateLog, ThankYouLog
 from services.certificate_generator import generate_certificate_pdf
@@ -15,6 +17,13 @@ from services.whatsapp_service import WhatsAppService
 router = APIRouter()
 logger = logging.getLogger(__name__)
 whatsapp = WhatsAppService()
+
+# ── Batch sending configuration (same as engagement) ──
+BATCH_SIZE = 25
+DELAY_MIN = 3.0
+DELAY_MAX = 8.0
+BATCH_PAUSE_MIN = 60.0
+BATCH_PAUSE_MAX = 90.0
 
 
 class SendCertificatesRequest(BaseModel):
@@ -216,6 +225,18 @@ async def send_certificates(req: SendCertificatesRequest):
                     "status": "failed",
                     "error": str(e)
                 })
+            
+            # Anti-ban delay (skip after last message)
+            idx = selected.index(p)
+            if idx < len(selected) - 1:
+                if (idx + 1) % BATCH_SIZE == 0:
+                    pause = random.uniform(BATCH_PAUSE_MIN, BATCH_PAUSE_MAX)
+                    logger.info(f"⏸️ Certificate batch {(idx+1)//BATCH_SIZE} done. Pausing {pause:.0f}s...")
+                    await asyncio.sleep(pause)
+                else:
+                    delay = random.uniform(DELAY_MIN, DELAY_MAX)
+                    logger.info(f"⏳ Waiting {delay:.1f}s before next certificate...")
+                    await asyncio.sleep(delay)
         
         session.commit()
         
@@ -302,6 +323,18 @@ async def send_thanks(req: SendThanksRequest):
                     "guest_name": p["guest_name"],
                     "status": "failed"
                 })
+            
+            # Anti-ban delay (skip after last message)
+            idx = selected.index(p)
+            if idx < len(selected) - 1:
+                if (idx + 1) % BATCH_SIZE == 0:
+                    pause = random.uniform(BATCH_PAUSE_MIN, BATCH_PAUSE_MAX)
+                    logger.info(f"⏸️ Thanks batch {(idx+1)//BATCH_SIZE} done. Pausing {pause:.0f}s...")
+                    await asyncio.sleep(pause)
+                else:
+                    delay = random.uniform(DELAY_MIN, DELAY_MAX)
+                    logger.info(f"⏳ Waiting {delay:.1f}s before next thanks msg...")
+                    await asyncio.sleep(delay)
         
         session.commit()
         
