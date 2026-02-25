@@ -18,8 +18,6 @@ function Tickets() {
     const [loading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [statusFilter, setStatusFilter] = useState('all')
-    const [selectedTicket, setSelectedTicket] = useState(null)
-    const [showProofModal, setShowProofModal] = useState(false)
 
     useEffect(() => {
         fetchTickets()
@@ -185,10 +183,7 @@ function Tickets() {
                                             <div className="flex items-center gap-2">
                                                 {ticket.payment_proof && (
                                                     <button
-                                                        onClick={() => {
-                                                            setSelectedTicket(ticket)
-                                                            setShowProofModal(true)
-                                                        }}
+                                                        onClick={() => navigate(`/tickets/${ticket.id}/proof`)}
                                                         className="p-2 rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors"
                                                         title="عرض إثبات الدفع"
                                                     >
@@ -241,98 +236,7 @@ function Tickets() {
                 )}
             </div>
 
-            {/* Payment Proof Modal */}
-            {showProofModal && selectedTicket && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[9999] p-4" onClick={() => setShowProofModal(false)}>
-                    <div className="bg-dark-400 rounded-2xl border border-gold-500/20 shadow-2xl shadow-gold-500/10 max-w-2xl w-full max-h-[85vh] overflow-y-auto animate-fade-in" onClick={e => e.stopPropagation()}>
-                        <div className="sticky top-0 bg-dark-400 border-b border-gold-500/10 p-4 flex items-center justify-between z-10 rounded-t-2xl">
-                            <div className="flex items-center gap-3">
-                                <button
-                                    onClick={() => setShowProofModal(false)}
-                                    className="p-2 rounded-lg bg-gold-500/20 text-gold-400 hover:bg-gold-500/30 transition-colors"
-                                    title="رجوع"
-                                >
-                                    <ArrowRight className="w-5 h-5" />
-                                </button>
-                                <h3 className="text-xl font-bold text-gold-500">إثبات الدفع - {selectedTicket.code}</h3>
-                            </div>
-                            <button
-                                onClick={() => setShowProofModal(false)}
-                                className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white/60 hover:text-white"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
 
-                        <div className="p-5 space-y-4">
-                            <div className="grid grid-cols-2 gap-4 text-sm">
-                                <div>
-                                    <span className="text-white/50">الاسم:</span>
-                                    <span className="mr-2">{selectedTicket.customer_name}</span>
-                                </div>
-                                <div>
-                                    <span className="text-white/50">الهاتف:</span>
-                                    <span className="mr-2">{selectedTicket.customer_phone}</span>
-                                </div>
-                                <div>
-                                    <span className="text-white/50">البريد الإلكتروني:</span>
-                                    <span className="mr-2">{selectedTicket.customer_email || '-'}</span>
-                                </div>
-                                <div>
-                                    <span className="text-white/50">النوع:</span>
-                                    <span className="mr-2">{selectedTicket.ticket_type}</span>
-                                </div>
-                                <div>
-                                    <span className="text-white/50">السعر:</span>
-                                    <span className="mr-2">{selectedTicket.price} جنيه</span>
-                                </div>
-                            </div>
-
-                            {selectedTicket.payment_proof && (
-                                <div className="mt-4">
-                                    <p className="text-white/50 mb-2">صورة إثبات الدفع:</p>
-                                    {selectedTicket.payment_proof.startsWith('data:image') || selectedTicket.payment_proof.startsWith('http') ? (
-                                        <img
-                                            src={selectedTicket.payment_proof}
-                                            alt="إثبات الدفع"
-                                            className="w-full rounded-lg border border-gold-500/30"
-                                        />
-                                    ) : (
-                                        <div className="p-3 rounded-lg bg-white/5 border border-gold-500/20 text-white/70 text-sm">
-                                            📎 {selectedTicket.payment_proof}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {(selectedTicket.status === 'pending' || selectedTicket.status === 'payment_submitted') && (
-                                <div className="flex gap-4 mt-6">
-                                    <button
-                                        onClick={() => {
-                                            handleApprove(selectedTicket.id)
-                                            setShowProofModal(false)
-                                        }}
-                                        className="btn-gold flex-1 flex items-center justify-center gap-2"
-                                    >
-                                        <Check className="w-5 h-5" />
-                                        موافقة
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            handleReject(selectedTicket.id)
-                                            setShowProofModal(false)
-                                        }}
-                                        className="flex-1 py-3 px-6 rounded-lg bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 transition-colors flex items-center justify-center gap-2"
-                                    >
-                                        <X className="w-5 h-5" />
-                                        رفض
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     )
 }

@@ -15,6 +15,7 @@ import ChecklistPage from './pages/ChecklistPage'
 import AgendaPage from './pages/AgendaPage'
 import ComplaintsPage from './pages/ComplaintsPage'
 import VipGuests from './pages/VipGuests'
+import PaymentProof from './pages/PaymentProof'
 
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/tickets" element={<Tickets />} />
+                        <Route path="/tickets/:id/proof" element={<PaymentProof />} />
                         <Route path="/distributors" element={<Distributors />} />
                         <Route path="/admins" element={<Admins />} />
                         <Route path="/admins/add" element={<AddAdmin />} />
