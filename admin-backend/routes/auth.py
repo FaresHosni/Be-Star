@@ -9,7 +9,8 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 import os
 
-from models import get_session, Admin
+from models import get_session, Admin, LoginAttempt
+from fastapi import Request
 
 router = APIRouter()
 security = HTTPBearer()
@@ -67,21 +68,65 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(login_data: LoginRequest):
-    """Admin login"""
+async def login(login_data: LoginRequest, request: Request):
+    """Admin login with Rate Limiting"""
     session = get_session()
     try:
+        ip = request.client.host
+        
+        # Check for existing login attempts
+        attempt = session.query(LoginAttempt).filter(LoginAttempt.email == login_data.email).first()
+        
+        if attempt:
+            # Check if locked
+            if attempt.is_locked:
+                if attempt.locked_until and attempt.locked_until > datetime.utcnow():
+                    remaining = (attempt.locked_until - datetime.utcnow()).seconds // 60
+                    raise HTTPException(
+                        status_code=403,
+                        detail=f"تم قفل الحساب مؤقتاً بسبب تكرار المحاولات الفاشلة. يرجى المحاولة بعد {remaining + 1} دقيقة."
+                    )
+                else:
+                    # Unlock if time passed
+                    attempt.is_locked = False
+                    attempt.attempt_count = 0
+                    attempt.locked_until = None
+                    session.commit()
+
         admin = session.query(Admin).filter(Admin.email == login_data.email).first()
-        
-        if not admin:
-            raise HTTPException(status_code=401, detail="البريد الإلكتروني أو كلمة المرور غير صحيحة")
-        
-        if not verify_password(login_data.password, admin.password_hash):
-            raise HTTPException(status_code=401, detail="البريد الإلكتروني أو كلمة المرور غير صحيحة")
+
+        # Verification Logic
+        if not admin or not verify_password(login_data.password, admin.password_hash):
+            # Record failed attempt
+            if not attempt:
+                attempt = LoginAttempt(email=login_data.email, ip_address=ip, attempt_count=1)
+                session.add(attempt)
+            else:
+                attempt.attempt_count += 1
+                attempt.last_attempt_at = datetime.utcnow()
+
+                # Lock if attempts > 3
+                if attempt.attempt_count >= 3:
+                    attempt.is_locked = True
+                    attempt.locked_until = datetime.utcnow() + timedelta(minutes=15)
+
+            session.commit()
+
+            remaining_attempts = 3 - (attempt.attempt_count if attempt else 1)
+            if remaining_attempts > 0:
+                 raise HTTPException(status_code=401, detail=f"البيانات غير صحيحة. متبقي {remaining_attempts} محاولات")
+            else:
+                 raise HTTPException(status_code=403, detail="تم قفل الحساب مؤقتاً لمدة 15 دقيقة")
+
         
         if not admin.is_active:
             raise HTTPException(status_code=401, detail="هذا الحساب غير مفعّل")
         
+        # Successful Login -> Reset attempts
+        if attempt:
+            session.delete(attempt)
+            session.commit()
+
         access_token = create_access_token({"sub": admin.email, "role": admin.role})
         
         return {
@@ -158,10 +203,10 @@ async def init_admin():
     """Initialize default admin account — only works if no admin exists"""
     session = get_session()
     try:
-        # Check if any admin exists
+        # Check if any admin exists - SECURITY: Block if exists
         existing = session.query(Admin).first()
         if existing:
-            return {"message": "يوجد أدمن بالفعل — لا يمكن إعادة التهيئة"}
+            raise HTTPException(status_code=403, detail="تم تهيئة النظام مسبقاً. لا يمكن إنشاء أدمن جديد من هنا.")
         
         # Create default admin
         default_password = os.getenv("ADMIN_DEFAULT_PASSWORD", "admin123")

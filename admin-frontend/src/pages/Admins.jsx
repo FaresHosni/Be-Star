@@ -42,13 +42,20 @@ function Admins() {
 
     const handleDelete = async (id) => {
         if (!confirm('هل أنت متأكد من حذف هذا الأدمن؟')) return
+
+        // Show loading state implicitly or explicit (could add specific loading state for id)
         try {
-            await apiFetch(`/api/auth/admins/${id}`, {
+            const res = await apiFetch(`/api/auth/admins/${id}`, {
                 method: 'DELETE'
             })
+            if (!res.ok) {
+                const data = await res.json()
+                throw new Error(data.detail || 'فشل الحذف')
+            }
             fetchAdmins()
         } catch (error) {
             console.error('Error deleting admin:', error)
+            alert(error.message)
         }
     }
 

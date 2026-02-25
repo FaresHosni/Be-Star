@@ -40,28 +40,40 @@ function Tickets() {
     }
 
     const handleApprove = async (ticketId) => {
+        if (!confirm('هل أنت متأكد من الموافقة على هذه التذكرة؟')) return
         try {
-            await fetch(`/api/tickets/${ticketId}/approve`, {
+            const res = await fetch(`/api/tickets/${ticketId}/approve`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ approved: true })
             })
+            if (!res.ok) {
+                 const data = await res.json()
+                 throw new Error(data.detail || 'فشل الموافقة على التذكرة')
+            }
             fetchTickets()
         } catch (error) {
             console.error('Error approving ticket:', error)
+            alert(error.message)
         }
     }
 
     const handleReject = async (ticketId, reason = 'تم الرفض') => {
+        if (!confirm('هل أنت متأكد من رفض هذه التذكرة؟')) return
         try {
-            await fetch(`/api/tickets/${ticketId}/approve`, {
+            const res = await fetch(`/api/tickets/${ticketId}/approve`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ approved: false, rejection_reason: reason })
             })
+            if (!res.ok) {
+                 const data = await res.json()
+                 throw new Error(data.detail || 'فشل رفض التذكرة')
+            }
             fetchTickets()
         } catch (error) {
             console.error('Error rejecting ticket:', error)
+            alert(error.message)
         }
     }
 

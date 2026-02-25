@@ -86,11 +86,17 @@ function Distributors() {
 
     const handleDelete = async (id) => {
         if (!confirm('هل أنت متأكد من حذف هذا الموزع؟')) return
+
         try {
-            await fetch(`/api/distributors/${id}`, { method: 'DELETE' })
+            const res = await fetch(`/api/distributors/${id}`, { method: 'DELETE' })
+            if (!res.ok) {
+                const data = await res.json()
+                throw new Error(data.detail || 'فشل حذف الموزع')
+            }
             fetchDistributors()
         } catch (error) {
             console.error('Error deleting distributor:', error)
+            alert(error.message)
         }
     }
 

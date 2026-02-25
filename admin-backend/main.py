@@ -1,7 +1,8 @@
 """
 Be Star Ticketing System - Main FastAPI Application
 """
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request, status
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
@@ -36,6 +37,16 @@ app = FastAPI(
     description="نظام حجز تذاكر إيفنت كن نجماً",
     version="1.0.0"
 )
+
+# ─── Global Exception Handler ───
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    # Log the error details here (e.g., to a file or Sentry)
+    print(f"❌ Unhandled Exception: {str(exc)}")
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": "حدث خطأ غير متوقع في الخادم. يرجى المحاولة لاحقاً.", "error": str(exc)},
+    )
 
 # CORS configuration — restricted to actual domains only
 ALLOWED_ORIGINS = [
