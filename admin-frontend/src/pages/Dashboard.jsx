@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { apiFetch } from '../utils/api'
 import {
     Ticket,
     Users,
@@ -41,7 +42,7 @@ function Dashboard() {
 
     const fetchStats = async () => {
         try {
-            const res = await fetch('/api/stats/dashboard')
+            const res = await apiFetch('/api/stats/dashboard')
             const data = await res.json()
             setStats(data)
         } catch (error) {
@@ -53,7 +54,7 @@ function Dashboard() {
 
     const fetchRecentTickets = async () => {
         try {
-            const res = await fetch('/api/stats/recent-tickets?limit=5')
+            const res = await apiFetch('/api/stats/recent-tickets?limit=5')
             const data = await res.json()
             setRecentTickets(data)
         } catch (error) {

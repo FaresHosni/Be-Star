@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { apiFetch } from '../utils/api'
 import {
     Search,
     Filter,
@@ -29,7 +30,7 @@ function Tickets() {
             const url = statusFilter === 'all'
                 ? '/api/tickets/'
                 : `/api/tickets/?status=${statusFilter}`
-            const res = await fetch(url)
+            const res = await apiFetch(url)
             const data = await res.json()
             setTickets(data)
         } catch (error) {
@@ -41,7 +42,7 @@ function Tickets() {
 
     const handleApprove = async (ticketId) => {
         try {
-            await fetch(`/api/tickets/${ticketId}/approve`, {
+            await apiFetch(`/api/tickets/${ticketId}/approve`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ approved: true })
@@ -54,7 +55,7 @@ function Tickets() {
 
     const handleReject = async (ticketId, reason = 'تم الرفض') => {
         try {
-            await fetch(`/api/tickets/${ticketId}/approve`, {
+            await apiFetch(`/api/tickets/${ticketId}/approve`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ approved: false, rejection_reason: reason })

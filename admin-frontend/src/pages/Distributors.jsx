@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { apiFetch } from '../utils/api'
 import { useNavigate } from 'react-router-dom'
 import {
     Plus,
@@ -27,7 +28,7 @@ function Distributors() {
 
     const fetchDistributors = async () => {
         try {
-            const res = await fetch('/api/distributors/')
+            const res = await apiFetch('/api/distributors/')
             const data = await res.json()
             console.log('Distributors API response:', res.status, data)
             setDistributors(Array.isArray(data) ? data : [])
@@ -44,13 +45,13 @@ function Distributors() {
         try {
             let res
             if (editingDistributor) {
-                res = await fetch(`/api/distributors/${editingDistributor.id}/`, {
+                res = await apiFetch(`/api/distributors/${editingDistributor.id}/`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 })
             } else {
-                res = await fetch('/api/distributors/', {
+                res = await apiFetch('/api/distributors/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
@@ -73,7 +74,7 @@ function Distributors() {
 
     const handleToggleActive = async (distributor) => {
         try {
-            await fetch(`/api/distributors/${distributor.id}`, {
+            await apiFetch(`/api/distributors/${distributor.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ is_active: !distributor.is_active })
@@ -87,7 +88,7 @@ function Distributors() {
     const handleDelete = async (id) => {
         if (!confirm('هل أنت متأكد من حذف هذا الموزع؟')) return
         try {
-            await fetch(`/api/distributors/${id}`, { method: 'DELETE' })
+            await apiFetch(`/api/distributors/${id}`, { method: 'DELETE' })
             fetchDistributors()
         } catch (error) {
             console.error('Error deleting distributor:', error)

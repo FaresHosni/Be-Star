@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import { apiFetch } from '../utils/api'
 import {
     Search,
     Send,
@@ -51,7 +52,7 @@ function LiveEngagement() {
     const fetchAttendees = useCallback(async () => {
         setLoading(true)
         try {
-            const res = await fetch(`${API}/attendees`)
+            const res = await apiFetch(`${API}/attendees`)
             const data = await res.json()
             setAttendees(data.attendees || [])
         } catch (e) {
@@ -62,7 +63,7 @@ function LiveEngagement() {
 
     const fetchHidden = useCallback(async () => {
         try {
-            const res = await fetch(`${API}/hidden`)
+            const res = await apiFetch(`${API}/hidden`)
             const data = await res.json()
             setHiddenAttendees(data.hidden || [])
         } catch (e) {
@@ -113,7 +114,7 @@ function LiveEngagement() {
     const handleHide = async () => {
         const ids = [...selected]
         try {
-            const res = await fetch(`${API}/hide`, {
+            const res = await apiFetch(`${API}/hide`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ticket_ids: ids })
@@ -130,7 +131,7 @@ function LiveEngagement() {
 
     const handleUnhide = async (ids) => {
         try {
-            const res = await fetch(`${API}/unhide`, {
+            const res = await apiFetch(`${API}/unhide`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ticket_ids: ids })
@@ -148,7 +149,7 @@ function LiveEngagement() {
         if (!confirm('هل أنت متأكد من الحذف النهائي للتذاكر المرفوضة المحددة؟')) return
         const ids = [...selected]
         try {
-            const res = await fetch(`${API}/delete`, {
+            const res = await apiFetch(`${API}/delete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ticket_ids: ids })
@@ -199,7 +200,7 @@ function LiveEngagement() {
                 url: sendUrl
             }
 
-            const res = await fetch(`${API}/send`, {
+            const res = await apiFetch(`${API}/send`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { apiFetch } from '../utils/api'
 import {
     HelpCircle, Users, Trophy, ClipboardList, Plus, Send, Trash2, Clock,
     CheckCircle, XCircle, ChevronDown, ChevronUp, Search, Timer, Award, X,
@@ -56,7 +57,7 @@ export default function QuizEngine() {
 
     const fetchQuestions = async () => {
         try {
-            const res = await fetch(`${API}/questions`)
+            const res = await apiFetch(`${API}/questions`)
             const data = await res.json()
             setQuestions(data.questions || [])
         } catch (e) { console.error(e) }
@@ -64,7 +65,7 @@ export default function QuizEngine() {
 
     const fetchGroups = async () => {
         try {
-            const res = await fetch(`${API}/groups`)
+            const res = await apiFetch(`${API}/groups`)
             const data = await res.json()
             setGroups(data.groups || [])
         } catch (e) { console.error(e) }
@@ -73,7 +74,7 @@ export default function QuizEngine() {
     const fetchLeaderboard = async () => {
         try {
             const url = lbFilter === 'all' ? `${API}/leaderboard` : `${API}/leaderboard?group=${lbFilter}`
-            const res = await fetch(url)
+            const res = await apiFetch(url)
             const data = await res.json()
             setLeaderboard(data.leaderboard || [])
         } catch (e) { console.error(e) }
@@ -81,7 +82,7 @@ export default function QuizEngine() {
 
     const fetchAttendees = async () => {
         try {
-            const res = await fetch('/api/engagement/attendees')
+            const res = await apiFetch('/api/engagement/attendees')
             const data = await res.json()
             setAttendees(data.attendees || [])
         } catch (e) { console.error(e) }
@@ -89,7 +90,7 @@ export default function QuizEngine() {
 
     const fetchAnswers = async (qid) => {
         try {
-            const res = await fetch(`${API}/answers/${qid}`)
+            const res = await apiFetch(`${API}/answers/${qid}`)
             const data = await res.json()
             setAnswersData(data)
             setShowAnswers(qid)
@@ -122,7 +123,7 @@ export default function QuizEngine() {
             else payload.time_limit_seconds = timeVal
             // Default points if empty
             if (!payload.points) payload.points = 1
-            const res = await fetch(`${API}/questions`, {
+            const res = await apiFetch(`${API}/questions`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -140,7 +141,7 @@ export default function QuizEngine() {
     const sendQuestion = async (qid) => {
         if (!confirm('هل أنت متأكد من إرسال السؤال؟')) return
         try {
-            const res = await fetch(`${API}/questions/${qid}/send`, { method: 'POST' })
+            const res = await apiFetch(`${API}/questions/${qid}/send`, { method: 'POST' })
             const data = await res.json()
             if (!res.ok) {
                 alert(data.detail || 'حدث خطأ أثناء الإرسال')
@@ -156,7 +157,7 @@ export default function QuizEngine() {
 
     const expireQuestion = async (qid) => {
         try {
-            await fetch(`${API}/questions/${qid}/expire`, { method: 'POST' })
+            await apiFetch(`${API}/questions/${qid}/expire`, { method: 'POST' })
             fetchQuestions()
         } catch (e) { console.error(e) }
     }
@@ -164,7 +165,7 @@ export default function QuizEngine() {
     const deleteQuestion = async (qid) => {
         if (!confirm('حذف السؤال نهائياً؟')) return
         try {
-            await fetch(`${API}/questions/${qid}`, { method: 'DELETE' })
+            await apiFetch(`${API}/questions/${qid}`, { method: 'DELETE' })
             fetchQuestions()
         } catch (e) { console.error(e) }
     }
@@ -175,7 +176,7 @@ export default function QuizEngine() {
             const isEdit = !!editingGroup
             const url = isEdit ? `${API}/groups/${editingGroup.id}` : `${API}/groups`
             const method = isEdit ? 'PUT' : 'POST'
-            const res = await fetch(url, {
+            const res = await apiFetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(gForm)
@@ -194,7 +195,7 @@ export default function QuizEngine() {
     const deleteGroup = async (gid) => {
         if (!confirm('حذف المجموعة؟')) return
         try {
-            await fetch(`${API}/groups/${gid}`, { method: 'DELETE' })
+            await apiFetch(`${API}/groups/${gid}`, { method: 'DELETE' })
             fetchGroups()
         } catch (e) { console.error(e) }
     }

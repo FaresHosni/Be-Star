@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { apiFetch } from '../utils/api'
 import {
     ArrowRight, Check, X, Loader2, User, Phone, Mail,
     CreditCard, Hash, Tag, Image, AlertCircle
@@ -21,7 +22,7 @@ function PaymentProof() {
     const fetchTicket = async () => {
         setLoading(true)
         try {
-            const res = await fetch('/api/tickets/')
+            const res = await apiFetch('/api/tickets/')
             const data = await res.json()
             const found = data.find(t => t.id === parseInt(id))
             if (found) {
@@ -39,7 +40,7 @@ function PaymentProof() {
     const handleApprove = async () => {
         setActionLoading(true)
         try {
-            await fetch(`/api/tickets/${id}/approve`, {
+            await apiFetch(`/api/tickets/${id}/approve`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ approved: true })
@@ -56,7 +57,7 @@ function PaymentProof() {
     const handleReject = async () => {
         setActionLoading(true)
         try {
-            await fetch(`/api/tickets/${id}/approve`, {
+            await apiFetch(`/api/tickets/${id}/approve`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ approved: false, rejection_reason: 'تم الرفض' })
@@ -96,8 +97,8 @@ function PaymentProof() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 animate-fade-in">
                 <div className={`w-24 h-24 rounded-full flex items-center justify-center ${actionDone === 'approved'
-                        ? 'bg-green-500/20 ring-4 ring-green-500/30'
-                        : 'bg-red-500/20 ring-4 ring-red-500/30'
+                    ? 'bg-green-500/20 ring-4 ring-green-500/30'
+                    : 'bg-red-500/20 ring-4 ring-red-500/30'
                     }`}>
                     {actionDone === 'approved'
                         ? <Check className="w-12 h-12 text-green-400" />
@@ -243,8 +244,8 @@ function PaymentProof() {
             {/* Already processed indicator */}
             {ticket.status !== 'pending' && ticket.status !== 'payment_submitted' && (
                 <div className={`p-4 rounded-xl border flex items-center gap-3 ${ticket.status === 'approved' || ticket.status === 'activated'
-                        ? 'bg-green-500/10 border-green-500/20 text-green-400'
-                        : 'bg-red-500/10 border-red-500/20 text-red-400'
+                    ? 'bg-green-500/10 border-green-500/20 text-green-400'
+                    : 'bg-red-500/10 border-red-500/20 text-red-400'
                     }`}>
                     {ticket.status === 'approved' || ticket.status === 'activated'
                         ? <Check className="w-5 h-5" />
