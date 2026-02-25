@@ -8,16 +8,24 @@ export default function ChatWidget() {
 
     // Registration state
     const [isRegistered, setIsRegistered] = useState(() => {
-        return !!sessionStorage.getItem('bestar_chat_user');
+        return !!localStorage.getItem('bestar_chat_user');
     });
     const [regName, setRegName] = useState('');
     const [regPhone, setRegPhone] = useState('');
     const [regError, setRegError] = useState('');
 
     // Chat state
-    const [messages, setMessages] = useState([
-        { id: 'welcome', role: 'ai', text: 'أهلاً بيك! 👋 أنا عمر، مساعد إيفنت كن نجماً الذكي.\nاسألني أي سؤال عن الحدث، الجلسات، المتحدثين، أو التذاكر وهجاوبك فوراً!' }
-    ]);
+    const WELCOME_MSG = { id: 'welcome', role: 'ai', text: 'أهلاً بيك! 👋 أنا عمر، مساعد إيفنت كن نجماً الذكي.\nاسألني أي سؤال عن الحدث، الجلسات، المتحدثين، أو التذاكر وهجاوبك فوراً!' };
+    const [messages, setMessages] = useState(() => {
+        try {
+            const saved = localStorage.getItem('bestar_chat_messages');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            }
+        } catch { /* ignore */ }
+        return [WELCOME_MSG];
+    });
     const [inputText, setInputText] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -33,6 +41,13 @@ export default function ChatWidget() {
     const fileInputRef = useRef(null);
     const inputRef = useRef(null);
 
+    // Save messages to localStorage whenever they change
+    useEffect(() => {
+        try {
+            localStorage.setItem('bestar_chat_messages', JSON.stringify(messages));
+        } catch { /* ignore quota errors */ }
+    }, [messages]);
+
     // Auto-scroll to bottom
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -41,7 +56,7 @@ export default function ChatWidget() {
     // Get user data from session
     const getUserData = useCallback(() => {
         try {
-            return JSON.parse(sessionStorage.getItem('bestar_chat_user') || '{}');
+            return JSON.parse(localStorage.getItem('bestar_chat_user') || '{}');
         } catch {
             return {};
         }
@@ -74,7 +89,7 @@ export default function ChatWidget() {
         }
 
         const userData = { name: trimmedName, phone: trimmedPhone };
-        sessionStorage.setItem('bestar_chat_user', JSON.stringify(userData));
+        localStorage.setItem('bestar_chat_user', JSON.stringify(userData));
         setIsRegistered(true);
     };
 
