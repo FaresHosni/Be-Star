@@ -10,6 +10,11 @@ import os
 
 from models import get_session, Customer, Ticket, TicketType, TicketStatus, TicketDraft, safe_value
 from sqlalchemy import func
+from routes.auth import verify_token
+
+# Allowed file types for payment proof uploads
+ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp", "application/pdf"]
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 
 router = APIRouter()
 
@@ -367,7 +372,7 @@ async def check_customer_tickets(phone: str):
 
 
 @router.get("/", response_model=List[dict])
-async def get_all_tickets(status: Optional[str] = None):
+async def get_all_tickets(status: Optional[str] = None, token_data: dict = Depends(verify_token)):
     """Get all tickets with optional status filter"""
     session = get_session()
     try:
@@ -419,6 +424,21 @@ async def get_all_tickets(status: Optional[str] = None):
 @router.post("/{ticket_id}/payment-proof")
 async def upload_payment_proof(ticket_id: int, background_tasks: BackgroundTasks, file: UploadFile = File(...)):
     """Upload payment proof image"""
+    # Validate file type
+    if file.content_type not in ALLOWED_IMAGE_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"نوع الملف غير مسموح ({file.content_type}). الأنواع المسموحة: JPG, PNG, GIF, WebP, PDF"
+        )
+    
+    # Validate file size
+    content = await file.read()
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=400,
+            detail=f"حجم الملف كبير جداً ({len(content) // (1024*1024)}MB). الحد الأقصى: 10MB"
+        )
+    
     session = get_session()
     try:
         ticket = session.query(Ticket).filter(Ticket.id == ticket_id).first()
@@ -426,8 +446,7 @@ async def upload_payment_proof(ticket_id: int, background_tasks: BackgroundTasks
         if not ticket:
             raise HTTPException(status_code=404, detail="التذكرة غير موجودة")
         
-        # Read and encode image
-        content = await file.read()
+        # Encode validated file
         encoded = base64.b64encode(content).decode('utf-8')
         
         # Always ensure proper prefix for uploaded files
@@ -457,7 +476,7 @@ from fastapi import BackgroundTasks
 from services.pdf_generator import generate_ticket_pdf
 
 @router.post("/{ticket_id}/approve")
-async def approve_ticket(ticket_id: int, approval: TicketApproval, background_tasks: BackgroundTasks, admin_id: int = 1):
+async def approve_ticket(ticket_id: int, approval: TicketApproval, background_tasks: BackgroundTasks, admin_id: int = 1, token_data: dict = Depends(verify_token)):
     """Approve or reject a ticket"""
     session = get_session()
     try:
@@ -528,7 +547,7 @@ async def approve_ticket(ticket_id: int, approval: TicketApproval, background_ta
 
 
 @router.post("/activate")
-async def activate_ticket(activation: TicketActivation):
+async def activate_ticket(activation: TicketActivation, token_data: dict = Depends(verify_token)):
     """Activate an offline ticket by code"""
     session = get_session()
     try:
@@ -575,7 +594,7 @@ async def activate_ticket(activation: TicketActivation):
 
 
 @router.get("/{ticket_id}")
-async def get_ticket(ticket_id: int):
+async def get_ticket(ticket_id: int, token_data: dict = Depends(verify_token)):
     """Get ticket details by ID"""
     session = get_session()
     try:
@@ -603,7 +622,7 @@ async def get_ticket(ticket_id: int):
 
 
 @router.get("/{ticket_id}/pdf")
-async def download_ticket_pdf(ticket_id: int):
+async def download_ticket_pdf(ticket_id: int, token_data: dict = Depends(verify_token)):
     """Download ticket as PDF"""
     from fastapi.responses import Response
     from services.pdf_generator import generate_ticket_pdf
