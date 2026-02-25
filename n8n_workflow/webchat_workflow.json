@@ -1,0 +1,1460 @@
+{
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "bestar-webchat",
+                "responseMode": "responseNode",
+                "options": {
+                    "rawBody": true
+                }
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2.1,
+            "position": [
+                -6768,
+                6064
+            ],
+            "id": "wc-webhook-001",
+            "name": "Web Chat Webhook",
+            "webhookId": "bestar-webchat-001"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "wc-uid-001",
+                            "name": "User_phone_ID",
+                            "value": "={{ $json.body.user_phone || '' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-uid-002",
+                            "name": "user_name",
+                            "value": "={{ $json.body.user_name || '' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-uid-003",
+                            "name": "session_id",
+                            "value": "={{ $json.body.session_id || 'web_anon' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-uid-004",
+                            "name": "message_type",
+                            "value": "={{ $json.body.message_type || 'text' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-uid-005",
+                            "name": "message_text",
+                            "value": "={{ $json.body.message_text || '' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-uid-006",
+                            "name": "image_base64",
+                            "value": "={{ $json.body.image_base64 || '' }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-uid-007",
+                            "name": "audio_base64",
+                            "value": "={{ $json.body.audio_base64 || '' }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -6576,
+                6064
+            ],
+            "id": "wc-set-user-001",
+            "name": "Set User Info"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://access.mrailabs.com/api/check-access",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ JSON.stringify({\"api_key\": \"Pi7HbQnp7lml2Ok30bBYq06dDbzD3oxxNEAdOQqeT38\", \"user_id\": $('Set User Info').item.json.User_phone_ID, \"platform_type\": \"WebChat\", \"user_name\": $('Set User Info').item.json.user_name}) }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                -6416,
+                6064
+            ],
+            "id": "wc-access-001",
+            "name": "Access Control"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "wc-if-access",
+                            "leftValue": "={{ $json.access }}",
+                            "rightValue": true,
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                -6256,
+                6064
+            ],
+            "id": "wc-if-001",
+            "name": "If Access"
+        },
+        {
+            "parameters": {
+                "rules": {
+                    "values": [
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "leftValue": "={{ $('Set User Info').first().json.message_type }}",
+                                        "rightValue": "text",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals"
+                                        },
+                                        "id": "wc-sw-text"
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "Text"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "leftValue": "={{ $('Set User Info').first().json.message_type }}",
+                                        "rightValue": "audio",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals"
+                                        },
+                                        "id": "wc-sw-audio"
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "Audio"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "leftValue": "={{ $('Set User Info').first().json.message_type }}",
+                                        "rightValue": "image",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals"
+                                        },
+                                        "id": "wc-sw-image"
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "Photos"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 3.2,
+            "position": [
+                -5984,
+                6032
+            ],
+            "id": "wc-switch-001",
+            "name": "Message Type Switch"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "wc-text-001",
+                            "name": "Text",
+                            "value": "={{ $('Set User Info').first().json.message_text }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -4848,
+                6016
+            ],
+            "id": "wc-text4-001",
+            "name": "Text4"
+        },
+        {
+            "parameters": {
+                "jsCode": "const audioBase64 = $('Set User Info').first().json.audio_base64;\nif (!audioBase64) return [{ json: { error: 'No audio data' } }];\nconst base64Data = audioBase64.includes(',') ? audioBase64.split(',')[1] : audioBase64;\nconst buffer = Buffer.from(base64Data, 'base64');\nreturn [{ json: { ready: true }, binary: { data: { data: base64Data, mimeType: 'audio/webm', fileName: 'voice.webm' } } }];"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -5680,
+                6240
+            ],
+            "id": "wc-audio-decode-001",
+            "name": "Decode Audio Base64"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://38.242.139.159:5555/convert",
+                "sendBody": true,
+                "contentType": "binaryData",
+                "inputDataFieldName": "data",
+                "options": {
+                    "response": {
+                        "response": {
+                            "responseFormat": "file"
+                        }
+                    }
+                }
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                -5360,
+                6240
+            ],
+            "id": "wc-convert-audio-001",
+            "name": "Convert Audio Type"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://mrai-openai.openai.azure.com/openai/deployments/gpt-4o-transcribe/audio/transcriptions?api-version=2025-03-01-preview",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "api-key",
+                            "value": "5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "contentType": "multipart-form-data",
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "parameterType": "formBinaryData",
+                            "name": "file",
+                            "inputDataFieldName": "data"
+                        },
+                        {
+                            "name": "model",
+                            "value": "gpt-4o-transcribe"
+                        },
+                        {
+                            "name": "prompt",
+                            "value": "\"Transcribe accurately. Speaker uses Arabic with English words mixed in. Keep English terms in English.\""
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                -5184,
+                6240
+            ],
+            "id": "wc-transcribe-001",
+            "name": "Transcribe Recording"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "wc-voice-001",
+                            "name": "Voice",
+                            "value": "={{ $('Transcribe Recording').item.json.text }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -4848,
+                6240
+            ],
+            "id": "wc-voice-001",
+            "name": "Voice"
+        },
+        {
+            "parameters": {
+                "jsCode": "const imgBase64 = $('Set User Info').first().json.image_base64;\nif (!imgBase64) return [{ json: { data: { base64: '' } } }];\nconst base64Data = imgBase64.includes(',') ? imgBase64.split(',')[1] : imgBase64;\nreturn [{ json: { data: { base64: base64Data } } }];"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -5680,
+                6464
+            ],
+            "id": "wc-img-decode-001",
+            "name": "Decode Image Base64"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://mrai-openai.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "api-key",
+                            "value": "5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        },
+                        {
+                            "name": "x-ms-model-mesh-model-name",
+                            "value": "mistral-medium-2505"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\"model\":\"mistral-medium-2505\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"وصف الصورة دي بالعربي بشكل مختصر. لو فيها نص أو كلام، اكتبه. لو فيها منتج أو خدمة أو شعار، وصفه.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:image/jpeg;base64,{{ $json.data.base64 }}\"}}]}],\"max_tokens\":500}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                -5184,
+                6464
+            ],
+            "id": "wc-analyze-img-001",
+            "name": "Analyze Image (Mistral)"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "wc-img-set-001",
+                            "name": "image",
+                            "value": "={{ $json.choices[0].message.content }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -4848,
+                6464
+            ],
+            "id": "wc-image-set-001",
+            "name": "image"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "wc-mem-001",
+                            "name": "Memory Key",
+                            "value": "=web_{{ $('Set User Info').item.json.User_phone_ID }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-mem-002",
+                            "name": "Input",
+                            "value": "={{ $if($('Text4').isExecuted, $('Text4').first().json.Text, $if($('Voice').isExecuted, $('Voice').first().json.Voice, $if($('image').isExecuted, 'العميل بعت صورة. وصف الصورة: ' + $('image').first().json.image, 'رسالة غير معروفة'))) }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-mem-003",
+                            "name": "image_base64",
+                            "value": "={{ $if($('image').isExecuted, $('Set User Info').first().json.image_base64, '') }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -4672,
+                6240
+            ],
+            "id": "wc-preenter-001",
+            "name": "Memory + Model PreEnter"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "wc-m3-1",
+                            "name": "workflow_id",
+                            "value": "={{ $workflow.id }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-m3-2",
+                            "name": "execution_id",
+                            "value": "={{ $execution.id }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-m3-3",
+                            "name": "client_id",
+                            "value": "Be-Star",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -4512,
+                6240
+            ],
+            "id": "wc-meta3-001",
+            "name": "Set metadata3"
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $('Memory + Model PreEnter').item.json.Input }}",
+                "options": {
+                    "systemMessage": "You are a deterministic router+query-reformer for Mr. AI RAG.\nInputs:\n- current_message (string)\n- previous_messages (array of {role,content})\n- last_namespace (string|null)\n- detected_language (\"ar\"|\"en\")\n\nTask A — classify:\nChoose EXACTLY one label: Who_Are_We_And_Related_Information | Terms_And_Conditions_Data_Privacy_Policy | Practical_Case_Studies_and_why_us.\nRules: if vague/ack (\"تمام\",\"more?\") → continue last_namespace; if multi-intent → pick the primary intent; if confidence <0.5 → Who_Are_We_And_Related_Information; greetings fall under Who_Are_We_And_Related_Information.\n\nTask B — reform:\nRewrite a concise semantic search query for the chosen label using context.\nKeep 5–20 tokens; preserve proper names, numbers, currency; add ≤2 helpful synonyms/domain terms; remove filler/pronouns; keep constraints.\n\nStrict output (one line, minified JSON only):\n{\"category\":\"<label>\",\"query\":\"<short query>\",\"alternates\":[\"...\"],\"negative_terms\":[\"...\"],\"hyde\":\"...\",\"language\":\"ar|en\"}\n\nHard limits: total output ≤ ~80 tokens; no text outside JSON; no line breaks; no explanations.\n"
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 3,
+            "position": [
+                -4368,
+                6240
+            ],
+            "id": "wc-reformer-001",
+            "name": "Reformer"
+        },
+        {
+            "parameters": {
+                "sessionIdType": "customKey",
+                "sessionKey": "={{ $('Memory + Model PreEnter').item.json['Memory Key'] }}"
+            },
+            "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+            "typeVersion": 1.3,
+            "position": [
+                -4208,
+                6464
+            ],
+            "id": "wc-simplemem-001",
+            "name": "Simple Memory"
+        },
+        {
+            "parameters": {
+                "code": {
+                    "supplyData": {
+                        "code": "const { AzureChatOpenAI } = require(\"@langchain/openai\");\nconst llm = new AzureChatOpenAI({ azureOpenAIApiKey: \"5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF\", azureOpenAIApiInstanceName: \"mrai-openai\", azureOpenAIApiDeploymentName: \"gpt-4.1-mini\", azureOpenAIApiVersion: \"2024-08-01-preview\", temperature: 0.7 });\nreturn llm;"
+                    }
+                },
+                "inputs": {
+                    "input": []
+                },
+                "outputs": {
+                    "output": [
+                        {
+                            "type": "ai_languageModel"
+                        }
+                    ]
+                }
+            },
+            "id": "wc-llm-ref-001",
+            "name": "Azure LLM Reformer",
+            "type": "@n8n/n8n-nodes-langchain.code",
+            "position": [
+                -4448,
+                6416
+            ],
+            "typeVersion": 1
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "wc-m4-1",
+                            "name": "workflow_id",
+                            "value": "={{ $workflow.id }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-m4-2",
+                            "name": "execution_id",
+                            "value": "={{ $execution.id }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-m4-3",
+                            "name": "client_id",
+                            "value": "Be-Star",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -4096,
+                6240
+            ],
+            "id": "wc-meta4-001",
+            "name": "Set metadata4"
+        },
+        {
+            "parameters": {
+                "text": "={{ $('Reformer').item.json.output }}",
+                "attributes": {
+                    "attributes": [
+                        {
+                            "name": "category",
+                            "description": "تصنيف السؤال: Who_Are_We_And_Related_Information أو Practical_Case_Studies_and_why_us أو Terms_And_Conditions_Data_Privacy_Policy",
+                            "required": true
+                        },
+                        {
+                            "name": "reformer_data",
+                            "description": "كل البيانات الأخرى (query, alternates, negative_terms, hyde, language)",
+                            "required": true
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+            "typeVersion": 1.2,
+            "position": [
+                -3952,
+                6240
+            ],
+            "id": "wc-extractor-001",
+            "name": "Information Extractor"
+        },
+        {
+            "parameters": {
+                "code": {
+                    "supplyData": {
+                        "code": "const { AzureChatOpenAI } = require(\"@langchain/openai\");\nconst llm = new AzureChatOpenAI({ azureOpenAIApiKey: \"5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF\", azureOpenAIApiInstanceName: \"mrai-openai\", azureOpenAIApiDeploymentName: \"gpt-4.1-mini\", azureOpenAIApiVersion: \"2024-08-01-preview\", temperature: 0.7 });\nreturn llm;"
+                    }
+                },
+                "inputs": {
+                    "input": []
+                },
+                "outputs": {
+                    "output": [
+                        {
+                            "type": "ai_languageModel"
+                        }
+                    ]
+                }
+            },
+            "id": "wc-llm-ext-001",
+            "name": "Azure LLM Extractor",
+            "type": "@n8n/n8n-nodes-langchain.code",
+            "position": [
+                -3984,
+                6416
+            ],
+            "typeVersion": 1
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "wc-ef-1",
+                            "name": "Pinecone_Namespace",
+                            "value": "={{ $json.output.category }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-ef-2",
+                            "name": "Reformer",
+                            "value": "={{ $json.output }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -3632,
+                6240
+            ],
+            "id": "wc-editf-001",
+            "name": "Edit Fields1"
+        },
+        {
+            "parameters": {
+                "mode": "load",
+                "pineconeIndex": {
+                    "__rl": true,
+                    "value": "mr-ai-website-chatbot-knowledge-base",
+                    "mode": "list",
+                    "cachedResultName": "mr-ai-website-chatbot-knowledge-base"
+                },
+                "prompt": "={{ $json.Reformer }}",
+                "topK": 12,
+                "options": {
+                    "pineconeNamespace": "={{ $json.Pinecone_Namespace }}"
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+            "typeVersion": 1.3,
+            "position": [
+                -3504,
+                6240
+            ],
+            "id": "wc-pinecone-001",
+            "name": "Pinecone Vector Store",
+            "credentials": {
+                "pineconeApi": {
+                    "id": "swltCt6gosR03VPd",
+                    "name": "GH_Sales"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "text-embedding-3-large",
+                "options": {
+                    "dimensions": 3072
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.embeddingsAzureOpenAi",
+            "typeVersion": 1,
+            "position": [
+                -3504,
+                6400
+            ],
+            "id": "wc-embed-001",
+            "name": "Embeddings Azure OpenAI",
+            "credentials": {
+                "azureOpenAiApi": {
+                    "id": "L4HdmJ5bGz2Owawh",
+                    "name": "Azure Open AI account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "fieldsToAggregate": {
+                    "fieldToAggregate": [
+                        {
+                            "fieldToAggregate": "document.pageContent"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.aggregate",
+            "typeVersion": 1,
+            "position": [
+                -3232,
+                6240
+            ],
+            "id": "wc-agg-001",
+            "name": "Aggregate1"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "wc-t3-1",
+                            "name": "Text from user",
+                            "value": "={{ $('Memory + Model PreEnter').first().json.Input }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-t3-2",
+                            "name": "Text  from database",
+                            "value": "={{ $json.pageContent }}",
+                            "type": "array"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -3104,
+                6240
+            ],
+            "id": "wc-text3-001",
+            "name": "Text3"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "wc-m2-1",
+                            "name": "workflow_id",
+                            "value": "={{ $workflow.id }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-m2-2",
+                            "name": "execution_id",
+                            "value": "={{ $execution.id }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "wc-m2-3",
+                            "name": "client_id",
+                            "value": "Be-Star",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -2960,
+                6240
+            ],
+            "id": "wc-meta2-001",
+            "name": "Set metadata2"
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $('Text3').item.json['Text from user'] }}",
+                "options": {
+                    "systemMessage": "=أنت \"عمر\" مساعد ذكي لحجز تذاكر فعالية \"كن نجمًا - Be Star\" 🌟\n\n📋 معلومات الفعالية:\n🎉 الاسم: كن نجمًا - Be Star\n📅 الموعد: 11 فبراير 2026\n📍 المكان: سوهاج - الكوامل - قاعة قناة السويس\n💰 الأسعار: VIP: 500 جنيه | طلبة: 100 جنيه\n\n📌 رقم واتساب العميل الحالي هو: {{ $('Set User Info').item.json.User_phone_ID }}\n📌 اسم العميل: {{ $('Set User Info').item.json.user_name }}\n\n═══════════════════════════════════════\n🔴 القاعدة رقم 1 — رقم الواتساب:\n═══════════════════════════════════════\nلو العميل كتب في خانة رقم الواتساب أي حاجة مش رقم فعلي مثل \"رقمي الحالي\" أو \"نفس الرقم\" → استبدلها بالرقم: {{ $('Set User Info').item.json.User_phone_ID }}\n\n🔵 قواعد المحادثة:\n1. تكلم كإنسان لطيف وبسيط\n2. اقبل البيانات بأي شكل\n3. لو طلب أكثر من تذكرة → اطلب أسماء كل شخص\n4. التأكد من البيانات قبل طلب صورة إثبات الدفع\n5. إرسال صورة إثبات الدفع = تأكيد كل البيانات 100%\n\n📝 سيناريو الحجز:\n1. اطلب: الاسم، الإيميل، رقم الواتساب، نوع التذكرة، عدد التذاكر\n2. اعرض ملخص واطلب التأكيد\n3. بعد التأكيد اعرض رقم فودافون كاش (01557368364)\n4. استلم صورة إثبات الدفع\n5. بعد الصورة → فعّل details فوراً\n\n🔴 قاعدة details:\nردك دائمًا: {\"details\": false, \"message\": \"ردك هنا\"}\nبعد جمع كل البيانات + الصورة:\n{\"details\": true, \"message\": \"\", \"booking_data\": {\"name\": \"الاسم\", \"email\": \"الإيميل\", \"phone\": \"الرقم\", \"ticket_type\": \"VIP/Student\", \"ticket_count\": 1, \"tickets\": [{\"name\": \"اسم الشخص\", \"type\": \"VIP/Student\"}]}}\n\n⛔ ممنوع:\n- details: true بدون صورة\n- كتابة أي حاجة بره الـ JSON\n- سؤال تأكيد بعد الصورة\n- طلب بيانات عند التحية",
+                    "returnIntermediateSteps": false
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 3,
+            "position": [
+                -2624,
+                6240
+            ],
+            "id": "wc-agent-001",
+            "name": "Be Star Ticketing Agent"
+        },
+        {
+            "parameters": {
+                "code": {
+                    "supplyData": {
+                        "code": "const { AzureChatOpenAI } = require(\"@langchain/openai\");\nconst llm = new AzureChatOpenAI({ azureOpenAIApiKey: \"5zSQL871XpyGNXgzSx0LPwzkCrPqYj52L5ODHMA0bs6stZlhi35xJQQJ99BKACfhMk5XJ3w3AAABACOGk5RF\", azureOpenAIApiInstanceName: \"mrai-openai\", azureOpenAIApiDeploymentName: \"gpt-4.1-mini\", azureOpenAIApiVersion: \"2024-12-01-preview\", temperature: 1 });\nreturn llm;"
+                    }
+                },
+                "inputs": {
+                    "input": []
+                },
+                "outputs": {
+                    "output": [
+                        {
+                            "type": "ai_languageModel"
+                        }
+                    ]
+                }
+            },
+            "id": "wc-llm-agent-001",
+            "name": "Azure LLM Agent",
+            "type": "@n8n/n8n-nodes-langchain.code",
+            "position": [
+                -2720,
+                6384
+            ],
+            "typeVersion": 1
+        },
+        {
+            "parameters": {
+                "sessionIdType": "customKey",
+                "sessionKey": "={{ $('Memory + Model PreEnter').first().json['Memory Key'] }}",
+                "tableName": "bestar_webchat_history_v1",
+                "contextWindowLength": 50
+            },
+            "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+            "typeVersion": 1.3,
+            "position": [
+                -2528,
+                6528
+            ],
+            "id": "wc-pgmem-001",
+            "name": "Postgres Chat Memory",
+            "credentials": {
+                "postgres": {
+                    "id": "nZpi0ecZbdqHX8nL",
+                    "name": "Postgres account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const rawOutput = $('Be Star Ticketing Agent').first().json.output || '';\nlet parsed = { details: false, message: rawOutput, booking_data: null };\ntry {\n  let cleaned = rawOutput.trim();\n  if (cleaned.startsWith('```')) { cleaned = cleaned.replace(/```json?\\n?/g, '').replace(/```/g, '').trim(); }\n  const obj = JSON.parse(cleaned);\n  parsed.details = obj.details === true;\n  parsed.message = obj.message || '';\n  parsed.booking_data = obj.booking_data || null;\n} catch (e) { parsed.details = false; parsed.message = rawOutput; }\nreturn [{ json: parsed }];"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -2240,
+                6128
+            ],
+            "id": "wc-parse-001",
+            "name": "Parse AI Output"
+        },
+        {
+            "parameters": {
+                "rules": {
+                    "values": [
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "wc-bk-true",
+                                        "leftValue": "={{ $json.details }}",
+                                        "rightValue": true,
+                                        "operator": {
+                                            "type": "boolean",
+                                            "operation": "equals"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "Booking Complete"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "wc-bk-false",
+                                        "leftValue": "={{ $json.details }}",
+                                        "rightValue": false,
+                                        "operator": {
+                                            "type": "boolean",
+                                            "operation": "equals"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "Normal Chat"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 3.2,
+            "position": [
+                -2080,
+                6128
+            ],
+            "id": "wc-bkswitch-001",
+            "name": "Booking Switch"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://38.242.139.159:3005/api/tickets/create-booking",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ JSON.stringify({ user_phone: $('Set User Info').first().json.User_phone_ID, booking_data: $json.booking_data, image_base64: $('Memory + Model PreEnter').first().json.image_base64 || '' }) }}",
+                "options": {
+                    "timeout": 15000
+                }
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                -1824,
+                6032
+            ],
+            "id": "wc-booking-001",
+            "name": "Send Booking to Platform"
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ JSON.stringify({ reply: '✅ تم حجز التذكرة بنجاح! يرجى انتظار المراجعة.', booking_completed: true }) }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1.1,
+            "position": [
+                -1648,
+                6032
+            ],
+            "id": "wc-respond-booking-001",
+            "name": "Respond Booking Done"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "wc-setmsg-1",
+                            "name": "output",
+                            "value": "={{ $json.message }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -2112,
+                6464
+            ],
+            "id": "wc-setmsg-001",
+            "name": "Set AI Message"
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ JSON.stringify({ reply: $json.output || 'عذراً، حدث خطأ.', booking_completed: false }) }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1.1,
+            "position": [
+                -1952,
+                6464
+            ],
+            "id": "wc-respond-chat-001",
+            "name": "Respond Chat"
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ JSON.stringify({ reply: 'عذراً، ليس لديك صلاحية الوصول.', booking_completed: false }) }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1.1,
+            "position": [
+                -6256,
+                6300
+            ],
+            "id": "wc-respond-noaccess-001",
+            "name": "Respond No Access"
+        }
+    ],
+    "connections": {
+        "Web Chat Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Set User Info",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Set User Info": {
+            "main": [
+                [
+                    {
+                        "node": "Access Control",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Access Control": {
+            "main": [
+                [
+                    {
+                        "node": "If Access",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "If Access": {
+            "main": [
+                [
+                    {
+                        "node": "Message Type Switch",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Respond No Access",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Message Type Switch": {
+            "main": [
+                [
+                    {
+                        "node": "Text4",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Decode Audio Base64",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Decode Image Base64",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Text4": {
+            "main": [
+                [
+                    {
+                        "node": "Memory + Model PreEnter",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Decode Audio Base64": {
+            "main": [
+                [
+                    {
+                        "node": "Convert Audio Type",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Convert Audio Type": {
+            "main": [
+                [
+                    {
+                        "node": "Transcribe Recording",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Transcribe Recording": {
+            "main": [
+                [
+                    {
+                        "node": "Voice",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Voice": {
+            "main": [
+                [
+                    {
+                        "node": "Memory + Model PreEnter",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Decode Image Base64": {
+            "main": [
+                [
+                    {
+                        "node": "Analyze Image (Mistral)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Analyze Image (Mistral)": {
+            "main": [
+                [
+                    {
+                        "node": "image",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "image": {
+            "main": [
+                [
+                    {
+                        "node": "Memory + Model PreEnter",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Memory + Model PreEnter": {
+            "main": [
+                [
+                    {
+                        "node": "Set metadata3",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Set metadata3": {
+            "main": [
+                [
+                    {
+                        "node": "Reformer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Reformer": {
+            "main": [
+                [
+                    {
+                        "node": "Set metadata4",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Simple Memory": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "Reformer",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Azure LLM Reformer": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Reformer",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Set metadata4": {
+            "main": [
+                [
+                    {
+                        "node": "Information Extractor",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Information Extractor": {
+            "main": [
+                [
+                    {
+                        "node": "Edit Fields1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Azure LLM Extractor": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Information Extractor",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Edit Fields1": {
+            "main": [
+                [
+                    {
+                        "node": "Pinecone Vector Store",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Pinecone Vector Store": {
+            "main": [
+                [
+                    {
+                        "node": "Aggregate1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Embeddings Azure OpenAI": {
+            "ai_embedding": [
+                [
+                    {
+                        "node": "Pinecone Vector Store",
+                        "type": "ai_embedding",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Aggregate1": {
+            "main": [
+                [
+                    {
+                        "node": "Text3",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Text3": {
+            "main": [
+                [
+                    {
+                        "node": "Set metadata2",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Set metadata2": {
+            "main": [
+                [
+                    {
+                        "node": "Be Star Ticketing Agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Be Star Ticketing Agent": {
+            "main": [
+                [
+                    {
+                        "node": "Parse AI Output",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Azure LLM Agent": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Be Star Ticketing Agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Postgres Chat Memory": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "Be Star Ticketing Agent",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse AI Output": {
+            "main": [
+                [
+                    {
+                        "node": "Booking Switch",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Booking Switch": {
+            "main": [
+                [
+                    {
+                        "node": "Send Booking to Platform",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Set AI Message",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send Booking to Platform": {
+            "main": [
+                [
+                    {
+                        "node": "Respond Booking Done",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Set AI Message": {
+            "main": [
+                [
+                    {
+                        "node": "Respond Chat",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "meta": {
+        "templateCredsSetupCompleted": true
+    }
+}
