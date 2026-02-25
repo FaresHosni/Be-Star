@@ -17,12 +17,13 @@ export async function apiFetch(url, options = {}) {
 
     const res = await fetch(url, { ...options, headers })
 
-    if (res.status === 401) {
-        // Token expired or invalid — auto logout
+    if (res.status === 401 || res.status === 403) {
+        // Token expired or invalid — auto logout & redirect (no throw)
         localStorage.removeItem('token')
         localStorage.removeItem('admin')
         window.location.href = '/'
-        throw new Error('جلستك انتهت، يرجى تسجيل الدخول مرة أخرى')
+        // Return a fake OK response so calling code doesn't crash during redirect
+        return new Response(JSON.stringify({}), { status: 401, headers: { 'Content-Type': 'application/json' } })
     }
 
     return res

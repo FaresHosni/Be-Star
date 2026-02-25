@@ -43,8 +43,9 @@ function Dashboard() {
     const fetchStats = async () => {
         try {
             const res = await apiFetch('/api/stats/dashboard')
+            if (!res.ok) return  // Don't crash on 401/403/500
             const data = await res.json()
-            setStats(data)
+            if (data && data.by_type) setStats(data)
         } catch (error) {
             console.error('Error fetching stats:', error)
         } finally {
@@ -71,13 +72,13 @@ function Dashboard() {
         },
         {
             title: 'تذاكر VIP',
-            value: stats.by_type.vip,
+            value: stats.by_type?.vip || 0,
             icon: Star,
             color: 'from-purple-500 to-purple-400'
         },
         {
             title: 'تذاكر Student',
-            value: stats.by_type.student,
+            value: stats.by_type?.student || 0,
             icon: Users,
             color: 'from-blue-500 to-blue-400'
         },
