@@ -114,6 +114,19 @@ class Admin(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
+class LoginAttempt(Base):
+    """Tracks failed login attempts for rate limiting"""
+    __tablename__ = "login_attempts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(100), nullable=False, index=True)
+    ip_address = Column(String(50), nullable=True)
+    attempt_count = Column(Integer, default=1)
+    last_attempt_at = Column(DateTime, default=datetime.utcnow)
+    is_locked = Column(Boolean, default=False)
+    locked_until = Column(DateTime, nullable=True)
+
+
 class Distributor(Base):
     __tablename__ = "distributors"
     
