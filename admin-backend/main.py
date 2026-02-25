@@ -1,7 +1,7 @@
 """
 Be Star Ticketing System - Main FastAPI Application
 """
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
@@ -12,7 +12,7 @@ load_dotenv()
 
 # Import routes
 from routes.tickets import router as tickets_router
-from routes.auth import router as auth_router
+from routes.auth import router as auth_router, verify_token
 from routes.distributors import router as distributors_router
 from routes.chat import router as chat_router
 from routes.stats import router as stats_router
@@ -37,28 +37,42 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS configuration
+# CORS configuration — restricted to actual domains only
+ALLOWED_ORIGINS = [
+    "https://admin-bestar.mrailabs.com",
+    "https://platform-bestar.mrailabs.com",
+    "http://localhost:3000",
+    "http://localhost:3005",
+    "http://localhost:3006",
+    "http://localhost:5173",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers
+# ─── Public routes (no token required) ───
+# Auth: login/init are public by design, register/admins are already protected inside
 app.include_router(auth_router, prefix="/api/auth", tags=["Authentication"])
+# Tickets: public booking from the official platform + WhatsApp
 app.include_router(tickets_router, prefix="/api/tickets", tags=["Tickets"])
-app.include_router(distributors_router, prefix="/api/distributors", tags=["Distributors"])
+# Chat: public chat widget from the official platform
 app.include_router(chat_router, prefix="/api/chat", tags=["Chat Widget"])
-app.include_router(stats_router, prefix="/api/stats", tags=["Statistics"])
-app.include_router(engagement_router, prefix="/api/engagement", tags=["Live Engagement"])
-app.include_router(quiz_router)  # Quiz router has its own /api/quiz prefix
-app.include_router(certificates_router, prefix="/api/certificates", tags=["Certificates"])
-app.include_router(checklist_router, prefix="/api/checklist", tags=["قائمة المهام"])
-app.include_router(agenda_router, prefix="/api/agenda", tags=["الأجندة"])
-app.include_router(complaints_router, prefix="/api/complaints", tags=["الشكاوى المباشرة"])
-app.include_router(vip_router, prefix="/api/vip", tags=["كبار الزوار"])
+
+# ─── Protected routes (require admin JWT token) ───
+app.include_router(stats_router, prefix="/api/stats", tags=["Statistics"], dependencies=[Depends(verify_token)])
+app.include_router(distributors_router, prefix="/api/distributors", tags=["Distributors"], dependencies=[Depends(verify_token)])
+app.include_router(engagement_router, prefix="/api/engagement", tags=["Live Engagement"], dependencies=[Depends(verify_token)])
+app.include_router(quiz_router, dependencies=[Depends(verify_token)])  # Quiz router has its own /api/quiz prefix
+app.include_router(certificates_router, prefix="/api/certificates", tags=["Certificates"], dependencies=[Depends(verify_token)])
+app.include_router(checklist_router, prefix="/api/checklist", tags=["قائمة المهام"], dependencies=[Depends(verify_token)])
+app.include_router(agenda_router, prefix="/api/agenda", tags=["الأجندة"], dependencies=[Depends(verify_token)])
+app.include_router(complaints_router, prefix="/api/complaints", tags=["الشكاوى المباشرة"], dependencies=[Depends(verify_token)])
+app.include_router(vip_router, prefix="/api/vip", tags=["كبار الزوار"], dependencies=[Depends(verify_token)])
 
 
 @app.get("/")

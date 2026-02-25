@@ -21,7 +21,10 @@ def hash_password(password: str) -> str:
 def verify_password(password: str, hashed: str) -> bool:
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
-SECRET_KEY = os.getenv("SECRET_KEY", "bestar_secret_key")
+SECRET_KEY = os.getenv("SECRET_KEY", "")
+if not SECRET_KEY or SECRET_KEY.startswith("bestar_secret"):
+    import secrets
+    SECRET_KEY = secrets.token_hex(32)
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 43200))  # 30 days
 
@@ -152,18 +155,19 @@ async def get_current_admin(token_data: dict = Depends(verify_token)):
 
 @router.post("/init")
 async def init_admin():
-    """Initialize default admin account"""
+    """Initialize default admin account — only works if no admin exists"""
     session = get_session()
     try:
         # Check if any admin exists
         existing = session.query(Admin).first()
         if existing:
-            return {"message": "يوجد أدمن بالفعل"}
+            return {"message": "يوجد أدمن بالفعل — لا يمكن إعادة التهيئة"}
         
         # Create default admin
-        password_hash = hash_password("admin123")
+        default_password = os.getenv("ADMIN_DEFAULT_PASSWORD", "admin123")
+        password_hash = hash_password(default_password)
         admin = Admin(
-            email=os.getenv("ADMIN_EMAIL", "hsny4756@gmail.com"),
+            email=os.getenv("ADMIN_EMAIL", "admin@bestar.com"),
             password_hash=password_hash,
             name="مدير النظام",
             role="super_admin"
@@ -173,9 +177,8 @@ async def init_admin():
         
         return {
             "success": True,
-            "message": "تم إنشاء حساب الأدمن الافتراضي",
-            "email": admin.email,
-            "password": "admin123"
+            "message": "تم إنشاء حساب الأدمن الافتراضي — غيّر كلمة المرور فوراً من لوحة التحكم",
+            "email": admin.email
         }
     except Exception as e:
         session.rollback()
