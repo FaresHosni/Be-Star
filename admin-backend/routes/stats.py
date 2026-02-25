@@ -19,7 +19,11 @@ async def get_dashboard_stats():
         
         # By status
         pending = session.query(func.count(Ticket.id)).filter(
-            func.lower(Ticket.status).in_(['pending', 'payment_submitted'])
+            func.lower(Ticket.status) == 'pending'
+        ).scalar() or 0
+        
+        payment_submitted = session.query(func.count(Ticket.id)).filter(
+            func.lower(Ticket.status) == 'payment_submitted'
         ).scalar() or 0
         
         approved = session.query(func.count(Ticket.id)).filter(
@@ -55,6 +59,7 @@ async def get_dashboard_stats():
             "total_tickets": total_tickets,
             "by_status": {
                 "pending": pending,
+                "payment_submitted": payment_submitted,
                 "approved": approved,
                 "rejected": rejected,
                 "activated": activated

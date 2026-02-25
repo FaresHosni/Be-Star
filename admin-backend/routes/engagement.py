@@ -4,9 +4,11 @@ Manage real-time engagement with event attendees
 """
 from fastapi import APIRouter, HTTPException, BackgroundTasks, UploadFile, File, Form
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict
 import base64
 import logging
+import asyncio
+import random
 
 from models import get_session, Ticket, TicketStatus, Customer, safe_value
 from sqlalchemy import func
@@ -23,6 +25,7 @@ router = APIRouter()
 
 class BulkSendRequest(BaseModel):
     phones: List[str]
+    attendee_ids: Optional[List[int]] = []  # ticket IDs for personalization
     type: str  # "text" | "image" | "invitation" | "link"
     content: str  # message text, or base64 image data
     caption: Optional[str] = ""
@@ -105,48 +108,141 @@ async def get_hidden_attendees():
         session.close()
 
 
+# ── Batch sending configuration ──
+BATCH_SIZE = 25           # messages per batch
+DELAY_MIN = 3.0           # min seconds between messages
+DELAY_MAX = 8.0           # max seconds between messages
+BATCH_PAUSE_MIN = 60.0    # min seconds between batches
+BATCH_PAUSE_MAX = 90.0    # max seconds between batches
+
+
+def _get_attendee_info(attendee_ids: List[int]) -> Dict[str, dict]:
+    """Look up guest_name and code for each attendee ticket, keyed by phone."""
+    if not attendee_ids:
+        return {}
+    session = get_session()
+    try:
+        tickets = session.query(Ticket).filter(Ticket.id.in_(attendee_ids)).all()
+        info = {}
+        for t in tickets:
+            customer = t.customer
+            phone = customer.phone if customer else (t.guest_phone or "")
+            if phone:
+                info[phone] = {
+                    "guest_name": t.guest_name or (customer.name if customer else ""),
+                    "code": t.code or "",
+                }
+        return info
+    finally:
+        session.close()
+
+
+def _build_message(request: BulkSendRequest, phone: str, attendee_info: Dict[str, dict]) -> str:
+    """Build the message text, adding personalization footer if info is available."""
+    # Base message
+    if request.type == "text":
+        msg = request.content
+    elif request.type == "invitation":
+        msg = f"📨 *دعوة خاصة*\n\n"
+        msg += f"🎉 *{request.title}*\n" if request.title else ""
+        msg += f"{request.description}\n" if request.description else ""
+        msg += f"\n🔗 {request.url}" if request.url else ""
+    else:
+        msg = request.content
+
+    # Add personalization footer
+    info = attendee_info.get(phone)
+    if info:
+        name = info.get("guest_name", "")
+        code = info.get("code", "")
+        if name or code:
+            footer = "\n\n"
+            if name:
+                footer += f"👤 {name}"
+            if code:
+                footer += f" | 🎫 {code}"
+            msg += footer
+
+    return msg
+
+
+async def _send_bulk_messages(request: BulkSendRequest, attendee_info: Dict[str, dict]):
+    """
+    Send messages one-by-one with random delay.
+    Every BATCH_SIZE messages, pause for a longer break.
+    """
+    total = len(request.phones)
+    sent = 0
+    failed = 0
+
+    for i, phone in enumerate(request.phones):
+        try:
+            if request.type == "text":
+                msg = _build_message(request, phone, attendee_info)
+                await whatsapp_service.send_message(phone, msg)
+
+            elif request.type == "image":
+                caption = request.caption or ""
+                info = attendee_info.get(phone)
+                if info:
+                    name = info.get("guest_name", "")
+                    code = info.get("code", "")
+                    if name or code:
+                        extra = f"\n👤 {name}" if name else ""
+                        extra += f" | 🎫 {code}" if code else ""
+                        caption = (caption + extra) if caption else extra.strip()
+                await whatsapp_service.send_image(phone, request.content, caption)
+
+            elif request.type == "invitation":
+                msg = _build_message(request, phone, attendee_info)
+                await whatsapp_service.send_message(phone, msg)
+
+            elif request.type == "link":
+                await whatsapp_service.send_link(
+                    phone,
+                    request.url or request.content,
+                    request.title or "",
+                    request.description or ""
+                )
+
+            sent += 1
+            logger.info(f"✅ Sent {i+1}/{total} to {phone}")
+        except Exception as e:
+            failed += 1
+            logger.error(f"❌ Failed {i+1}/{total} to {phone}: {e}")
+
+        # Delay logic (skip after last message)
+        if i < total - 1:
+            # Check if we just finished a batch
+            if (i + 1) % BATCH_SIZE == 0:
+                pause = random.uniform(BATCH_PAUSE_MIN, BATCH_PAUSE_MAX)
+                logger.info(f"⏸️ Batch {(i+1)//BATCH_SIZE} complete. Pausing {pause:.0f}s...")
+                await asyncio.sleep(pause)
+            else:
+                delay = random.uniform(DELAY_MIN, DELAY_MAX)
+                logger.info(f"⏳ Waiting {delay:.1f}s...")
+                await asyncio.sleep(delay)
+
+    logger.info(f"📊 Bulk send finished: {sent} sent, {failed} failed out of {total}")
+
+
 @router.post("/send")
 async def bulk_send(request: BulkSendRequest, background_tasks: BackgroundTasks):
-    """Send message (text/image/invitation/link) to selected phone numbers"""
-    
+    """Send message to selected phone numbers with anti-ban batch delays"""
+
     if not request.phones:
         raise HTTPException(status_code=400, detail="No phones selected")
 
-    sent_count = 0
-    failed_count = 0
+    # Look up attendee info for personalization
+    attendee_info = _get_attendee_info(request.attendee_ids or [])
 
-    for phone in request.phones:
-        try:
-            if request.type == "text":
-                background_tasks.add_task(whatsapp_service.send_message, phone, request.content)
-            
-            elif request.type == "image":
-                background_tasks.add_task(whatsapp_service.send_image, phone, request.content, request.caption or "")
-            
-            elif request.type == "invitation":
-                # Format invitation message
-                invite_msg = f"📨 *دعوة خاصة*\n\n"
-                invite_msg += f"🎉 *{request.title}*\n" if request.title else ""
-                invite_msg += f"{request.description}\n" if request.description else ""
-                invite_msg += f"\n🔗 {request.url}" if request.url else ""
-                background_tasks.add_task(whatsapp_service.send_message, phone, invite_msg)
-            
-            elif request.type == "link":
-                background_tasks.add_task(whatsapp_service.send_link, phone, request.url or request.content, request.title or "", request.description or "")
-            
-            else:
-                raise HTTPException(status_code=400, detail=f"Invalid type: {request.type}")
-            
-            sent_count += 1
-        except Exception as e:
-            logger.error(f"Failed to queue message for {phone}: {e}")
-            failed_count += 1
+    # Queue the entire batch as ONE background task
+    background_tasks.add_task(_send_bulk_messages, request, attendee_info)
 
     return {
         "success": True,
-        "message": f"تم إرسال الرسالة إلى {sent_count} أشخاص",
-        "sent": sent_count,
-        "failed": failed_count
+        "message": f"تم بدء إرسال الرسائل إلى {len(request.phones)} شخص (مع تأخير لحماية الرقم)",
+        "queued": len(request.phones),
     }
 
 

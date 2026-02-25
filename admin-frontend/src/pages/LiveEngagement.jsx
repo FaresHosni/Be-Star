@@ -190,6 +190,7 @@ function LiveEngagement() {
         try {
             const payload = {
                 phones,
+                attendee_ids: [...selected],
                 type: sendType,
                 content: sendContent,
                 caption: sendCaption,

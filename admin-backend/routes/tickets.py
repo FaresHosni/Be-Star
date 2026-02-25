@@ -623,7 +623,7 @@ async def download_ticket_pdf(ticket_id: int):
         pdf_bytes = generate_ticket_pdf(
             ticket_code=ticket.code,
             ticket_type=safe_value(ticket.ticket_type),
-            customer_name=ticket.customer.name,
+            customer_name=ticket.guest_name if ticket.guest_name else ticket.customer.name,
             price=ticket.price
         )
         

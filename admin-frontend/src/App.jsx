@@ -15,7 +15,7 @@ import ChecklistPage from './pages/ChecklistPage'
 import AgendaPage from './pages/AgendaPage'
 import ComplaintsPage from './pages/ComplaintsPage'
 import VipGuests from './pages/VipGuests'
-import ChatWidget from './components/ChatWidget'
+
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -70,7 +70,7 @@ function App() {
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
                 </main>
-                <ChatWidget />
+
             </div>
         </Router>
     )

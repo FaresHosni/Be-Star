@@ -26,7 +26,7 @@ function Dashboard() {
     const navigate = useNavigate()
     const [stats, setStats] = useState({
         total_tickets: 0,
-        by_status: { payment_submitted: 0, approved: 0, rejected: 0 },
+        by_status: { pending: 0, payment_submitted: 0, approved: 0, rejected: 0, activated: 0 },
         by_type: { vip: 0, student: 0 },
         total_revenue: 0,
         total_customers: 0
@@ -92,6 +92,7 @@ function Dashboard() {
         { name: 'معتمدة', value: stats.by_status.approved, color: '#22C55E' },
         { name: 'في المراجعة', value: stats.by_status.payment_submitted, color: '#FBBF24' },
         { name: 'مرفوضة', value: stats.by_status.rejected, color: '#EF4444' },
+        { name: 'مفعلة', value: stats.by_status.activated, color: '#3B82F6' },
     ]
 
     const getStatusBadge = (status) => {
